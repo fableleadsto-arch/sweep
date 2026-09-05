@@ -1,0 +1,51 @@
+{
+ "dataset_file": "benchmark/datasets/hidden_v1.json",
+ "dataset_sha256": "22ae8609524de38bd569f724e0bd5a6260350b690efa957c69f4c06b443ac11d",
+ "num_cases": 270,
+ "per_group": {
+  "hidden_content": {
+   "total": 60,
+   "families": [
+    "claim_conflicting",
+    "claim_hedged",
+    "claim_irrelevant",
+    "claim_refute",
+    "claim_support"
+   ]
+  },
+  "hidden_evidence": {
+   "total": 40,
+   "families": [
+    "duration_grounding"
+   ]
+  },
+  "hidden_logic": {
+   "total": 90,
+   "families": [
+    "minmax",
+    "modulo",
+    "set_count"
+   ]
+  },
+  "hidden_quantifier": {
+   "total": 40,
+   "families": [
+    "quantifier_grounding"
+   ]
+  },
+  "hidden_temporal": {
+   "total": 40,
+   "families": [
+    "event_ordering"
+   ]
+  }
+ },
+ "contamination_counts": {
+  "CLEAN": 0,
+  "POSSIBLY_CONTAMINATED": 270,
+  "KNOWN_CONTAMINATION": 0
+ },
+ "role": "hidden",
+ "frozen_on": "2026-09-05",
+ "note": "Held-out evaluation set. Not used for tuning or selection. All families and vocabulary are new relative to suite_v1 and sweep_neural_mesh training data."
+}

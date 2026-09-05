@@ -1,0 +1,90 @@
+{
+ "status": "VALID",
+ "checks": [
+  {
+   "check": "Benchmark actually executed",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Results from this machine",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Git SHA recorded",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Hardware recorded",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Software recorded",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Dataset hashes recorded",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Random seeds recorded",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Test data separated from training",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "No benchmark leakage detected",
+   "ok": true,
+   "detail": "0 hit(s) across 428 repo files"
+  },
+  {
+   "check": "Raw results saved",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Failed tests preserved",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "No cherry-picking (raw + summary)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Public references have sources",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "CPU/GPU clearly separated",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Statistical analysis completed",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Ablation completed",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "Scaling completed",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

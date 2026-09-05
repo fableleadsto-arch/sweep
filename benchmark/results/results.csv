@@ -1,0 +1,669 @@
+id,group,family,difficulty,mode,query,expected,model_answer,decision,confidence,correct,abstained,latency_ms
+sb_0000,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9761,True,False,188.778
+sb_0001,evidence,claim_support,easy,claim,The troon is open.,supported,supported,supported,0.9,True,False,0.382
+sb_0002,generalization,nested_boolean,hard,yesno,not (false or true),no,no,refuted,0.99,True,False,0.831
+sb_0003,evidence,claim_support,easy,claim,The quark is awake.,supported,supported,supported,0.9,True,False,0.336
+sb_0004,generalization,nested_boolean,hard,yesno,not (true or false),no,no,refuted,0.99,True,False,0.697
+sb_0005,generalization,nested_boolean,hard,yesno,not (false or false),yes,yes,supported,0.99,True,False,0.689
+sb_0006,generalization,novel_sets,hard,set,"What is the union of {35, 40, 61, 95, 97} and {16, 25, 37, 45, 50}?","[16, 25, 35, 37, 40, 45, 50, 61, 95, 97]","[16, 25, 35, 37, 40, 45, 50, 61, 95, 97]",supported,0.95,True,False,1.558
+sb_0007,basic_logic,boolean,easy,yesno,true and false,no,no,refuted,0.99,True,False,0.656
+sb_0008,ambiguity,hedged_claim,hard,claim,The quark is awake.,unknown,unknown,insufficient,0.45,True,True,0.302
+sb_0009,basic_logic,set_subset,medium,yesno,"Is {2} a subset of {2, 5, 7, 9}?",yes,yes,supported,0.95,True,False,5.689
+sb_0010,adversarial,circular_claim,hard,claim,"Because the quark is connected, the quark is connected.",supported,supported,supported,0.9,True,False,0.536
+sb_0011,basic_logic,sequence,easy,int,"What comes next: 2, 13, 24, 35, ?",46,46,supported,0.95,True,False,2.303
+sb_0012,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,3.129
+sb_0013,generalization,deep_syllogism,hard,yesno,All hobbs are zwaps. All zwaps are gronks. All gronks are vexes. Are all hobbs vexes?,yes,yes,supported,0.9,True,False,2.778
+sb_0014,basic_logic,arithmetic,easy,int,What is 201 times 47?,9447,9447,supported,0.99,True,False,0.8
+sb_0015,evidence,claim_support,easy,claim,The blix is running.,supported,supported,supported,0.9,True,False,0.294
+sb_0016,basic_logic,set_union,easy,set,"What is the union of {1, 2, 8, 11} and {1, 6}?","[1, 2, 6, 8, 11]","[1, 2, 6, 8, 11]",supported,0.95,True,False,3.769
+sb_0017,multi_step,chain_syllogism_fallacy,hard,yesno,All quarks are troons. All troons are greeps. Are all greeps quarks?,unknown,unknown,insufficient,0.85,True,True,1.301
+sb_0018,ambiguity,hedged_claim,hard,claim,The troon is enabled.,unknown,unknown,insufficient,0.45,True,True,0.366
+sb_0019,adversarial,explicit_negation,medium,claim,The zorp is charged.,refuted,refuted,refuted,0.9,True,False,0.32
+sb_0020,evidence,claim_support,easy,claim,The daxel is enabled.,supported,supported,supported,0.9,True,False,0.37
+sb_0021,basic_logic,arithmetic,easy,int,What is 200 plus 27?,227,227,supported,0.99,True,False,2.223
+sb_0022,evidence,claim_support,easy,claim,The wibble is enabled.,supported,supported,supported,0.9,True,False,0.358
+sb_0023,multi_step,neg_syllogism,hard,yesno,All morphs are fimps. No fimps are glorps. Are any morphs glorps?,no,no,refuted,0.85,True,False,1.29
+sb_0024,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9925,True,False,97.806
+sb_0025,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9909,True,False,88.948
+sb_0026,basic_logic,boolean,easy,yesno,true xor true,no,no,refuted,0.99,True,False,5.509
+sb_0027,ambiguity,claim_irrelevant,medium,claim,The zorp is enabled.,unknown,unknown,insufficient,0.45,True,True,0.677
+sb_0028,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9767,True,False,129.585
+sb_0029,basic_logic,set_intersection,easy,set,"What is the intersection of {4, 5, 7} and {6, 10}?",[],[],supported,0.95,True,False,2.055
+sb_0030,basic_logic,boolean,easy,yesno,not true,no,no,refuted,0.99,True,False,0.562
+sb_0031,generalization,novel_claim,medium,claim,The quantum relay is calibrated.,refuted,refuted,refuted,0.9,True,False,0.46
+sb_0032,generalization,nested_boolean,hard,yesno,not (true or false),no,no,refuted,0.99,True,False,0.793
+sb_0033,ambiguity,conflicting_sources,hard,claim,The zorp is charged.,unknown,unknown,insufficient,0.45,True,True,0.456
+sb_0034,multi_step,transitivity_gap,hard,yesno,Aaron is faster than Beth. Dana is faster than Cole. Is Aaron faster than Cole?,unknown,unknown,insufficient,0.3,True,True,1.569
+sb_0035,multi_step,chain_syllogism,medium,yesno,All quarks are daxels. All daxels are zorbs. Are all quarks zorbs?,yes,yes,supported,0.9,True,False,2.013
+sb_0036,generalization,novel_claim,medium,claim,The quantum relay is calibrated.,refuted,refuted,refuted,0.9,True,False,0.333
+sb_0037,generalization,deep_transitivity,hard,yesno,Ada is faster than Bo. Bo is faster than Cy. Cy is faster than Dee. Is Ada faster than Dee?,yes,yes,supported,0.9,True,False,1.024
+sb_0038,multi_step,transitivity,medium,yesno,Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?,yes,yes,supported,0.9,True,False,3.321
+sb_0039,multi_step,chain_syllogism,medium,yesno,All daxels are fleeps. All fleeps are zorbs. Are all daxels zorbs?,yes,yes,supported,0.9,True,False,1.404
+sb_0040,generalization,deep_syllogism,hard,yesno,All krell are squibs. All squibs are muntz. All muntz are gronks. Are all krell gronks?,yes,yes,supported,0.9,True,False,1.644
+sb_0041,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.992,True,False,77.334
+sb_0042,basic_logic,prime,easy,yesno,Is 147 prime?,no,no,refuted,0.99,True,False,3.026
+sb_0043,multi_step,neg_syllogism,hard,yesno,All klaxes are glorps. No glorps are quuxes. Are any klaxes quuxes?,no,no,refuted,0.85,True,False,1.134
+sb_0044,generalization,nested_boolean,hard,yesno,not (true or false),no,no,refuted,0.99,True,False,0.501
+sb_0045,ambiguity,uncertain_date,hard,claim,The zorp was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.246
+sb_0046,generalization,novel_sets,hard,set,"What is the intersection of {17, 54, 63, 81, 94} and {8, 32, 52, 90, 98}?",[],[],supported,0.95,True,False,1.556
+sb_0047,multi_step,transitivity,medium,yesno,Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?,yes,yes,supported,0.9,True,False,4.897
+sb_0048,basic_logic,sequence,easy,int,"What comes next: 0, 6, 12, 18, ?",24,24,supported,0.95,True,False,1.76
+sb_0049,adversarial,circular_claim,hard,claim,"Because the zorp is enabled, the zorp is enabled.",supported,supported,supported,0.9,True,False,0.287
+sb_0050,evidence,claim_refute,easy,claim,The daxel is open.,refuted,refuted,refuted,0.9,True,False,0.183
+sb_0051,basic_logic,sequence,easy,int,"What comes next: 24, 16, 8, 0, ?",-8,-8,supported,0.95,True,False,1.908
+sb_0052,generalization,multi_term_arithmetic,hard,int,What is 481 * 66 * 610?,19365060,19365060,supported,0.99,True,False,1.451
+sb_0053,generalization,nested_boolean,hard,yesno,not (false or false),yes,yes,supported,0.99,True,False,0.509
+sb_0054,evidence,claim_refute,easy,claim,The gloop is charged.,refuted,refuted,refuted,0.9,True,False,0.217
+sb_0055,adversarial,distractor_padding,hard,claim,The fleep is running.,supported,supported,supported,0.9,True,False,0.366
+sb_0056,basic_logic,arithmetic,easy,int,What is 95 times 79?,7505,7505,supported,0.99,True,False,0.506
+sb_0057,generalization,deep_transitivity,hard,yesno,Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?,yes,yes,supported,0.9,True,False,2.772
+sb_0058,ambiguity,hedged_claim,hard,claim,The zorp is running.,unknown,unknown,insufficient,0.45,True,True,0.436
+sb_0059,multi_step,chain_syllogism,medium,yesno,All quarks are daxels. All daxels are zorbs. Are all quarks zorbs?,yes,yes,supported,0.9,True,False,1.032
+sb_0060,multi_step,chain_syllogism,medium,yesno,All zorbs are troons. All troons are quarks. Are all zorbs quarks?,yes,yes,supported,0.9,True,False,0.851
+sb_0061,evidence,claim_support,easy,claim,The wibble is charged.,supported,supported,supported,0.9,True,False,0.231
+sb_0062,adversarial,explicit_negation,medium,claim,The quark is open.,refuted,refuted,refuted,0.9,True,False,0.647
+sb_0063,multi_step,chain_syllogism,medium,yesno,All bloops are zorbs. All zorbs are greeps. Are all bloops greeps?,yes,yes,supported,0.9,True,False,2.12
+sb_0064,adversarial,explicit_negation,medium,claim,The troon is running.,refuted,refuted,refuted,0.9,True,False,0.421
+sb_0065,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9763,True,False,112.736
+sb_0066,adversarial,circular_claim,hard,claim,"Because the wibble is connected, the wibble is connected.",supported,supported,supported,0.9,True,False,0.588
+sb_0067,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9862,True,False,135.127
+sb_0068,adversarial,distractor_padding,hard,claim,The fleep is open.,supported,supported,supported,0.9,True,False,0.62
+sb_0069,multi_step,chain_syllogism_fallacy,hard,yesno,All quarks are wibbles. All wibbles are fleeps. Are all fleeps quarks?,unknown,unknown,insufficient,0.85,True,True,2.016
+sb_0070,generalization,deep_transitivity,hard,yesno,Amy is faster than Ben. Ben is faster than Cole. Cole is faster than Dan. Is Amy faster than Dan?,yes,yes,supported,0.9,True,False,0.869
+sb_0071,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9707,True,False,248.222
+sb_0072,adversarial,circular_claim,hard,claim,"Because the fleep is connected, the fleep is connected.",supported,supported,supported,0.9,True,False,0.559
+sb_0073,evidence,claim_refute,easy,claim,The daxel is open.,refuted,refuted,refuted,0.9,True,False,0.289
+sb_0074,adversarial,double_negation,hard,claim,The blix is enabled.,supported,supported,supported,0.9,True,False,0.264
+sb_0075,adversarial,distractor_padding,hard,claim,The quark is charged.,supported,supported,supported,0.9,True,False,0.537
+sb_0076,generalization,multi_term_arithmetic,hard,int,What is 570 * 712 * 35?,14204400,14204400,supported,0.99,True,False,3.677
+sb_0077,multi_step,chain_syllogism,medium,yesno,All greeps are zorbs. All zorbs are troons. Are all greeps troons?,yes,yes,supported,0.9,True,False,1.76
+sb_0078,adversarial,explicit_negation,medium,claim,The zorp is active.,refuted,refuted,refuted,0.9,True,False,0.298
+sb_0079,multi_step,transitivity,medium,yesno,Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?,yes,yes,supported,0.9,True,False,3.589
+sb_0080,adversarial,circular_claim,hard,claim,"Because the gloop is open, the gloop is open.",supported,supported,supported,0.9,True,False,0.331
+sb_0081,evidence,claim_refute,easy,claim,The fleep is charged.,refuted,refuted,refuted,0.9,True,False,0.246
+sb_0082,adversarial,circular_claim,hard,claim,"Because the quark is awake, the quark is awake.",supported,supported,supported,0.9,True,False,0.31
+sb_0083,generalization,deep_transitivity,hard,yesno,Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?,yes,yes,supported,0.9,True,False,2.701
+sb_0084,basic_logic,set_union,easy,set,"What is the union of {10, 11} and {2, 6, 9}?","[2, 6, 9, 10, 11]","[2, 6, 9, 10, 11]",supported,0.95,True,False,1.32
+sb_0085,generalization,novel_sequence,hard,int,"What comes next: -22, 9, 40, 71, ?",102,102,supported,0.95,True,False,2.397
+sb_0086,ambiguity,uncertain_date,hard,claim,The zorp was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.316
+sb_0087,adversarial,explicit_negation,medium,claim,The blix is open.,refuted,refuted,refuted,0.9,True,False,0.201
+sb_0088,evidence,claim_support,easy,claim,The daxel is charged.,supported,supported,supported,0.9,True,False,0.27
+sb_0089,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9891,True,False,97.778
+sb_0090,ambiguity,uncertain_date,hard,claim,The blix was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.316
+sb_0091,basic_logic,boolean,easy,yesno,false nand false,yes,yes,supported,0.99,True,False,1.669
+sb_0092,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.991,True,False,122.383
+sb_0093,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9863,True,False,151.124
+sb_0094,multi_step,chain_syllogism,medium,yesno,All daxels are troons. All troons are wibbles. Are all daxels wibbles?,yes,yes,supported,0.9,True,False,2.583
+sb_0095,evidence,claim_refute,easy,claim,The wibble is charged.,refuted,refuted,refuted,0.9,True,False,0.869
+sb_0096,basic_logic,boolean,easy,yesno,false and true,no,no,refuted,0.99,True,False,0.93
+sb_0097,basic_logic,set_union,easy,set,"What is the union of {3, 5, 7, 8} and {4, 5}?","[3, 4, 5, 7, 8]","[3, 4, 5, 7, 8]",supported,0.95,True,False,1.28
+sb_0098,evidence,claim_support,easy,claim,The wibble is connected.,supported,supported,supported,0.9,True,False,0.354
+sb_0099,multi_step,neg_syllogism,hard,yesno,All wibbles are quuxes. No quuxes are morphs. Are any wibbles morphs?,no,no,refuted,0.85,True,False,1.615
+sb_0100,ambiguity,uncertain_date,hard,claim,The troon was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.372
+sb_0101,basic_logic,arithmetic,easy,int,What is 33 divided by 11?,3,3,supported,0.99,True,False,9.827
+sb_0102,multi_step,chain_syllogism,medium,yesno,All zorbs are quarks. All quarks are wibbles. Are all zorbs wibbles?,yes,yes,supported,0.9,True,False,1.887
+sb_0103,basic_logic,arithmetic,easy,int,What is 36 divided by 6?,6,6,supported,0.99,True,False,3.687
+sb_0104,multi_step,chain_syllogism,medium,yesno,All wibbles are greeps. All greeps are fleeps. Are all wibbles fleeps?,yes,yes,supported,0.9,True,False,1.885
+sb_0105,evidence,claim_refute,easy,claim,The fleep is running.,refuted,refuted,refuted,0.9,True,False,0.309
+sb_0106,multi_step,chain_syllogism_fallacy,hard,yesno,All fleeps are greeps. All greeps are wibbles. Are all wibbles fleeps?,unknown,unknown,insufficient,0.85,True,True,1.638
+sb_0107,basic_logic,set_intersection,easy,set,"What is the intersection of {1, 2} and {2, 3, 4, 8}?",[2],[2],supported,0.95,True,False,2.068
+sb_0108,adversarial,double_negation,hard,claim,The daxel is open.,supported,supported,supported,0.9,True,False,0.353
+sb_0109,basic_logic,sequence,easy,int,"What comes next: 26, 35, 44, 53, ?",62,62,supported,0.95,True,False,3.787
+sb_0110,ambiguity,uncertain_date,hard,claim,The troon was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.418
+sb_0111,basic_logic,set_subset,medium,yesno,"Is {5, 7, 10, 78} a subset of {1, 5, 7}?",no,no,refuted,0.95,True,False,3.623
+sb_0112,generalization,novel_claim,medium,claim,The cryo module is polarized.,refuted,refuted,refuted,0.9,True,False,0.915
+sb_0113,generalization,novel_sequence,hard,int,"What comes next: -28, -45, -62, -79, ?",-96,-96,supported,0.95,True,False,3.494
+sb_0114,basic_logic,boolean,easy,yesno,true or false,yes,yes,supported,0.99,True,False,2.022
+sb_0115,generalization,deep_transitivity,hard,yesno,Ada is taller than Bo. Bo is taller than Cy. Cy is taller than Dee. Is Ada taller than Dee?,yes,yes,supported,0.9,True,False,1.458
+sb_0116,basic_logic,boolean,easy,yesno,not true,no,no,refuted,0.99,True,False,0.624
+sb_0117,ambiguity,claim_irrelevant,medium,claim,The troon is charged.,unknown,unknown,insufficient,0.45,True,True,0.28
+sb_0118,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9925,True,False,133.084
+sb_0119,evidence,claim_refute,easy,claim,The daxel is awake.,refuted,refuted,refuted,0.9,True,False,0.267
+sb_0120,multi_step,chain_syllogism,medium,yesno,All quarks are daxels. All daxels are bloops. Are all quarks bloops?,yes,yes,supported,0.9,True,False,2.588
+sb_0121,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.919
+sb_0122,generalization,novel_sets,hard,set,"What is the intersection of {31, 39, 52, 67, 72} and {21, 59, 70, 71, 96}?",[],[],supported,0.95,True,False,13.491
+sb_0123,evidence,claim_refute,easy,claim,The wibble is enabled.,refuted,refuted,refuted,0.9,True,False,1.375
+sb_0124,generalization,deep_syllogism,hard,yesno,All zwaps are vexes. All vexes are pilts. All pilts are gronks. Are all zwaps gronks?,yes,yes,supported,0.9,True,False,10.416
+sb_0125,adversarial,explicit_negation,medium,claim,The fleep is charged.,refuted,refuted,refuted,0.9,True,False,0.327
+sb_0126,evidence,claim_refute,easy,claim,The daxel is enabled.,refuted,refuted,refuted,0.9,True,False,0.264
+sb_0127,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9837,True,False,383.743
+sb_0128,adversarial,distractor_padding,hard,claim,The daxel is locked.,supported,supported,supported,0.9,True,False,0.575
+sb_0129,multi_step,transitivity,medium,yesno,Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?,yes,yes,supported,0.9,True,False,32.686
+sb_0130,generalization,multi_term_arithmetic,hard,int,What is 752 * 196 * 177?,26088384,26088384,supported,0.99,True,False,11.677
+sb_0131,basic_logic,prime,easy,yesno,Is 153 prime?,no,no,refuted,0.99,True,False,1.197
+sb_0132,adversarial,distractor_padding,hard,claim,The gloop is connected.,supported,supported,supported,0.9,True,False,0.698
+sb_0133,evidence,claim_refute,easy,claim,The quark is active.,refuted,refuted,refuted,0.9,True,False,0.316
+sb_0134,adversarial,explicit_negation,medium,claim,The zorp is awake.,refuted,refuted,refuted,0.9,True,False,0.31
+sb_0135,generalization,deep_syllogism,hard,yesno,All pilts are muntz. All muntz are gronks. All gronks are vexes. Are all pilts vexes?,yes,yes,supported,0.9,True,False,2.331
+sb_0136,basic_logic,sequence,easy,int,"What comes next: 24, 20, 16, 12, ?",8,8,supported,0.95,True,False,2.99
+sb_0137,ambiguity,conflicting_sources,hard,claim,The gloop is connected.,unknown,unknown,insufficient,0.45,True,True,0.578
+sb_0138,evidence,claim_refute,easy,claim,The daxel is locked.,refuted,refuted,refuted,0.9,True,False,0.388
+sb_0139,basic_logic,arithmetic,easy,int,What is 170 divided by 10?,17,17,supported,0.99,True,False,3.354
+sb_0140,basic_logic,set_union,easy,set,"What is the union of {1, 2, 9, 10} and {3, 5, 7, 9}?","[1, 2, 3, 5, 7, 9, 10]","[1, 2, 3, 5, 7, 9, 10]",supported,0.95,True,False,2.152
+sb_0141,generalization,deep_syllogism,hard,yesno,All squibs are vexes. All vexes are muntz. All muntz are yotz. Are all squibs yotz?,yes,yes,supported,0.9,True,False,5.052
+sb_0142,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9897,True,False,523.059
+sb_0143,basic_logic,arithmetic,easy,int,What is 194 plus 50?,244,244,supported,0.99,True,False,2.069
+sb_0144,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9837,True,False,110.832
+sb_0145,multi_step,chain_syllogism,medium,yesno,All daxels are bloops. All bloops are wibbles. Are all daxels wibbles?,yes,yes,supported,0.9,True,False,1.469
+sb_0146,basic_logic,arithmetic,easy,int,What is 84 divided by 6?,14,14,supported,0.99,True,False,2.169
+sb_0147,ambiguity,conflicting_sources,hard,claim,The troon is charged.,unknown,unknown,insufficient,0.45,True,True,0.377
+sb_0148,ambiguity,conflicting_sources,hard,claim,The daxel is active.,unknown,unknown,insufficient,0.45,True,True,0.344
+sb_0149,basic_logic,arithmetic,easy,int,What is 47 times 32?,1504,1504,supported,0.99,True,False,0.664
+sb_0150,basic_logic,prime,easy,yesno,Is 85 prime?,no,no,refuted,0.99,True,False,0.472
+sb_0151,evidence,claim_refute,easy,claim,The gloop is open.,refuted,refuted,refuted,0.9,True,False,1.828
+sb_0152,evidence,claim_support,easy,claim,The wibble is enabled.,supported,supported,supported,0.9,True,False,0.359
+sb_0153,basic_logic,prime,easy,yesno,Is 59 prime?,yes,yes,supported,0.99,True,False,0.83
+sb_0154,adversarial,double_negation,hard,claim,The wibble is locked.,supported,supported,supported,0.9,True,False,0.332
+sb_0155,ambiguity,hedged_claim,hard,claim,The daxel is locked.,unknown,unknown,insufficient,0.45,True,True,0.223
+sb_0156,multi_step,chain_syllogism,medium,yesno,All fleeps are quarks. All quarks are greeps. Are all fleeps greeps?,yes,yes,supported,0.9,True,False,1.384
+sb_0157,multi_step,chain_syllogism,medium,yesno,All troons are zorbs. All zorbs are greeps. Are all troons greeps?,yes,yes,supported,0.9,True,False,1.105
+sb_0158,multi_step,neg_syllogism,hard,yesno,All fimps are klaxes. No klaxes are snorps. Are any fimps snorps?,no,no,refuted,0.85,True,False,1.824
+sb_0159,basic_logic,sequence,easy,int,"What comes next: 28, 37, 46, 55, ?",64,64,supported,0.95,True,False,1.874
+sb_0160,ambiguity,claim_irrelevant,medium,claim,The zorp is enabled.,unknown,unknown,insufficient,0.45,True,True,0.285
+sb_0161,generalization,deep_transitivity,hard,yesno,Ana is heavier than Bob. Bob is heavier than Cid. Cid is heavier than Don. Is Ana heavier than Don?,yes,yes,supported,0.9,True,False,2.927
+sb_0162,multi_step,neg_syllogism,hard,yesno,All blerts are wibbles. No wibbles are morphs. Are any blerts morphs?,no,no,refuted,0.85,True,False,1.008
+sb_0163,adversarial,explicit_negation,medium,claim,The blix is active.,refuted,refuted,refuted,0.9,True,False,0.202
+sb_0164,evidence,claim_refute,easy,claim,The zorp is locked.,refuted,refuted,refuted,0.9,True,False,0.17
+sb_0165,generalization,novel_sets,hard,set,"What is the intersection of {16, 25, 35, 41, 54} and {18, 24, 38, 45, 93}?",[],[],supported,0.95,True,False,1.248
+sb_0166,multi_step,neg_syllogism,hard,yesno,All morphs are fimps. No fimps are blerts. Are any morphs blerts?,no,no,refuted,0.85,True,False,2.698
+sb_0167,basic_logic,sequence,easy,int,"What comes next: 28, 19, 10, 1, ?",-8,-8,supported,0.95,True,False,2.786
+sb_0168,ambiguity,hedged_claim,hard,claim,The wibble is connected.,unknown,unknown,insufficient,0.45,True,True,0.364
+sb_0169,basic_logic,arithmetic,easy,int,What is 13 plus 46?,59,59,supported,0.99,True,False,2.116
+sb_0170,generalization,deep_transitivity,hard,yesno,Amy is taller than Ben. Ben is taller than Cole. Cole is taller than Dan. Is Amy taller than Dan?,yes,yes,supported,0.9,True,False,4.163
+sb_0171,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9716,True,False,137.928
+sb_0172,basic_logic,arithmetic,easy,int,What is 182 times 80?,14560,14560,supported,0.99,True,False,5.049
+sb_0173,basic_logic,arithmetic,easy,int,What is 38 times 34?,1292,1292,supported,0.99,True,False,0.778
+sb_0174,ambiguity,conflicting_sources,hard,claim,The gloop is awake.,unknown,unknown,insufficient,0.45,True,True,0.349
+sb_0175,evidence,claim_support,easy,claim,The daxel is connected.,supported,supported,supported,0.9,True,False,0.255
+sb_0176,generalization,novel_claim,medium,claim,The quantum relay is ionized.,refuted,refuted,refuted,0.9,True,False,0.228
+sb_0177,ambiguity,hedged_claim,hard,claim,The blix is locked.,unknown,unknown,insufficient,0.45,True,True,0.19
+sb_0178,basic_logic,sequence,easy,int,"What comes next: 18, 9, 0, -9, ?",-18,-18,supported,0.95,True,False,1.884
+sb_0179,adversarial,distractor_padding,hard,claim,The quark is connected.,supported,supported,supported,0.9,True,False,1.192
+sb_0180,ambiguity,uncertain_date,hard,claim,The wibble was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.407
+sb_0181,multi_step,transitivity,medium,yesno,Aaron is older than Beth. Beth is older than Cole. Is Aaron older than Cole?,yes,yes,supported,0.9,True,False,4.243
+sb_0182,ambiguity,conflicting_sources,hard,claim,The daxel is running.,unknown,unknown,insufficient,0.45,True,True,0.581
+sb_0183,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9744,True,False,132.122
+sb_0184,generalization,novel_sets,hard,set,"What is the intersection of {22, 29, 47, 50, 69} and {52, 61, 66, 82, 87}?",[],[],supported,0.95,True,False,1.868
+sb_0185,basic_logic,arithmetic,easy,int,What is 134 times 68?,9112,9112,supported,0.99,True,False,2.03
+sb_0186,multi_step,transitivity,medium,yesno,Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?,yes,yes,supported,0.9,True,False,3.096
+sb_0187,ambiguity,uncertain_date,hard,claim,The quark was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.303
+sb_0188,multi_step,chain_syllogism_fallacy,hard,yesno,All quarks are troons. All troons are bloops. Are all bloops quarks?,unknown,unknown,insufficient,0.85,True,True,1.149
+sb_0189,evidence,claim_support,easy,claim,The fleep is awake.,supported,supported,supported,0.9,True,False,0.264
+sb_0190,ambiguity,claim_irrelevant,medium,claim,The blix is active.,unknown,unknown,insufficient,0.45,True,True,0.227
+sb_0191,multi_step,chain_syllogism,medium,yesno,All fleeps are bloops. All bloops are greeps. Are all fleeps greeps?,yes,yes,supported,0.9,True,False,1.071
+sb_0192,generalization,novel_claim,medium,claim,The quantum relay is calibrated.,supported,supported,supported,0.9,True,False,0.276
+sb_0193,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9925,True,False,83.856
+sb_0194,generalization,deep_transitivity,hard,yesno,Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?,yes,yes,supported,0.9,True,False,4.468
+sb_0195,evidence,claim_support,easy,claim,The quark is connected.,supported,supported,supported,0.9,True,False,0.57
+sb_0196,basic_logic,arithmetic,easy,int,What is 20 times 82?,1640,1640,supported,0.99,True,False,1.015
+sb_0197,basic_logic,boolean,easy,yesno,false nand true,yes,yes,supported,0.99,True,False,1.675
+sb_0198,basic_logic,set_intersection,easy,set,"What is the intersection of {4, 8} and {2, 5, 8}?",[8],[8],supported,0.95,True,False,2.268
+sb_0199,generalization,multi_term_arithmetic,hard,int,What is 399 * 613 * 854?,208877298,208877298,supported,0.99,True,False,2.069
+sb_0200,multi_step,chain_syllogism,medium,yesno,All fleeps are bloops. All bloops are zorbs. Are all fleeps zorbs?,yes,yes,supported,0.9,True,False,1.413
+sb_0201,evidence,claim_support,easy,claim,The troon is awake.,supported,supported,supported,0.9,True,False,0.33
+sb_0202,evidence,claim_refute,easy,claim,The quark is connected.,refuted,refuted,refuted,0.9,True,False,0.234
+sb_0203,generalization,novel_sequence,hard,int,"What comes next: -142, -164, -186, -208, ?",-230,-230,supported,0.95,True,False,2.795
+sb_0204,ambiguity,claim_irrelevant,medium,claim,The zorp is charged.,unknown,unknown,insufficient,0.45,True,True,0.391
+sb_0205,multi_step,transitivity,medium,yesno,Alice is older than Bob. Bob is older than Carol. Is Alice older than Carol?,yes,yes,supported,0.9,True,False,3.236
+sb_0206,adversarial,double_negation,hard,claim,The zorp is running.,supported,supported,supported,0.9,True,False,0.264
+sb_0207,adversarial,double_negation,hard,claim,The troon is connected.,supported,supported,supported,0.9,True,False,0.222
+sb_0208,basic_logic,arithmetic,easy,int,What is 62 minus 71?,-9,-9,supported,0.99,True,False,1.582
+sb_0209,ambiguity,hedged_claim,hard,claim,The troon is awake.,unknown,unknown,insufficient,0.45,True,True,0.228
+sb_0210,adversarial,distractor_padding,hard,claim,The blix is charged.,supported,supported,supported,0.9,True,False,0.437
+sb_0211,adversarial,double_negation,hard,claim,The quark is running.,supported,supported,supported,0.9,True,False,0.215
+sb_0212,evidence,claim_support,easy,claim,The troon is open.,supported,supported,supported,0.9,True,False,0.227
+sb_0213,basic_logic,arithmetic,easy,int,What is 219 minus 70?,149,149,supported,0.99,True,False,3.894
+sb_0214,multi_step,chain_syllogism,medium,yesno,All zorbs are greeps. All greeps are fleeps. Are all zorbs fleeps?,yes,yes,supported,0.9,True,False,1.23
+sb_0215,ambiguity,conflicting_sources,hard,claim,The troon is connected.,unknown,unknown,insufficient,0.45,True,True,0.376
+sb_0216,basic_logic,prime,easy,yesno,Is 31 prime?,yes,yes,supported,0.99,True,False,0.521
+sb_0217,ambiguity,hedged_claim,hard,claim,The gloop is connected.,unknown,unknown,insufficient,0.45,True,True,0.221
+sb_0218,ambiguity,claim_irrelevant,medium,claim,The daxel is open.,unknown,unknown,insufficient,0.45,True,True,0.217
+sb_0219,adversarial,explicit_negation,medium,claim,The zorp is awake.,refuted,refuted,refuted,0.9,True,False,0.183
+sb_0220,ambiguity,hedged_claim,hard,claim,The daxel is enabled.,unknown,unknown,insufficient,0.45,True,True,0.195
+sb_0221,ambiguity,conflicting_sources,hard,claim,The fleep is open.,unknown,unknown,insufficient,0.45,True,True,0.272
+sb_0222,evidence,claim_refute,easy,claim,The zorp is enabled.,refuted,refuted,refuted,0.9,True,False,0.192
+sb_0223,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.55
+sb_0224,multi_step,chain_syllogism,medium,yesno,All zorbs are daxels. All daxels are greeps. Are all zorbs greeps?,yes,yes,supported,0.9,True,False,1.273
+sb_0225,ambiguity,conflicting_sources,hard,claim,The fleep is running.,unknown,unknown,insufficient,0.45,True,True,0.362
+sb_0226,adversarial,distractor_padding,hard,claim,The blix is open.,supported,supported,supported,0.9,True,False,0.448
+sb_0227,ambiguity,claim_irrelevant,medium,claim,The gloop is active.,unknown,unknown,insufficient,0.45,True,True,0.238
+sb_0228,evidence,claim_refute,easy,claim,The troon is running.,refuted,refuted,refuted,0.9,True,False,0.211
+sb_0229,ambiguity,claim_irrelevant,medium,claim,The zorp is enabled.,unknown,unknown,insufficient,0.45,True,True,0.225
+sb_0230,evidence,claim_refute,easy,claim,The zorp is awake.,refuted,refuted,refuted,0.9,True,False,0.193
+sb_0231,ambiguity,uncertain_date,hard,claim,The wibble was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.23
+sb_0232,ambiguity,claim_irrelevant,medium,claim,The gloop is running.,unknown,unknown,insufficient,0.45,True,True,0.239
+sb_0233,multi_step,neg_syllogism,hard,yesno,All glorps are klaxes. No klaxes are blerts. Are any glorps blerts?,no,no,refuted,0.85,True,False,1.469
+sb_0234,generalization,nested_boolean,hard,yesno,not (false or true),no,no,refuted,0.99,True,False,0.681
+sb_0235,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9848,True,False,202.367
+sb_0236,ambiguity,hedged_claim,hard,claim,The wibble is awake.,unknown,unknown,insufficient,0.45,True,True,0.319
+sb_0237,adversarial,circular_claim,hard,claim,"Because the zorp is enabled, the zorp is enabled.",supported,supported,supported,0.9,True,False,0.326
+sb_0238,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9916,True,False,138.84
+sb_0239,generalization,deep_transitivity,hard,yesno,Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?,yes,yes,supported,0.9,True,False,5.107
+sb_0240,multi_step,chain_syllogism,medium,yesno,All troons are bloops. All bloops are wibbles. Are all troons wibbles?,yes,yes,supported,0.9,True,False,2.204
+sb_0241,basic_logic,boolean,easy,yesno,false and true,no,no,refuted,0.99,True,False,0.904
+sb_0242,multi_step,chain_syllogism,medium,yesno,All greeps are daxels. All daxels are quarks. Are all greeps quarks?,yes,yes,supported,0.9,True,False,1.714
+sb_0243,ambiguity,hedged_claim,hard,claim,The daxel is open.,unknown,unknown,insufficient,0.45,True,True,0.364
+sb_0244,ambiguity,conflicting_sources,hard,claim,The daxel is connected.,unknown,unknown,insufficient,0.45,True,True,0.462
+sb_0245,adversarial,distractor_padding,hard,claim,The gloop is running.,supported,supported,supported,0.9,True,False,0.742
+sb_0246,ambiguity,claim_irrelevant,medium,claim,The gloop is locked.,unknown,unknown,insufficient,0.45,True,True,0.352
+sb_0247,evidence,claim_support,easy,claim,The blix is running.,supported,supported,supported,0.9,True,False,0.414
+sb_0248,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9837,True,False,128.391
+sb_0249,evidence,claim_support,easy,claim,The daxel is running.,supported,supported,supported,0.9,True,False,0.405
+sb_0250,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9922,True,False,142.225
+sb_0251,evidence,claim_support,easy,claim,The gloop is open.,supported,supported,supported,0.9,True,False,0.349
+sb_0252,multi_step,transitivity,medium,yesno,Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?,yes,yes,supported,0.9,True,False,3.729
+sb_0253,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.976,True,False,154.789
+sb_0254,basic_logic,set_subset,medium,yesno,"Is {2, 3} a subset of {2, 3, 6, 10}?",yes,yes,supported,0.95,True,False,3.456
+sb_0255,generalization,novel_sets,hard,set,"What is the union of {37, 53, 62, 68, 98} and {2, 4, 29, 42, 71}?","[2, 4, 29, 37, 42, 53, 62, 68, 71, 98]","[2, 4, 29, 37, 42, 53, 62, 68, 71, 98]",supported,0.95,True,False,2.311
+sb_0256,ambiguity,hedged_claim,hard,claim,The daxel is active.,unknown,unknown,insufficient,0.45,True,True,0.378
+sb_0257,multi_step,transitivity,medium,yesno,Aaron is faster than Beth. Beth is faster than Cole. Is Aaron faster than Cole?,yes,yes,supported,0.9,True,False,1.15
+sb_0258,basic_logic,prime,easy,yesno,Is 161 prime?,no,no,refuted,0.99,True,False,0.611
+sb_0259,evidence,claim_refute,easy,claim,The quark is charged.,refuted,refuted,refuted,0.9,True,False,0.266
+sb_0260,generalization,deep_syllogism,hard,yesno,All vexes are gronks. All gronks are pilts. All pilts are muntz. Are all vexes muntz?,yes,yes,supported,0.9,True,False,1.683
+sb_0261,adversarial,double_negation,hard,claim,The wibble is connected.,supported,supported,supported,0.9,True,False,0.263
+sb_0262,evidence,claim_support,easy,claim,The gloop is open.,supported,supported,supported,0.9,True,False,0.292
+sb_0263,adversarial,explicit_negation,medium,claim,The daxel is connected.,refuted,refuted,refuted,0.9,True,False,0.237
+sb_0264,basic_logic,set_union,easy,set,"What is the union of {6, 11} and {2, 4, 7}?","[2, 4, 6, 7, 11]","[2, 4, 6, 7, 11]",supported,0.95,True,False,1.307
+sb_0265,evidence,claim_refute,easy,claim,The daxel is locked.,refuted,refuted,refuted,0.9,True,False,0.277
+sb_0266,ambiguity,conflicting_sources,hard,claim,The quark is locked.,unknown,unknown,insufficient,0.45,True,True,0.362
+sb_0267,adversarial,double_negation,hard,claim,The troon is connected.,supported,supported,supported,0.9,True,False,0.254
+sb_0268,basic_logic,boolean,easy,yesno,true nand false,yes,yes,supported,0.99,True,False,1.527
+sb_0269,generalization,deep_syllogism,hard,yesno,All squibs are yotz. All yotz are muntz. All muntz are hobbs. Are all squibs hobbs?,yes,yes,supported,0.9,True,False,1.72
+sb_0270,adversarial,double_negation,hard,claim,The blix is open.,supported,supported,supported,0.9,True,False,0.261
+sb_0271,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9567,True,False,145.533
+sb_0272,adversarial,distractor_padding,hard,claim,The fleep is enabled.,supported,supported,supported,0.9,True,False,0.442
+sb_0273,generalization,novel_sets,hard,set,"What is the intersection of {11, 15, 18, 45, 74} and {25, 38, 55, 79, 81}?",[],[],supported,0.95,True,False,1.441
+sb_0274,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9837,True,False,135.039
+sb_0275,generalization,novel_claim,medium,claim,The tachyon drive is quenched.,refuted,refuted,refuted,0.9,True,False,0.376
+sb_0276,evidence,claim_support,easy,claim,The blix is charged.,supported,supported,supported,0.9,True,False,0.322
+sb_0277,ambiguity,hedged_claim,hard,claim,The zorp is running.,unknown,unknown,insufficient,0.45,True,True,0.464
+sb_0278,generalization,deep_syllogism,hard,yesno,All gronks are pilts. All pilts are loams. All loams are muntz. Are all gronks muntz?,yes,yes,supported,0.9,True,False,2.163
+sb_0279,ambiguity,uncertain_date,hard,claim,The gloop was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.382
+sb_0280,generalization,multi_term_arithmetic,hard,int,What is 137 * 561 * 31?,2382567,2382567,supported,0.99,True,False,2.19
+sb_0281,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9644,True,False,138.824
+sb_0282,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9893,True,False,102.222
+sb_0283,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.8946,True,False,80.299
+sb_0284,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,4.072
+sb_0285,adversarial,explicit_negation,medium,claim,The fleep is enabled.,refuted,refuted,refuted,0.9,True,False,0.366
+sb_0286,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,3.724
+sb_0287,ambiguity,hedged_claim,hard,claim,The troon is open.,unknown,unknown,insufficient,0.45,True,True,0.602
+sb_0288,basic_logic,boolean,easy,yesno,false xor false,no,no,refuted,0.99,True,False,1.848
+sb_0289,evidence,claim_support,easy,claim,The wibble is enabled.,supported,supported,supported,0.9,True,False,0.478
+sb_0290,multi_step,transitivity,medium,yesno,Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?,yes,yes,supported,0.9,True,False,3.607
+sb_0291,basic_logic,set_union,easy,set,"What is the union of {1, 3, 5} and {2, 3, 7}?","[1, 2, 3, 5, 7]","[1, 2, 3, 5, 7]",supported,0.95,True,False,1.372
+sb_0292,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9874,True,False,89.538
+sb_0293,generalization,novel_sets,hard,set,"What is the union of {33, 49, 56, 71, 89} and {37, 52, 55, 69, 80}?","[33, 37, 49, 52, 55, 56, 69, 71, 80, 89]","[33, 37, 49, 52, 55, 56, 69, 71, 80, 89]",supported,0.95,True,False,1.374
+sb_0294,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9929,True,False,94.036
+sb_0295,ambiguity,uncertain_date,hard,claim,The troon was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.358
+sb_0296,ambiguity,conflicting_sources,hard,claim,The quark is active.,unknown,unknown,insufficient,0.45,True,True,0.761
+sb_0297,generalization,novel_claim,medium,claim,The neural lattice is quenched.,refuted,refuted,refuted,0.9,True,False,0.341
+sb_0298,basic_logic,boolean,easy,yesno,true xor true,no,no,refuted,0.99,True,False,1.993
+sb_0299,basic_logic,boolean,easy,yesno,false and true,no,no,refuted,0.99,True,False,1.092
+sb_0300,evidence,claim_refute,easy,claim,The gloop is enabled.,refuted,refuted,refuted,0.9,True,False,0.358
+sb_0301,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.381
+sb_0302,generalization,novel_sets,hard,set,"What is the intersection of {8, 11, 45, 47, 68} and {18, 72, 78, 81, 92}?",[],[],supported,0.95,True,False,5.055
+sb_0303,generalization,deep_syllogism,hard,yesno,All yotz are loams. All loams are vexes. All vexes are zwaps. Are all yotz zwaps?,yes,yes,supported,0.9,True,False,2.341
+sb_0304,multi_step,transitivity,medium,yesno,Alex is faster than Ben. Ben is faster than Chris. Is Alex faster than Chris?,yes,yes,supported,0.9,True,False,1.123
+sb_0305,generalization,novel_sets,hard,set,"What is the union of {21, 26, 61, 73, 81} and {33, 72, 90, 97, 99}?","[21, 26, 33, 61, 72, 73, 81, 90, 97, 99]","[21, 26, 33, 61, 72, 73, 81, 90, 97, 99]",supported,0.95,True,False,1.707
+sb_0306,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9799,True,False,112.62
+sb_0307,adversarial,distractor_padding,hard,claim,The fleep is locked.,supported,supported,supported,0.9,True,False,0.5
+sb_0308,generalization,novel_sets,hard,set,"What is the union of {37, 62, 66, 70, 93} and {34, 43, 63, 66, 82}?","[34, 37, 43, 62, 63, 66, 70, 82, 93]","[34, 37, 43, 62, 63, 66, 70, 82, 93]",supported,0.95,True,False,1.519
+sb_0309,ambiguity,hedged_claim,hard,claim,The zorp is enabled.,unknown,unknown,insufficient,0.45,True,True,0.282
+sb_0310,basic_logic,arithmetic,easy,int,What is 173 minus 56?,117,117,supported,0.99,True,False,1.814
+sb_0311,evidence,claim_support,easy,claim,The zorp is locked.,supported,supported,supported,0.9,True,False,0.309
+sb_0312,basic_logic,prime,easy,yesno,Is 140 prime?,no,no,refuted,0.99,True,False,0.533
+sb_0313,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9903,True,False,292.46
+sb_0314,basic_logic,boolean,easy,yesno,false nand true,yes,yes,supported,0.99,True,False,2.765
+sb_0315,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,1.167
+sb_0316,ambiguity,hedged_claim,hard,claim,The gloop is awake.,unknown,unknown,insufficient,0.45,True,True,0.461
+sb_0317,ambiguity,uncertain_date,hard,claim,The quark was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.344
+sb_0318,multi_step,chain_syllogism_fallacy,hard,yesno,All troons are quarks. All quarks are wibbles. Are all wibbles troons?,unknown,unknown,insufficient,0.85,True,True,2.433
+sb_0319,basic_logic,sequence,easy,int,"What comes next: 23, 16, 9, 2, ?",-5,-5,supported,0.95,True,False,10.851
+sb_0320,adversarial,circular_claim,hard,claim,"Because the daxel is enabled, the daxel is enabled.",supported,supported,supported,0.9,True,False,2.233
+sb_0321,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9852,True,False,390.302
+sb_0322,ambiguity,hedged_claim,hard,claim,The troon is active.,unknown,unknown,insufficient,0.45,True,True,0.352
+sb_0323,multi_step,chain_syllogism,medium,yesno,All troons are daxels. All daxels are wibbles. Are all troons wibbles?,yes,yes,supported,0.9,True,False,2.907
+sb_0324,evidence,claim_refute,easy,claim,The daxel is awake.,refuted,refuted,refuted,0.9,True,False,0.478
+sb_0325,generalization,deep_syllogism,hard,yesno,All loams are squibs. All squibs are gronks. All gronks are zwaps. Are all loams zwaps?,yes,yes,supported,0.9,True,False,2.533
+sb_0326,generalization,multi_term_arithmetic,hard,int,What is 84 - 451 - 790?,-1157,-1157,supported,0.99,True,False,2.541
+sb_0327,adversarial,circular_claim,hard,claim,"Because the troon is running, the troon is running.",supported,supported,supported,0.9,True,False,0.43
+sb_0328,multi_step,transitivity_gap,hard,yesno,Alex is older than Ben. Frank is older than Chris. Is Alex older than Chris?,unknown,unknown,insufficient,0.3,True,True,3.835
+sb_0329,evidence,claim_support,easy,claim,The daxel is locked.,supported,supported,supported,0.9,True,False,0.386
+sb_0330,multi_step,chain_syllogism_fallacy,hard,yesno,All zorbs are greeps. All greeps are daxels. Are all daxels zorbs?,unknown,unknown,insufficient,0.85,True,True,1.459
+sb_0331,ambiguity,conflicting_sources,hard,claim,The quark is connected.,unknown,unknown,insufficient,0.45,True,True,1.405
+sb_0332,basic_logic,set_union,easy,set,"What is the union of {4, 10} and {1, 2, 8}?","[1, 2, 4, 8, 10]","[1, 2, 4, 8, 10]",supported,0.95,True,False,1.295
+sb_0333,basic_logic,arithmetic,easy,int,What is 24 divided by 6?,4,4,supported,0.99,True,False,2.376
+sb_0334,adversarial,explicit_negation,medium,claim,The fleep is active.,refuted,refuted,refuted,0.9,True,False,0.446
+sb_0335,adversarial,double_negation,hard,claim,The gloop is charged.,supported,supported,supported,0.9,True,False,0.306
+sb_0336,basic_logic,arithmetic,easy,int,What is 72 plus 24?,96,96,supported,0.99,True,False,1.917
+sb_0337,adversarial,explicit_negation,medium,claim,The wibble is locked.,refuted,refuted,refuted,0.9,True,False,0.277
+sb_0338,adversarial,circular_claim,hard,claim,"Because the blix is open, the blix is open.",supported,supported,supported,0.9,True,False,0.284
+sb_0339,evidence,claim_refute,easy,claim,The troon is active.,refuted,refuted,refuted,0.9,True,False,0.234
+sb_0340,ambiguity,hedged_claim,hard,claim,The zorp is connected.,unknown,unknown,insufficient,0.45,True,True,0.368
+sb_0341,basic_logic,prime,easy,yesno,Is 44 prime?,no,no,refuted,0.99,True,False,0.668
+sb_0342,ambiguity,uncertain_date,hard,claim,The blix was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.372
+sb_0343,ambiguity,hedged_claim,hard,claim,The daxel is open.,unknown,unknown,insufficient,0.45,True,True,0.302
+sb_0344,basic_logic,sequence,easy,int,"What comes next: 15, 7, -1, -9, ?",-17,-17,supported,0.95,True,False,2.778
+sb_0345,adversarial,double_negation,hard,claim,The blix is charged.,supported,supported,supported,0.9,True,False,0.286
+sb_0346,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9589,True,False,147.73
+sb_0347,generalization,novel_sequence,hard,int,"What comes next: -20, 22, 64, 106, ?",148,148,supported,0.95,True,False,4.563
+sb_0348,adversarial,double_negation,hard,claim,The zorp is connected.,supported,supported,supported,0.9,True,False,1.203
+sb_0349,generalization,novel_claim,medium,claim,The cryo module is calibrated.,supported,supported,supported,0.9,True,False,0.381
+sb_0350,multi_step,chain_syllogism,medium,yesno,All quarks are greeps. All greeps are daxels. Are all quarks daxels?,yes,yes,supported,0.9,True,False,1.734
+sb_0351,ambiguity,conflicting_sources,hard,claim,The fleep is open.,unknown,unknown,insufficient,0.45,True,True,0.698
+sb_0352,adversarial,circular_claim,hard,claim,"Because the fleep is charged, the fleep is charged.",supported,supported,supported,0.9,True,False,0.447
+sb_0353,adversarial,double_negation,hard,claim,The blix is running.,supported,supported,supported,0.9,True,False,0.307
+sb_0354,multi_step,transitivity,medium,yesno,Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?,yes,yes,supported,0.9,True,False,3.905
+sb_0355,evidence,claim_support,easy,claim,The fleep is open.,supported,supported,supported,0.9,True,False,0.461
+sb_0356,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9784,True,False,531.454
+sb_0357,evidence,claim_refute,easy,claim,The blix is running.,refuted,refuted,refuted,0.9,True,False,0.262
+sb_0358,basic_logic,arithmetic,easy,int,What is 120 divided by 10?,12,12,supported,0.99,True,False,4.929
+sb_0359,generalization,novel_sets,hard,set,"What is the union of {21, 27, 63, 75, 95} and {21, 50, 53, 82, 83}?","[21, 27, 50, 53, 63, 75, 82, 83, 95]","[21, 27, 50, 53, 63, 75, 82, 83, 95]",supported,0.95,True,False,3.17
+sb_0360,basic_logic,boolean,easy,yesno,true or false,yes,yes,supported,0.99,True,False,7.159
+sb_0361,ambiguity,hedged_claim,hard,claim,The daxel is enabled.,unknown,unknown,insufficient,0.45,True,True,0.343
+sb_0362,basic_logic,boolean,easy,yesno,false and true,no,no,refuted,0.99,True,False,0.691
+sb_0363,ambiguity,hedged_claim,hard,claim,The fleep is running.,unknown,unknown,insufficient,0.45,True,True,0.315
+sb_0364,evidence,claim_refute,easy,claim,The blix is enabled.,refuted,refuted,refuted,0.9,True,False,3.327
+sb_0365,generalization,novel_sequence,hard,int,"What comes next: -147, -120, -93, -66, ?",-39,-39,supported,0.95,True,False,14.277
+sb_0366,multi_step,neg_syllogism,hard,yesno,All snorps are klaxes. No klaxes are wibbles. Are any snorps wibbles?,no,no,refuted,0.85,True,False,13.771
+sb_0367,adversarial,circular_claim,hard,claim,"Because the zorp is running, the zorp is running.",supported,supported,supported,0.9,True,False,0.405
+sb_0368,evidence,claim_support,easy,claim,The gloop is locked.,supported,supported,supported,0.9,True,False,0.357
+sb_0369,generalization,novel_sequence,hard,int,"What comes next: -74, -26, 22, 70, ?",118,118,supported,0.95,True,False,16.91
+sb_0370,evidence,claim_support,easy,claim,The fleep is locked.,supported,supported,supported,0.9,True,False,0.397
+sb_0371,generalization,deep_syllogism,hard,yesno,All gronks are squibs. All squibs are hobbs. All hobbs are vexes. Are all gronks vexes?,yes,yes,supported,0.9,True,False,1.972
+sb_0372,adversarial,double_negation,hard,claim,The blix is open.,supported,supported,supported,0.9,True,False,0.423
+sb_0373,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9859,True,False,205.151
+sb_0374,adversarial,circular_claim,hard,claim,"Because the wibble is connected, the wibble is connected.",supported,supported,supported,0.9,True,False,0.552
+sb_0375,generalization,nested_boolean,hard,yesno,not (false or false),yes,yes,supported,0.99,True,False,5.221
+sb_0376,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.506
+sb_0377,basic_logic,boolean,easy,yesno,true or true,yes,yes,supported,0.99,True,False,4.346
+sb_0378,ambiguity,conflicting_sources,hard,claim,The quark is locked.,unknown,unknown,insufficient,0.45,True,True,0.423
+sb_0379,generalization,deep_transitivity,hard,yesno,Ada is taller than Bo. Bo is taller than Cy. Cy is taller than Dee. Is Ada taller than Dee?,yes,yes,supported,0.9,True,False,1.48
+sb_0380,basic_logic,arithmetic,easy,int,What is 93 times 31?,2883,2883,supported,0.99,True,False,0.879
+sb_0381,generalization,nested_boolean,hard,yesno,not (false or false),yes,yes,supported,0.99,True,False,1.293
+sb_0382,basic_logic,sequence,easy,int,"What comes next: 16, 17, 18, 19, ?",20,20,supported,0.95,True,False,7.438
+sb_0383,basic_logic,arithmetic,easy,int,What is 20 plus 84?,104,104,supported,0.99,True,False,6.054
+sb_0384,basic_logic,arithmetic,easy,int,What is 183 plus 35?,218,218,supported,0.99,True,False,3.478
+sb_0385,generalization,novel_claim,medium,claim,The cryo module is polarized.,refuted,refuted,refuted,0.9,True,False,0.308
+sb_0386,basic_logic,set_intersection,easy,set,"What is the intersection of {2, 8} and {3, 7, 8, 9}?",[8],[8],supported,0.95,True,False,2.368
+sb_0387,multi_step,transitivity,medium,yesno,Aaron is heavier than Beth. Beth is heavier than Cole. Is Aaron heavier than Cole?,yes,yes,supported,0.9,True,False,4.0
+sb_0388,multi_step,chain_syllogism_fallacy,hard,yesno,All greeps are quarks. All quarks are wibbles. Are all wibbles greeps?,unknown,unknown,insufficient,0.85,True,True,1.769
+sb_0389,ambiguity,conflicting_sources,hard,claim,The fleep is running.,unknown,unknown,insufficient,0.45,True,True,0.406
+sb_0390,ambiguity,uncertain_date,hard,claim,The troon was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.269
+sb_0391,multi_step,transitivity,medium,yesno,Aaron is older than Beth. Beth is older than Cole. Is Aaron older than Cole?,yes,yes,supported,0.9,True,False,3.324
+sb_0392,adversarial,explicit_negation,medium,claim,The daxel is enabled.,refuted,refuted,refuted,0.9,True,False,0.294
+sb_0393,basic_logic,arithmetic,easy,int,What is 52 plus 12?,64,64,supported,0.99,True,False,2.245
+sb_0394,multi_step,chain_syllogism_fallacy,hard,yesno,All wibbles are quarks. All quarks are greeps. Are all greeps wibbles?,unknown,unknown,insufficient,0.85,True,True,9.223
+sb_0395,multi_step,transitivity_gap,hard,yesno,Alex is older than Ben. Eve is older than Chris. Is Alex older than Chris?,unknown,unknown,insufficient,0.3,True,True,7.981
+sb_0396,ambiguity,conflicting_sources,hard,claim,The wibble is open.,unknown,unknown,insufficient,0.45,True,True,0.418
+sb_0397,ambiguity,claim_irrelevant,medium,claim,The gloop is open.,unknown,unknown,insufficient,0.45,True,True,0.47
+sb_0398,adversarial,distractor_padding,hard,claim,The zorp is connected.,supported,supported,supported,0.9,True,False,1.0
+sb_0399,generalization,novel_claim,medium,claim,The cryo module is polarized.,supported,supported,supported,0.9,True,False,0.387
+sb_0400,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9679,True,False,259.243
+sb_0401,multi_step,transitivity,medium,yesno,Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?,yes,yes,supported,0.9,True,False,4.361
+sb_0402,evidence,claim_refute,easy,claim,The wibble is open.,refuted,refuted,refuted,0.9,True,False,0.291
+sb_0403,multi_step,neg_syllogism,hard,yesno,All klaxes are glorps. No glorps are quuxes. Are any klaxes quuxes?,no,no,refuted,0.85,True,False,1.464
+sb_0404,basic_logic,arithmetic,easy,int,What is 128 times 47?,6016,6016,supported,0.99,True,False,0.832
+sb_0405,ambiguity,conflicting_sources,hard,claim,The daxel is active.,unknown,unknown,insufficient,0.45,True,True,0.505
+sb_0406,basic_logic,sequence,easy,int,"What comes next: 11, 17, 23, 29, ?",35,35,supported,0.95,True,False,3.071
+sb_0407,generalization,novel_sequence,hard,int,"What comes next: -156, -114, -72, -30, ?",12,12,supported,0.95,True,False,2.741
+sb_0408,generalization,nested_boolean,hard,yesno,not (false or false),yes,yes,supported,0.99,True,False,0.753
+sb_0409,adversarial,explicit_negation,medium,claim,The fleep is running.,refuted,refuted,refuted,0.9,True,False,0.277
+sb_0410,ambiguity,uncertain_date,hard,claim,The wibble was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.254
+sb_0411,adversarial,circular_claim,hard,claim,"Because the fleep is running, the fleep is running.",supported,supported,supported,0.9,True,False,0.327
+sb_0412,basic_logic,boolean,easy,yesno,false nand false,yes,yes,supported,0.99,True,False,1.613
+sb_0413,ambiguity,claim_irrelevant,medium,claim,The fleep is connected.,unknown,unknown,insufficient,0.45,True,True,0.383
+sb_0414,adversarial,double_negation,hard,claim,The quark is connected.,supported,supported,supported,0.9,True,False,0.257
+sb_0415,generalization,novel_claim,medium,claim,The plasma vane is calibrated.,refuted,refuted,refuted,0.9,True,False,0.251
+sb_0416,basic_logic,arithmetic,easy,int,What is 16 divided by 4?,4,4,supported,0.99,True,False,2.13
+sb_0417,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.309
+sb_0418,ambiguity,conflicting_sources,hard,claim,The daxel is enabled.,unknown,unknown,insufficient,0.45,True,True,0.318
+sb_0419,adversarial,distractor_padding,hard,claim,The zorp is awake.,supported,supported,supported,0.9,True,False,0.417
+sb_0420,multi_step,chain_syllogism,medium,yesno,All fleeps are bloops. All bloops are troons. Are all fleeps troons?,yes,yes,supported,0.9,True,False,1.222
+sb_0421,evidence,claim_support,easy,claim,The wibble is connected.,supported,supported,supported,0.9,True,False,0.281
+sb_0422,basic_logic,sequence,easy,int,"What comes next: 16, 19, 22, 25, ?",28,28,supported,0.95,True,False,2.61
+sb_0423,generalization,nested_boolean,hard,yesno,not (false or true),no,no,refuted,0.99,True,False,0.932
+sb_0424,ambiguity,claim_irrelevant,medium,claim,The quark is connected.,unknown,unknown,insufficient,0.45,True,True,0.405
+sb_0425,adversarial,distractor_padding,hard,claim,The zorp is charged.,supported,supported,supported,0.9,True,False,0.451
+sb_0426,adversarial,explicit_negation,medium,claim,The zorp is locked.,refuted,refuted,refuted,0.9,True,False,0.24
+sb_0427,evidence,claim_refute,easy,claim,The wibble is open.,refuted,refuted,refuted,0.9,True,False,0.204
+sb_0428,multi_step,transitivity,medium,yesno,Alex is older than Ben. Ben is older than Chris. Is Alex older than Chris?,yes,yes,supported,0.9,True,False,3.23
+sb_0429,adversarial,distractor_padding,hard,claim,The quark is locked.,supported,supported,supported,0.9,True,False,0.727
+sb_0430,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,3.946
+sb_0431,ambiguity,hedged_claim,hard,claim,The blix is awake.,unknown,unknown,insufficient,0.45,True,True,0.261
+sb_0432,multi_step,chain_syllogism,medium,yesno,All zorbs are bloops. All bloops are quarks. Are all zorbs quarks?,yes,yes,supported,0.9,True,False,1.395
+sb_0433,multi_step,neg_syllogism,hard,yesno,All blerts are morphs. No morphs are wibbles. Are any blerts wibbles?,no,no,refuted,0.85,True,False,1.219
+sb_0434,basic_logic,sequence,easy,int,"What comes next: 7, 17, 27, 37, ?",47,47,supported,0.95,True,False,2.126
+sb_0435,adversarial,explicit_negation,medium,claim,The wibble is locked.,refuted,refuted,refuted,0.9,True,False,0.282
+sb_0436,multi_step,chain_syllogism,medium,yesno,All quarks are troons. All troons are daxels. Are all quarks daxels?,yes,yes,supported,0.9,True,False,1.879
+sb_0437,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9925,True,False,97.308
+sb_0438,generalization,multi_term_arithmetic,hard,int,What is 575 - 560 - 427?,-412,-412,supported,0.99,True,False,4.888
+sb_0439,basic_logic,arithmetic,easy,int,What is 175 times 55?,9625,9625,supported,0.99,True,False,0.906
+sb_0440,generalization,novel_sequence,hard,int,"What comes next: -122, -127, -132, -137, ?",-142,-142,supported,0.95,True,False,2.817
+sb_0441,generalization,deep_transitivity,hard,yesno,Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?,yes,yes,supported,0.9,True,False,0.957
+sb_0442,multi_step,transitivity,medium,yesno,Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?,yes,yes,supported,0.9,True,False,3.898
+sb_0443,multi_step,chain_syllogism,medium,yesno,All daxels are zorbs. All zorbs are troons. Are all daxels troons?,yes,yes,supported,0.9,True,False,1.337
+sb_0444,multi_step,chain_syllogism,medium,yesno,All quarks are zorbs. All zorbs are daxels. Are all quarks daxels?,yes,yes,supported,0.9,True,False,1.156
+sb_0445,adversarial,double_negation,hard,claim,The gloop is open.,supported,supported,supported,0.9,True,False,0.325
+sb_0446,generalization,deep_transitivity,hard,yesno,Ada is heavier than Bo. Bo is heavier than Cy. Cy is heavier than Dee. Is Ada heavier than Dee?,yes,yes,supported,0.9,True,False,1.757
+sb_0447,basic_logic,sequence,easy,int,"What comes next: 19, 28, 37, 46, ?",55,55,supported,0.95,True,False,2.644
+sb_0448,evidence,claim_support,easy,claim,The gloop is open.,supported,supported,supported,0.9,True,False,0.404
+sb_0449,ambiguity,claim_irrelevant,medium,claim,The fleep is enabled.,unknown,unknown,insufficient,0.45,True,True,0.262
+sb_0450,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9798,True,False,129.191
+sb_0451,generalization,deep_syllogism,hard,yesno,All vexes are squibs. All squibs are krell. All krell are loams. Are all vexes loams?,yes,yes,supported,0.9,True,False,2.247
+sb_0452,basic_logic,sequence,easy,int,"What comes next: 15, 26, 37, 48, ?",59,59,supported,0.95,True,False,3.282
+sb_0453,evidence,claim_refute,easy,claim,The daxel is locked.,refuted,refuted,refuted,0.9,True,False,0.397
+sb_0454,basic_logic,arithmetic,easy,int,What is 39 minus 63?,-24,-24,supported,0.99,True,False,2.373
+sb_0455,multi_step,chain_syllogism_fallacy,hard,yesno,All quarks are daxels. All daxels are troons. Are all troons quarks?,unknown,unknown,insufficient,0.85,True,True,1.722
+sb_0456,adversarial,distractor_padding,hard,claim,The blix is open.,supported,supported,supported,0.9,True,False,0.593
+sb_0457,adversarial,distractor_padding,hard,claim,The daxel is active.,supported,supported,supported,0.9,True,False,0.603
+sb_0458,ambiguity,hedged_claim,hard,claim,The wibble is active.,unknown,unknown,insufficient,0.45,True,True,0.326
+sb_0459,ambiguity,hedged_claim,hard,claim,The gloop is charged.,unknown,unknown,insufficient,0.45,True,True,0.319
+sb_0460,evidence,claim_refute,easy,claim,The gloop is active.,refuted,refuted,refuted,0.9,True,False,0.253
+sb_0461,ambiguity,conflicting_sources,hard,claim,The troon is charged.,unknown,unknown,insufficient,0.45,True,True,0.396
+sb_0462,generalization,deep_syllogism,hard,yesno,All yotz are gronks. All gronks are krell. All krell are muntz. Are all yotz muntz?,yes,yes,supported,0.9,True,False,1.956
+sb_0463,multi_step,chain_syllogism,medium,yesno,All troons are zorbs. All zorbs are quarks. Are all troons quarks?,yes,yes,supported,0.9,True,False,1.554
+sb_0464,basic_logic,arithmetic,easy,int,What is 45 divided by 9?,5,5,supported,0.99,True,False,2.908
+sb_0465,multi_step,chain_syllogism,medium,yesno,All bloops are zorbs. All zorbs are troons. Are all bloops troons?,yes,yes,supported,0.9,True,False,1.563
+sb_0466,multi_step,transitivity,medium,yesno,Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?,yes,yes,supported,0.9,True,False,3.608
+sb_0467,ambiguity,claim_irrelevant,medium,claim,The blix is open.,unknown,unknown,insufficient,0.45,True,True,0.372
+sb_0468,multi_step,transitivity,medium,yesno,Amy is heavier than Brian. Brian is heavier than Cathy. Is Amy heavier than Cathy?,yes,yes,supported,0.9,True,False,3.51
+sb_0469,multi_step,transitivity_gap,hard,yesno,Alice is faster than Bob. Frank is faster than Carol. Is Alice faster than Carol?,unknown,unknown,insufficient,0.3,True,True,1.131
+sb_0470,basic_logic,sequence,easy,int,"What comes next: 16, 8, 0, -8, ?",-16,-16,supported,0.95,True,False,2.495
+sb_0471,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9694,True,False,96.076
+sb_0472,generalization,novel_sets,hard,set,"What is the union of {1, 3, 52, 79, 80} and {17, 18, 33, 52, 93}?","[1, 3, 17, 18, 33, 52, 79, 80, 93]","[1, 3, 17, 18, 33, 52, 79, 80, 93]",supported,0.95,True,False,1.803
+sb_0473,basic_logic,arithmetic,easy,int,What is 118 times 45?,5310,5310,supported,0.99,True,False,0.832
+sb_0474,evidence,claim_refute,easy,claim,The wibble is running.,refuted,refuted,refuted,0.9,True,False,0.299
+sb_0475,multi_step,transitivity,medium,yesno,Aaron is faster than Beth. Beth is faster than Cole. Is Aaron faster than Cole?,yes,yes,supported,0.9,True,False,0.955
+sb_0476,basic_logic,sequence,easy,int,"What comes next: 29, 33, 37, 41, ?",45,45,supported,0.95,True,False,3.302
+sb_0477,generalization,novel_claim,medium,claim,The neural lattice is synchronized.,refuted,refuted,refuted,0.9,True,False,0.475
+sb_0478,adversarial,distractor_padding,hard,claim,The gloop is connected.,supported,supported,supported,0.9,True,False,0.532
+sb_0479,generalization,novel_sets,hard,set,"What is the intersection of {29, 41, 63, 69, 91} and {25, 36, 71, 72, 99}?",[],[],supported,0.95,True,False,1.833
+sb_0480,adversarial,distractor_padding,hard,claim,The wibble is open.,supported,supported,supported,0.9,True,False,0.476
+sb_0481,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9854,True,False,93.31
+sb_0482,multi_step,transitivity,medium,yesno,Amy is older than Brian. Brian is older than Cathy. Is Amy older than Cathy?,yes,yes,supported,0.9,True,False,3.744
+sb_0483,evidence,claim_refute,easy,claim,The blix is running.,refuted,refuted,refuted,0.9,True,False,0.321
+sb_0484,multi_step,transitivity,medium,yesno,Alice is faster than Bob. Bob is faster than Carol. Is Alice faster than Carol?,yes,yes,supported,0.9,True,False,0.922
+sb_0485,multi_step,transitivity_gap,hard,yesno,Alice is older than Bob. Eve is older than Carol. Is Alice older than Carol?,unknown,unknown,insufficient,0.3,True,True,3.784
+sb_0486,generalization,nested_boolean,hard,yesno,not (true or true),no,no,refuted,0.99,True,False,0.956
+sb_0487,generalization,novel_sequence,hard,int,"What comes next: -200, -168, -136, -104, ?",-72,-72,supported,0.95,True,False,2.882
+sb_0488,evidence,claim_support,easy,claim,The zorp is active.,supported,supported,supported,0.9,True,False,0.423
+sb_0489,multi_step,chain_syllogism_fallacy,hard,yesno,All troons are daxels. All daxels are wibbles. Are all wibbles troons?,unknown,unknown,insufficient,0.85,True,True,1.536
+sb_0490,ambiguity,conflicting_sources,hard,claim,The zorp is running.,unknown,unknown,insufficient,0.45,True,True,0.588
+sb_0491,basic_logic,boolean,easy,yesno,false xor false,no,no,refuted,0.99,True,False,1.681
+sb_0492,adversarial,double_negation,hard,claim,The fleep is enabled.,supported,supported,supported,0.9,True,False,0.411
+sb_0493,multi_step,transitivity_gap,hard,yesno,Aaron is older than Beth. Frank is older than Cole. Is Aaron older than Cole?,unknown,unknown,insufficient,0.3,True,True,3.277
+sb_0494,basic_logic,sequence,easy,int,"What comes next: 22, 19, 16, 13, ?",10,10,supported,0.95,True,False,2.457
+sb_0495,evidence,claim_refute,easy,claim,The gloop is enabled.,refuted,refuted,refuted,0.9,True,False,0.325
+sb_0496,ambiguity,uncertain_date,hard,claim,The zorp was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.303
+sb_0497,ambiguity,claim_irrelevant,medium,claim,The fleep is running.,unknown,unknown,insufficient,0.45,True,True,0.307
+sb_0498,ambiguity,uncertain_date,hard,claim,The wibble was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.24
+sb_0499,adversarial,circular_claim,hard,claim,"Because the daxel is running, the daxel is running.",supported,supported,supported,0.9,True,False,0.296
+sb_0500,multi_step,chain_syllogism,medium,yesno,All troons are bloops. All bloops are zorbs. Are all troons zorbs?,yes,yes,supported,0.9,True,False,1.414
+sb_0501,basic_logic,sequence,easy,int,"What comes next: 14, 17, 20, 23, ?",26,26,supported,0.95,True,False,2.313
+sb_0502,adversarial,double_negation,hard,claim,The daxel is charged.,supported,supported,supported,0.9,True,False,0.244
+sb_0503,ambiguity,uncertain_date,hard,claim,The quark was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.249
+sb_0504,multi_step,transitivity_gap,hard,yesno,Aaron is older than Beth. Frank is older than Cole. Is Aaron older than Cole?,unknown,unknown,insufficient,0.3,True,True,3.383
+sb_0505,generalization,nested_boolean,hard,yesno,not (false or true),no,no,refuted,0.99,True,False,0.925
+sb_0506,evidence,claim_support,easy,claim,The quark is active.,supported,supported,supported,0.9,True,False,0.412
+sb_0507,basic_logic,sequence,easy,int,"What comes next: 12, 6, 0, -6, ?",-12,-12,supported,0.95,True,False,2.27
+sb_0508,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,3.307
+sb_0509,adversarial,double_negation,hard,claim,The troon is enabled.,supported,supported,supported,0.9,True,False,0.251
+sb_0510,multi_step,transitivity,medium,yesno,Alex is older than Ben. Ben is older than Chris. Is Alex older than Chris?,yes,yes,supported,0.9,True,False,2.651
+sb_0511,evidence,claim_support,easy,claim,The zorp is enabled.,supported,supported,supported,0.9,True,False,0.291
+sb_0512,basic_logic,sequence,easy,int,"What comes next: 11, 7, 3, -1, ?",-5,-5,supported,0.95,True,False,1.827
+sb_0513,adversarial,explicit_negation,medium,claim,The gloop is awake.,refuted,refuted,refuted,0.9,True,False,0.207
+sb_0514,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9893,True,False,509.108
+sb_0515,evidence,claim_refute,easy,claim,The gloop is locked.,refuted,refuted,refuted,0.9,True,False,0.302
+sb_0516,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.73
+sb_0517,basic_logic,prime,easy,yesno,Is 196 prime?,no,no,refuted,0.99,True,False,0.565
+sb_0518,basic_logic,arithmetic,easy,int,What is 206 plus 37?,243,243,supported,0.99,True,False,2.436
+sb_0519,adversarial,explicit_negation,medium,claim,The blix is charged.,refuted,refuted,refuted,0.9,True,False,0.317
+sb_0520,ambiguity,claim_irrelevant,medium,claim,The troon is enabled.,unknown,unknown,insufficient,0.45,True,True,4.557
+sb_0521,basic_logic,arithmetic,easy,int,What is 148 minus 75?,73,73,supported,0.99,True,False,4.34
+sb_0522,generalization,novel_claim,medium,claim,The tachyon drive is polarized.,supported,supported,supported,0.9,True,False,0.464
+sb_0523,generalization,multi_term_arithmetic,hard,int,What is 647 + 97 + 376?,1120,1120,supported,0.99,True,False,2.158
+sb_0524,multi_step,transitivity,medium,yesno,Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?,yes,yes,supported,0.9,True,False,4.007
+sb_0525,basic_logic,set_intersection,easy,set,"What is the intersection of {2, 3, 5, 6} and {1, 3, 7, 11}?",[3],[3],supported,0.95,True,False,1.928
+sb_0526,ambiguity,hedged_claim,hard,claim,The wibble is running.,unknown,unknown,insufficient,0.45,True,True,0.315
+sb_0527,adversarial,circular_claim,hard,claim,"Because the zorp is connected, the zorp is connected.",supported,supported,supported,0.9,True,False,0.391
+sb_0528,ambiguity,claim_irrelevant,medium,claim,The gloop is open.,unknown,unknown,insufficient,0.45,True,True,0.327
+sb_0529,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9776,True,False,444.528
+sb_0530,basic_logic,prime,easy,yesno,Is 68 prime?,no,no,refuted,0.99,True,False,4.219
+sb_0531,adversarial,circular_claim,hard,claim,"Because the blix is awake, the blix is awake.",supported,supported,supported,0.9,True,False,0.79
+sb_0532,ambiguity,hedged_claim,hard,claim,The gloop is enabled.,unknown,unknown,insufficient,0.45,True,True,0.262
+sb_0533,evidence,claim_support,easy,claim,The wibble is charged.,supported,supported,supported,0.9,True,False,0.291
+sb_0534,generalization,multi_term_arithmetic,hard,int,What is 105 + 124 + 300?,529,529,supported,0.99,True,False,5.442
+sb_0535,generalization,novel_sets,hard,set,"What is the intersection of {20, 48, 52, 75, 86} and {5, 8, 9, 79, 80}?",[],[],supported,0.95,True,False,4.167
+sb_0536,basic_logic,boolean,easy,yesno,true nand true,no,no,refuted,0.99,True,False,3.41
+sb_0537,adversarial,explicit_negation,medium,claim,The zorp is open.,refuted,refuted,refuted,0.9,True,False,0.34
+sb_0538,generalization,novel_claim,medium,claim,The quantum relay is quenched.,refuted,refuted,refuted,0.9,True,False,0.355
+sb_0539,ambiguity,conflicting_sources,hard,claim,The gloop is charged.,unknown,unknown,insufficient,0.45,True,True,0.47
+sb_0540,generalization,nested_boolean,hard,yesno,not (true or true),no,no,refuted,0.99,True,False,1.199
+sb_0541,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.613
+sb_0542,evidence,claim_support,easy,claim,The gloop is running.,supported,supported,supported,0.9,True,False,0.384
+sb_0543,ambiguity,claim_irrelevant,medium,claim,The gloop is active.,unknown,unknown,insufficient,0.45,True,True,0.302
+sb_0544,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9923,True,False,139.295
+sb_0545,basic_logic,sequence,easy,int,"What comes next: 19, 9, -1, -11, ?",-21,-21,supported,0.95,True,False,2.504
+sb_0546,evidence,claim_refute,easy,claim,The fleep is charged.,refuted,refuted,refuted,0.9,True,False,0.309
+sb_0547,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9924,True,False,131.239
+sb_0548,multi_step,transitivity,medium,yesno,Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?,yes,yes,supported,0.9,True,False,4.009
+sb_0549,basic_logic,set_union,easy,set,"What is the union of {2, 9, 11} and {2, 4, 5, 8}?","[2, 4, 5, 8, 9, 11]","[2, 4, 5, 8, 9, 11]",supported,0.95,True,False,1.282
+sb_0550,adversarial,circular_claim,hard,claim,"Because the daxel is active, the daxel is active.",supported,supported,supported,0.9,True,False,0.326
+sb_0551,multi_step,transitivity,medium,yesno,Amy is older than Brian. Brian is older than Cathy. Is Amy older than Cathy?,yes,yes,supported,0.9,True,False,2.953
+sb_0552,generalization,novel_sequence,hard,int,"What comes next: -45, -57, -69, -81, ?",-93,-93,supported,0.95,True,False,2.332
+sb_0553,basic_logic,set_intersection,easy,set,"What is the intersection of {1, 9} and {3, 9}?",[9],[9],supported,0.95,True,False,1.162
+sb_0554,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.989,True,False,92.103
+sb_0555,multi_step,chain_syllogism,medium,yesno,All wibbles are fleeps. All fleeps are zorbs. Are all wibbles zorbs?,yes,yes,supported,0.9,True,False,1.411
+sb_0556,generalization,deep_syllogism,hard,yesno,All squibs are krell. All krell are loams. All loams are gronks. Are all squibs gronks?,yes,yes,supported,0.9,True,False,1.821
+sb_0557,multi_step,transitivity,medium,yesno,Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?,yes,yes,supported,0.9,True,False,3.09
+sb_0558,multi_step,transitivity,medium,yesno,Alex is faster than Ben. Ben is faster than Chris. Is Alex faster than Chris?,yes,yes,supported,0.9,True,False,0.814
+sb_0559,evidence,claim_refute,easy,claim,The zorp is charged.,refuted,refuted,refuted,0.9,True,False,0.248
+sb_0560,basic_logic,arithmetic,easy,int,What is 215 plus 79?,294,294,supported,0.99,True,False,2.176
+sb_0561,basic_logic,prime,easy,yesno,Is 144 prime?,no,no,refuted,0.99,True,False,0.77
+sb_0562,ambiguity,conflicting_sources,hard,claim,The troon is open.,unknown,unknown,insufficient,0.45,True,True,0.487
+sb_0563,basic_logic,boolean,easy,yesno,true nand false,yes,yes,supported,0.99,True,False,1.503
+sb_0564,basic_logic,boolean,easy,yesno,false nand false,yes,yes,supported,0.99,True,False,1.917
+sb_0565,ambiguity,claim_irrelevant,medium,claim,The daxel is charged.,unknown,unknown,insufficient,0.45,True,True,0.295
+sb_0566,ambiguity,conflicting_sources,hard,claim,The daxel is awake.,unknown,unknown,insufficient,0.45,True,True,0.308
+sb_0567,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9898,True,False,110.486
+sb_0568,generalization,multi_term_arithmetic,hard,int,What is 675 * 786 * 393?,208506150,208506150,supported,0.99,True,False,2.77
+sb_0569,basic_logic,arithmetic,easy,int,What is 32 divided by 4?,8,8,supported,0.99,True,False,3.29
+sb_0570,generalization,deep_transitivity,hard,yesno,Ana is heavier than Bob. Bob is heavier than Cid. Cid is heavier than Don. Is Ana heavier than Don?,yes,yes,supported,0.9,True,False,4.127
+sb_0571,generalization,multi_term_arithmetic,hard,int,What is 194 + 94 + 413?,701,701,supported,0.99,True,False,2.467
+sb_0572,basic_logic,arithmetic,easy,int,What is 179 times 47?,8413,8413,supported,0.99,True,False,0.875
+sb_0573,generalization,novel_claim,medium,claim,The cryo module is polarized.,supported,supported,supported,0.9,True,False,0.495
+sb_0574,basic_logic,arithmetic,easy,int,What is 180 times 90?,16200,16200,supported,0.99,True,False,0.949
+sb_0575,generalization,multi_term_arithmetic,hard,int,What is 430 + 885 + 828?,2143,2143,supported,0.99,True,False,2.509
+sb_0576,adversarial,double_negation,hard,claim,The daxel is active.,supported,supported,supported,0.9,True,False,0.315
+sb_0577,multi_step,chain_syllogism_fallacy,hard,yesno,All wibbles are greeps. All greeps are fleeps. Are all fleeps wibbles?,unknown,unknown,insufficient,0.85,True,True,1.64
+sb_0578,evidence,claim_support,easy,claim,The zorp is awake.,supported,supported,supported,0.9,True,False,0.345
+sb_0579,ambiguity,claim_irrelevant,medium,claim,The gloop is locked.,unknown,unknown,insufficient,0.45,True,True,0.278
+sb_0580,generalization,multi_term_arithmetic,hard,int,What is 182 + 289 + 886?,1357,1357,supported,0.99,True,False,2.274
+sb_0581,adversarial,distractor_padding,hard,claim,The wibble is enabled.,supported,supported,supported,0.9,True,False,0.52
+sb_0582,ambiguity,uncertain_date,hard,claim,The daxel was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.271
+sb_0583,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.603
+sb_0584,multi_step,chain_syllogism_fallacy,hard,yesno,All wibbles are bloops. All bloops are troons. Are all troons wibbles?,unknown,unknown,insufficient,0.85,True,True,1.506
+sb_0585,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9859,True,False,394.244
+sb_0586,adversarial,circular_claim,hard,claim,"Because the wibble is enabled, the wibble is enabled.",supported,supported,supported,0.9,True,False,0.424
+sb_0587,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9664,True,False,360.837
+sb_0588,adversarial,distractor_padding,hard,claim,The blix is active.,supported,supported,supported,0.9,True,False,0.585
+sb_0589,basic_logic,prime,easy,yesno,Is 168 prime?,no,no,refuted,0.99,True,False,2.058
+sb_0590,ambiguity,claim_irrelevant,medium,claim,The fleep is charged.,unknown,unknown,insufficient,0.45,True,True,0.347
+sb_0591,multi_step,neg_syllogism,hard,yesno,All morphs are klaxes. No klaxes are glorps. Are any morphs glorps?,no,no,refuted,0.85,True,False,1.541
+sb_0592,generalization,novel_sequence,hard,int,"What comes next: -153, -102, -51, 0, ?",51,51,supported,0.95,True,False,2.39
+sb_0593,generalization,deep_transitivity,hard,yesno,Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?,yes,yes,supported,0.9,True,False,1.813
+sb_0594,generalization,novel_sequence,hard,int,"What comes next: -155, -188, -221, -254, ?",-287,-287,supported,0.95,True,False,2.611
+sb_0595,evidence,claim_support,easy,claim,The gloop is locked.,supported,supported,supported,0.9,True,False,0.43
+sb_0596,multi_step,neg_syllogism,hard,yesno,All snorps are klaxes. No klaxes are glorps. Are any snorps glorps?,no,no,refuted,0.85,True,False,1.313
+sb_0597,adversarial,explicit_negation,medium,claim,The daxel is connected.,refuted,refuted,refuted,0.9,True,False,0.265
+sb_0598,generalization,deep_transitivity,hard,yesno,Amy is heavier than Ben. Ben is heavier than Cole. Cole is heavier than Dan. Is Amy heavier than Dan?,yes,yes,supported,0.9,True,False,6.624
+sb_0599,generalization,multi_term_arithmetic,hard,int,What is 373 * 297 * 785?,86963085,86963085,supported,0.99,True,False,4.437
+sb_0600,ambiguity,claim_irrelevant,medium,claim,The troon is connected.,unknown,unknown,insufficient,0.45,True,True,0.391
+sb_0601,generalization,novel_sequence,hard,int,"What comes next: -83, -35, 13, 61, ?",109,109,supported,0.95,True,False,2.687
+sb_0602,adversarial,circular_claim,hard,claim,"Because the wibble is locked, the wibble is locked.",supported,supported,supported,0.9,True,False,0.366
+sb_0603,ambiguity,conflicting_sources,hard,claim,The quark is open.,unknown,unknown,insufficient,0.45,True,True,0.341
+sb_0604,basic_logic,prime,easy,yesno,Is 92 prime?,no,no,refuted,0.99,True,False,0.721
+sb_0605,ambiguity,claim_irrelevant,medium,claim,The blix is locked.,unknown,unknown,insufficient,0.45,True,True,0.335
+sb_0606,evidence,statement_pair,medium,pair,Compare these two statements.,consistent,consistent,supported,0.9702,True,False,112.931
+sb_0607,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9882,True,False,99.556
+sb_0608,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9923,True,False,94.679
+sb_0609,adversarial,circular_claim,hard,claim,"Because the wibble is active, the wibble is active.",supported,supported,supported,0.9,True,False,0.458
+sb_0610,ambiguity,claim_irrelevant,medium,claim,The daxel is active.,unknown,unknown,insufficient,0.45,True,True,0.254
+sb_0611,ambiguity,claim_irrelevant,medium,claim,The quark is running.,unknown,unknown,insufficient,0.45,True,True,0.283
+sb_0612,basic_logic,boolean,easy,yesno,false or false,no,no,refuted,0.99,True,False,1.434
+sb_0613,multi_step,neg_syllogism,hard,yesno,All snorps are fimps. No fimps are klaxes. Are any snorps klaxes?,no,no,refuted,0.85,True,False,0.971
+sb_0614,evidence,claim_support,easy,claim,The fleep is awake.,supported,supported,supported,0.9,True,False,0.341
+sb_0615,multi_step,transitivity,medium,yesno,Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?,yes,yes,supported,0.9,True,False,2.422
+sb_0616,multi_step,transitivity,medium,yesno,Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?,yes,yes,supported,0.9,True,False,2.489
+sb_0617,ambiguity,conflicting_sources,hard,claim,The quark is charged.,unknown,unknown,insufficient,0.45,True,True,0.328
+sb_0618,basic_logic,prime,easy,yesno,Is 99 prime?,no,no,refuted,0.99,True,False,0.515
+sb_0619,ambiguity,claim_irrelevant,medium,claim,The blix is active.,unknown,unknown,insufficient,0.45,True,True,0.256
+sb_0620,adversarial,double_negation,hard,claim,The gloop is locked.,supported,supported,supported,0.9,True,False,0.199
+sb_0621,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.231
+sb_0622,ambiguity,conflicting_sources,hard,claim,The daxel is running.,unknown,unknown,insufficient,0.45,True,True,0.278
+sb_0623,multi_step,neg_syllogism,hard,yesno,All fimps are quuxes. No quuxes are klaxes. Are any fimps klaxes?,no,no,refuted,0.85,True,False,1.155
+sb_0624,ambiguity,uncertain_date,hard,claim,The fleep was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.296
+sb_0625,multi_step,neg_syllogism,hard,yesno,All morphs are quuxes. No quuxes are wibbles. Are any morphs wibbles?,no,no,refuted,0.85,True,False,2.191
+sb_0626,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9925,True,False,92.173
+sb_0627,adversarial,distractor_padding,hard,claim,The daxel is enabled.,supported,supported,supported,0.9,True,False,0.62
+sb_0628,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9921,True,False,110.985
+sb_0629,multi_step,chain_syllogism,medium,yesno,All greeps are wibbles. All wibbles are quarks. Are all greeps quarks?,yes,yes,supported,0.9,True,False,2.289
+sb_0630,multi_step,chain_syllogism_fallacy,hard,yesno,All zorbs are bloops. All bloops are quarks. Are all quarks zorbs?,unknown,unknown,insufficient,0.85,True,True,2.195
+sb_0631,generalization,novel_sequence,hard,int,"What comes next: -149, -132, -115, -98, ?",-81,-81,supported,0.95,True,False,3.281
+sb_0632,basic_logic,set_subset,medium,yesno,"Is {5, 10, 64} a subset of {5, 7, 10, 11}?",no,no,refuted,0.95,True,False,2.893
+sb_0633,ambiguity,hedged_claim,hard,claim,The wibble is charged.,unknown,unknown,insufficient,0.45,True,True,0.291
+sb_0634,basic_logic,sequence,easy,int,"What comes next: 11, 5, -1, -7, ?",-13,-13,supported,0.95,True,False,5.124
+sb_0635,basic_logic,prime,easy,yesno,Is 50 prime?,no,no,refuted,0.99,True,False,0.636
+sb_0636,evidence,claim_refute,easy,claim,The blix is locked.,refuted,refuted,refuted,0.9,True,False,0.289
+sb_0637,basic_logic,boolean,easy,yesno,not false,yes,yes,supported,0.99,True,False,0.547
+sb_0638,basic_logic,boolean,easy,yesno,false and false,no,no,refuted,0.99,True,False,0.546
+sb_0639,ambiguity,uncertain_date,hard,claim,The wibble was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.319
+sb_0640,basic_logic,arithmetic,easy,int,What is 80 divided by 4?,20,20,supported,0.99,True,False,2.189
+sb_0641,generalization,novel_sequence,hard,int,"What comes next: -86, -31, 24, 79, ?",134,134,supported,0.95,True,False,1.947
+sb_0642,ambiguity,uncertain_date,hard,claim,The blix was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.302
+sb_0643,evidence,statement_pair,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9903,True,False,244.994
+sb_0644,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.955,True,False,222.675
+sb_0645,adversarial,explicit_negation,medium,claim,The quark is open.,refuted,refuted,refuted,0.9,True,False,0.34
+sb_0646,basic_logic,boolean,easy,yesno,true xor true,no,no,refuted,0.99,True,False,2.117
+sb_0647,basic_logic,set_union,easy,set,"What is the union of {4, 7} and {2, 3}?","[2, 3, 4, 7]","[2, 3, 4, 7]",supported,0.95,True,False,1.219
+sb_0648,adversarial,circular_claim,hard,claim,"Because the blix is charged, the blix is charged.",supported,supported,supported,0.9,True,False,1.772
+sb_0649,multi_step,transitivity_gap,hard,yesno,Amy is faster than Brian. Gina is faster than Cathy. Is Amy faster than Cathy?,unknown,unknown,insufficient,0.3,True,True,1.482
+sb_0650,evidence,claim_support,easy,claim,The quark is awake.,supported,supported,supported,0.9,True,False,0.34
+sb_0651,basic_logic,arithmetic,easy,int,What is 94 times 12?,1128,1128,supported,0.99,True,False,1.11
+sb_0652,basic_logic,arithmetic,easy,int,What is 178 plus 30?,208,208,supported,0.99,True,False,1.803
+sb_0653,ambiguity,uncertain_date,hard,claim,The gloop was launched in 1990.,unknown,unknown,insufficient,0.45,True,True,0.297
+sb_0654,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9765,True,False,140.003
+sb_0655,multi_step,transitivity,medium,yesno,Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?,yes,yes,supported,0.9,True,False,3.928
+sb_0656,basic_logic,arithmetic,easy,int,What is 191 plus 82?,273,273,supported,0.99,True,False,2.354
+sb_0657,basic_logic,boolean,easy,yesno,false nand true,yes,yes,supported,0.99,True,False,1.593
+sb_0658,multi_step,transitivity,medium,yesno,Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?,yes,yes,supported,0.9,True,False,3.393
+sb_0659,adversarial,double_negation,hard,claim,The gloop is running.,supported,supported,supported,0.9,True,False,0.285
+sb_0660,generalization,multi_term_arithmetic,hard,int,What is 275 * 647 * 129?,22952325,22952325,supported,0.99,True,False,2.137
+sb_0661,basic_logic,sequence,easy,int,"What comes next: 17, 22, 27, 32, ?",37,37,supported,0.95,True,False,2.295
+sb_0662,generalization,nested_boolean,hard,yesno,not (true or false),no,no,refuted,0.99,True,False,0.687
+sb_0663,evidence,claim_refute,easy,claim,The wibble is open.,refuted,refuted,refuted,0.9,True,False,0.43
+sb_0664,basic_logic,set_intersection,easy,set,"What is the intersection of {4, 7, 9, 10} and {6, 10, 11}?",[10],[10],supported,0.95,True,False,1.873
+sb_0665,multi_step,chain_syllogism,medium,yesno,All bloops are quarks. All quarks are greeps. Are all bloops greeps?,yes,yes,supported,0.9,True,False,3.716
+sb_0666,generalization,deep_syllogism,hard,yesno,All pilts are hobbs. All hobbs are squibs. All squibs are yotz. Are all pilts yotz?,yes,yes,supported,0.9,True,False,1.837
+sb_0667,adversarial,numeric_conflict,medium,pair,Compare these two statements.,contradiction,contradiction,refuted,0.9855,True,False,143.086

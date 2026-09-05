@@ -1,0 +1,43 @@
+{
+ "timestamp": "2026-09-04T01:15:23.162819",
+ "os": "Windows-11-10.0.26200-SP0",
+ "os_system": "Windows",
+ "os_release": "11",
+ "node": "yukii",
+ "machine": "AMD64",
+ "processor": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+ "python_version": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+ "python_impl": "CPython",
+ "cpu_physical_cores": 10,
+ "cpu_logical_cores": 12,
+ "ram_total_gb": 16.88,
+ "ram_available_gb": 1.41,
+ "ram_percent_used": 91.7,
+ "cpu_freq_mhz": 1300.0,
+ "gpu": [
+  "none detected"
+ ],
+ "versions": {
+  "torch": "2.9.1+cu126",
+  "tensorflow": "2.21.0",
+  "transformers": "4.57.0",
+  "numpy": "2.3.3",
+  "sklearn": "1.7.2",
+  "psutil": "7.2.2",
+  "pandas": "2.3.3",
+  "pytest": "9.1.1"
+ },
+ "git": {
+  "sha": "5375b35fe5c069ebc7fa73690058abe7335fa7f2",
+  "status": "dirty",
+  "branch": "main"
+ },
+ "cpu_brand": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+ "compilers": {
+  "gcc": null,
+  "clang": null,
+  "cc": null,
+  "cmake": null,
+  "make": null
+ }
+}

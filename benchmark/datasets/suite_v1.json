@@ -1,0 +1,8317 @@
+{
+ "version": "1.0.0",
+ "seed": 20260903,
+ "generator": "sweep_benchmark.datasets",
+ "per_group": {
+  "adversarial": 110,
+  "ambiguity": 108,
+  "basic_logic": 132,
+  "evidence": 108,
+  "generalization": 105,
+  "multi_step": 105
+ },
+ "total": 668,
+ "cases": [
+  {
+   "id": "sb_0000",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the troon count was 26.",
+    "Report 2 says the troon count was 53."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0001",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The troon is open.",
+   "evidence": [
+    "The troon is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0002",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0003",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quark is awake.",
+   "evidence": [
+    "The quark is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0004",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or false)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0005",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or false)",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0006",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {35, 40, 61, 95, 97} and {16, 25, 37, 45, 50}?",
+   "evidence": [],
+   "expected": [
+    16,
+    25,
+    35,
+    37,
+    40,
+    45,
+    50,
+    61,
+    95,
+    97
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0007",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true and false",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0008",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The quark is awake.",
+   "evidence": [
+    "The quark possibly is awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0009",
+   "group": "basic_logic",
+   "family": "set_subset",
+   "difficulty": "medium",
+   "query": "Is {2} a subset of {2, 5, 7, 9}?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0010",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the quark is connected, the quark is connected.",
+   "evidence": [
+    "The quark is connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0011",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 2, 13, 24, 35, ?",
+   "evidence": [],
+   "expected": "46",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0012",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0013",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All hobbs are zwaps. All zwaps are gronks. All gronks are vexes. Are all hobbs vexes?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0014",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 201 times 47?",
+   "evidence": [],
+   "expected": "9447",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0015",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The blix is running.",
+   "evidence": [
+    "The blix is running and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0016",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {1, 2, 8, 11} and {1, 6}?",
+   "evidence": [],
+   "expected": [
+    1,
+    2,
+    6,
+    8,
+    11
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0017",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All quarks are troons. All troons are greeps. Are all greeps quarks?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0018",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The troon is enabled.",
+   "evidence": [
+    "The troon possibly is enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0019",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is charged.",
+   "evidence": [
+    "It is false that the zorp is charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0020",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "The daxel is enabled and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0021",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 200 plus 27?",
+   "evidence": [],
+   "expected": "227",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0022",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is enabled.",
+   "evidence": [
+    "The wibble is enabled and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0023",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All morphs are fimps. No fimps are glorps. Are any morphs glorps?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0024",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is active.",
+    "The zorp is not active."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0025",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is charged.",
+    "The wibble is not charged."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0026",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true xor true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0027",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp is green and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0028",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the wibble count was 10.",
+    "Report 2 says the wibble count was 25."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0029",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {4, 5, 7} and {6, 10}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0030",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0031",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The quantum relay is calibrated.",
+   "evidence": [
+    "The quantum relay is not calibrated per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0032",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or false)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0033",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The zorp is charged.",
+   "evidence": [
+    "Source A says the zorp is charged.",
+    "Source B says the zorp is not charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0034",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Aaron is faster than Beth. Dana is faster than Cole. Is Aaron faster than Cole?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0035",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are daxels. All daxels are zorbs. Are all quarks zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0036",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The quantum relay is calibrated.",
+   "evidence": [
+    "The quantum relay is not calibrated per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0037",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is faster than Bo. Bo is faster than Cy. Cy is faster than Dee. Is Ada faster than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0038",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0039",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All daxels are fleeps. All fleeps are zorbs. Are all daxels zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0040",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All krell are squibs. All squibs are muntz. All muntz are gronks. Are all krell gronks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0041",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The troon is open.",
+    "The troon is not open."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0042",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 147 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0043",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All klaxes are glorps. No glorps are quuxes. Are any klaxes quuxes?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0044",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or false)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0045",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The zorp was launched in 1990.",
+   "evidence": [
+    "Records say the zorp was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0046",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {17, 54, 63, 81, 94} and {8, 32, 52, 90, 98}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0047",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0048",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 0, 6, 12, 18, ?",
+   "evidence": [],
+   "expected": "24",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0049",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the zorp is enabled, the zorp is enabled.",
+   "evidence": [
+    "The zorp is enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0050",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0051",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 24, 16, 8, 0, ?",
+   "evidence": [],
+   "expected": "-8",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0052",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 481 * 66 * 610?",
+   "evidence": [],
+   "expected": "19365060",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0053",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or false)",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0054",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is charged.",
+   "evidence": [
+    "The gloop is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0055",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The fleep is running.",
+   "evidence": [
+    "The fleep is yellow.",
+    "The fleep is running.",
+    "The fleep is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0056",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 95 times 79?",
+   "evidence": [],
+   "expected": "7505",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0057",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0058",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The zorp is running.",
+   "evidence": [
+    "The zorp could be running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0059",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are daxels. All daxels are zorbs. Are all quarks zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0060",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All zorbs are troons. All troons are quarks. Are all zorbs quarks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0061",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is charged.",
+   "evidence": [
+    "The wibble is charged and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0062",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The quark is open.",
+   "evidence": [
+    "It is false that the quark is open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0063",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All bloops are zorbs. All zorbs are greeps. Are all bloops greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0064",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The troon is running.",
+   "evidence": [
+    "It is false that the troon is running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0065",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the troon count was 31.",
+    "Report 2 says the troon count was 42."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0066",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the wibble is connected, the wibble is connected.",
+   "evidence": [
+    "The wibble is connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0067",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 63.",
+    "Report 2 says the gloop count was 82."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0068",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The fleep is open.",
+   "evidence": [
+    "The fleep is yellow.",
+    "The fleep is open.",
+    "The fleep is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0069",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All quarks are wibbles. All wibbles are fleeps. Are all fleeps quarks?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0070",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Amy is faster than Ben. Ben is faster than Cole. Cole is faster than Dan. Is Amy faster than Dan?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0071",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the quark count was 67.",
+    "Report 2 says the quark count was 94."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0072",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the fleep is connected, the fleep is connected.",
+   "evidence": [
+    "The fleep is connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0073",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0074",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The blix is enabled.",
+   "evidence": [
+    "The blix is not not enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0075",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The quark is charged.",
+   "evidence": [
+    "The quark is green.",
+    "The quark is charged.",
+    "The quark is red."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0076",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 570 * 712 * 35?",
+   "evidence": [],
+   "expected": "14204400",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0077",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All greeps are zorbs. All zorbs are troons. Are all greeps troons?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0078",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is active.",
+   "evidence": [
+    "It is false that the zorp is active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0079",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0080",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the gloop is open, the gloop is open.",
+   "evidence": [
+    "The gloop is open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0081",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The fleep is charged.",
+   "evidence": [
+    "The fleep is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0082",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the quark is awake, the quark is awake.",
+   "evidence": [
+    "The quark is awake."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0083",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0084",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {10, 11} and {2, 6, 9}?",
+   "evidence": [],
+   "expected": [
+    2,
+    6,
+    9,
+    10,
+    11
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0085",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -22, 9, 40, 71, ?",
+   "evidence": [],
+   "expected": "102",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0086",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The zorp was launched in 1990.",
+   "evidence": [
+    "Records say the zorp was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0087",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The blix is open.",
+   "evidence": [
+    "It is false that the blix is open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0088",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The daxel is charged.",
+   "evidence": [
+    "The daxel is charged and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0089",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The daxel is enabled.",
+    "The daxel is not enabled."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0090",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The blix was launched in 1990.",
+   "evidence": [
+    "Records say the blix was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0091",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0092",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is running.",
+    "The zorp is not running."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0093",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 58.",
+    "Report 2 says the gloop count was 83."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0094",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All daxels are troons. All troons are wibbles. Are all daxels wibbles?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0095",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is charged.",
+   "evidence": [
+    "The wibble is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0096",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false and true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0097",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {3, 5, 7, 8} and {4, 5}?",
+   "evidence": [],
+   "expected": [
+    3,
+    4,
+    5,
+    7,
+    8
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0098",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is connected.",
+   "evidence": [
+    "The wibble is connected and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0099",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All wibbles are quuxes. No quuxes are morphs. Are any wibbles morphs?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0100",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The troon was launched in 1990.",
+   "evidence": [
+    "Records say the troon was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0101",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 33 divided by 11?",
+   "evidence": [],
+   "expected": "3",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0102",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All zorbs are quarks. All quarks are wibbles. Are all zorbs wibbles?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0103",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 36 divided by 6?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0104",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All wibbles are greeps. All greeps are fleeps. Are all wibbles fleeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0105",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The fleep is running.",
+   "evidence": [
+    "The fleep is not running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0106",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All fleeps are greeps. All greeps are wibbles. Are all wibbles fleeps?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0107",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {1, 2} and {2, 3, 4, 8}?",
+   "evidence": [],
+   "expected": [
+    2
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0108",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel is not not open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0109",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 26, 35, 44, 53, ?",
+   "evidence": [],
+   "expected": "62",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0110",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The troon was launched in 1990.",
+   "evidence": [
+    "Records say the troon was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0111",
+   "group": "basic_logic",
+   "family": "set_subset",
+   "difficulty": "medium",
+   "query": "Is {5, 7, 10, 78} a subset of {1, 5, 7}?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0112",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The cryo module is polarized.",
+   "evidence": [
+    "The cryo module is not polarized per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0113",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -28, -45, -62, -79, ?",
+   "evidence": [],
+   "expected": "-96",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0114",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true or false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0115",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is taller than Bo. Bo is taller than Cy. Cy is taller than Dee. Is Ada taller than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0116",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0117",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The troon is charged.",
+   "evidence": [
+    "The troon is green and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0118",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is active.",
+    "The zorp is not active."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0119",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is awake.",
+   "evidence": [
+    "The daxel is not awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0120",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are daxels. All daxels are bloops. Are all quarks bloops?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0121",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0122",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {31, 39, 52, 67, 72} and {21, 59, 70, 71, 96}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0123",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is enabled.",
+   "evidence": [
+    "The wibble is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0124",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All zwaps are vexes. All vexes are pilts. All pilts are gronks. Are all zwaps gronks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0125",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The fleep is charged.",
+   "evidence": [
+    "It is false that the fleep is charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0126",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "The daxel is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0127",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is active.",
+    "The wibble is active and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0128",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel is yellow.",
+    "The daxel is locked.",
+    "The daxel is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0129",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0130",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 752 * 196 * 177?",
+   "evidence": [],
+   "expected": "26088384",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0131",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 153 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0132",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The gloop is connected.",
+   "evidence": [
+    "The gloop is blue.",
+    "The gloop is connected.",
+    "The gloop is yellow."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0133",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The quark is active.",
+   "evidence": [
+    "The quark is not active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0134",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is awake.",
+   "evidence": [
+    "It is false that the zorp is awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0135",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All pilts are muntz. All muntz are gronks. All gronks are vexes. Are all pilts vexes?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0136",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 24, 20, 16, 12, ?",
+   "evidence": [],
+   "expected": "8",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0137",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The gloop is connected.",
+   "evidence": [
+    "Source A says the gloop is connected.",
+    "Source B says the gloop is not connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0138",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0139",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 170 divided by 10?",
+   "evidence": [],
+   "expected": "17",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0140",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {1, 2, 9, 10} and {3, 5, 7, 9}?",
+   "evidence": [],
+   "expected": [
+    1,
+    2,
+    3,
+    5,
+    7,
+    9,
+    10
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0141",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All squibs are vexes. All vexes are muntz. All muntz are yotz. Are all squibs yotz?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0142",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is locked.",
+    "The zorp is locked and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0143",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 194 plus 50?",
+   "evidence": [],
+   "expected": "244",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0144",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is active.",
+    "The wibble is active and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0145",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All daxels are bloops. All bloops are wibbles. Are all daxels wibbles?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0146",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 84 divided by 6?",
+   "evidence": [],
+   "expected": "14",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0147",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The troon is charged.",
+   "evidence": [
+    "Source A says the troon is charged.",
+    "Source B says the troon is not charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0148",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is active.",
+   "evidence": [
+    "Source A says the daxel is active.",
+    "Source B says the daxel is not active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0149",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 47 times 32?",
+   "evidence": [],
+   "expected": "1504",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0150",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 85 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0151",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0152",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is enabled.",
+   "evidence": [
+    "The wibble is enabled and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0153",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 59 prime?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0154",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The wibble is locked.",
+   "evidence": [
+    "The wibble is not not locked."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0155",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel might be locked."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0156",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All fleeps are quarks. All quarks are greeps. Are all fleeps greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0157",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All troons are zorbs. All zorbs are greeps. Are all troons greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0158",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All fimps are klaxes. No klaxes are snorps. Are any fimps snorps?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0159",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 28, 37, 46, 55, ?",
+   "evidence": [],
+   "expected": "64",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0160",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0161",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ana is heavier than Bob. Bob is heavier than Cid. Cid is heavier than Don. Is Ana heavier than Don?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0162",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All blerts are wibbles. No wibbles are morphs. Are any blerts morphs?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0163",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The blix is active.",
+   "evidence": [
+    "It is false that the blix is active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0164",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The zorp is locked.",
+   "evidence": [
+    "The zorp is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0165",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {16, 25, 35, 41, 54} and {18, 24, 38, 45, 93}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0166",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All morphs are fimps. No fimps are blerts. Are any morphs blerts?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0167",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 28, 19, 10, 1, ?",
+   "evidence": [],
+   "expected": "-8",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0168",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The wibble is connected.",
+   "evidence": [
+    "The wibble may be connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0169",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 13 plus 46?",
+   "evidence": [],
+   "expected": "59",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0170",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Amy is taller than Ben. Ben is taller than Cole. Cole is taller than Dan. Is Amy taller than Dan?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0171",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the quark count was 78.",
+    "Report 2 says the quark count was 107."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0172",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 182 times 80?",
+   "evidence": [],
+   "expected": "14560",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0173",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 38 times 34?",
+   "evidence": [],
+   "expected": "1292",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0174",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The gloop is awake.",
+   "evidence": [
+    "Source A says the gloop is awake.",
+    "Source B says the gloop is not awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0175",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The daxel is connected.",
+   "evidence": [
+    "The daxel is connected and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0176",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The quantum relay is ionized.",
+   "evidence": [
+    "The quantum relay is not ionized per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0177",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The blix is locked.",
+   "evidence": [
+    "The blix could be locked."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0178",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 18, 9, 0, -9, ?",
+   "evidence": [],
+   "expected": "-18",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0179",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The quark is connected.",
+   "evidence": [
+    "The quark is blue.",
+    "The quark is connected.",
+    "The quark is red."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0180",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The wibble was launched in 1990.",
+   "evidence": [
+    "Records say the wibble was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0181",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is older than Beth. Beth is older than Cole. Is Aaron older than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0182",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is running.",
+   "evidence": [
+    "Source A says the daxel is running.",
+    "Source B says the daxel is not running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0183",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the quark count was 49.",
+    "Report 2 says the quark count was 61."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0184",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {22, 29, 47, 50, 69} and {52, 61, 66, 82, 87}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0185",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 134 times 68?",
+   "evidence": [],
+   "expected": "9112",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0186",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0187",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The quark was launched in 1990.",
+   "evidence": [
+    "Records say the quark was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0188",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All quarks are troons. All troons are bloops. Are all bloops quarks?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0189",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The fleep is awake.",
+   "evidence": [
+    "The fleep is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0190",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The blix is active.",
+   "evidence": [
+    "The blix is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0191",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All fleeps are bloops. All bloops are greeps. Are all fleeps greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0192",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The quantum relay is calibrated.",
+   "evidence": [
+    "The quantum relay is calibrated per diagnostic log 7."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0193",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The gloop is enabled.",
+    "The gloop is not enabled."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0194",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0195",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quark is connected.",
+   "evidence": [
+    "The quark is connected and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0196",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 20 times 82?",
+   "evidence": [],
+   "expected": "1640",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0197",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand true",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0198",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {4, 8} and {2, 5, 8}?",
+   "evidence": [],
+   "expected": [
+    8
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0199",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 399 * 613 * 854?",
+   "evidence": [],
+   "expected": "208877298",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0200",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All fleeps are bloops. All bloops are zorbs. Are all fleeps zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0201",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The troon is awake.",
+   "evidence": [
+    "The troon is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0202",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The quark is connected.",
+   "evidence": [
+    "The quark is not connected."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0203",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -142, -164, -186, -208, ?",
+   "evidence": [],
+   "expected": "-230",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0204",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The zorp is charged.",
+   "evidence": [
+    "The zorp is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0205",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is older than Bob. Bob is older than Carol. Is Alice older than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0206",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The zorp is running.",
+   "evidence": [
+    "The zorp is not not running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0207",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The troon is connected.",
+   "evidence": [
+    "The troon is not not connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0208",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 62 minus 71?",
+   "evidence": [],
+   "expected": "-9",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0209",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The troon is awake.",
+   "evidence": [
+    "The troon might be awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0210",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The blix is charged.",
+   "evidence": [
+    "The blix is blue.",
+    "The blix is charged.",
+    "The blix is red."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0211",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The quark is running.",
+   "evidence": [
+    "The quark is not not running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0212",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The troon is open.",
+   "evidence": [
+    "The troon is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0213",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 219 minus 70?",
+   "evidence": [],
+   "expected": "149",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0214",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All zorbs are greeps. All greeps are fleeps. Are all zorbs fleeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0215",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The troon is connected.",
+   "evidence": [
+    "Source A says the troon is connected.",
+    "Source B says the troon is not connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0216",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 31 prime?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0217",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The gloop is connected.",
+   "evidence": [
+    "The gloop might be connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0218",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0219",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is awake.",
+   "evidence": [
+    "It is false that the zorp is awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0220",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "The daxel possibly is enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0221",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The fleep is open.",
+   "evidence": [
+    "Source A says the fleep is open.",
+    "Source B says the fleep is not open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0222",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0223",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0224",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All zorbs are daxels. All daxels are greeps. Are all zorbs greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0225",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The fleep is running.",
+   "evidence": [
+    "Source A says the fleep is running.",
+    "Source B says the fleep is not running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0226",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The blix is open.",
+   "evidence": [
+    "The blix is yellow.",
+    "The blix is open.",
+    "The blix is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0227",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is active.",
+   "evidence": [
+    "The gloop is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0228",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The troon is running.",
+   "evidence": [
+    "The troon is not running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0229",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp is red and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0230",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The zorp is awake.",
+   "evidence": [
+    "The zorp is not awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0231",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The wibble was launched in 1990.",
+   "evidence": [
+    "Records say the wibble was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0232",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is running.",
+   "evidence": [
+    "The gloop is green and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0233",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All glorps are klaxes. No klaxes are blerts. Are any glorps blerts?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0234",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0235",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 38.",
+    "Report 2 says the gloop count was 47."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0236",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The wibble is awake.",
+   "evidence": [
+    "The wibble possibly is awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0237",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the zorp is enabled, the zorp is enabled.",
+   "evidence": [
+    "The zorp is enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0238",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The gloop is locked.",
+    "The gloop is not locked."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0239",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ana is older than Bob. Bob is older than Cid. Cid is older than Don. Is Ana older than Don?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0240",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All troons are bloops. All bloops are wibbles. Are all troons wibbles?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0241",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false and true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0242",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All greeps are daxels. All daxels are quarks. Are all greeps quarks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0243",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel might be open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0244",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is connected.",
+   "evidence": [
+    "Source A says the daxel is connected.",
+    "Source B says the daxel is not connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0245",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The gloop is running.",
+   "evidence": [
+    "The gloop is red.",
+    "The gloop is running.",
+    "The gloop is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0246",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0247",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The blix is running.",
+   "evidence": [
+    "The blix is running and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0248",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is active.",
+    "The wibble is active and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0249",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The daxel is running.",
+   "evidence": [
+    "The daxel is running and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0250",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The troon is connected.",
+    "The troon is not connected."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0251",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0252",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0253",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the troon count was 55.",
+    "Report 2 says the troon count was 66."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0254",
+   "group": "basic_logic",
+   "family": "set_subset",
+   "difficulty": "medium",
+   "query": "Is {2, 3} a subset of {2, 3, 6, 10}?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0255",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {37, 53, 62, 68, 98} and {2, 4, 29, 42, 71}?",
+   "evidence": [],
+   "expected": [
+    2,
+    4,
+    29,
+    37,
+    42,
+    53,
+    62,
+    68,
+    71,
+    98
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0256",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is active.",
+   "evidence": [
+    "The daxel could be active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0257",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is faster than Beth. Beth is faster than Cole. Is Aaron faster than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0258",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 161 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0259",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The quark is charged.",
+   "evidence": [
+    "The quark is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0260",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All vexes are gronks. All gronks are pilts. All pilts are muntz. Are all vexes muntz?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0261",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The wibble is connected.",
+   "evidence": [
+    "The wibble is not not connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0262",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0263",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The daxel is connected.",
+   "evidence": [
+    "It is false that the daxel is connected."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0264",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {6, 11} and {2, 4, 7}?",
+   "evidence": [],
+   "expected": [
+    2,
+    4,
+    6,
+    7,
+    11
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0265",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0266",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is locked.",
+   "evidence": [
+    "Source A says the quark is locked.",
+    "Source B says the quark is not locked."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0267",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The troon is connected.",
+   "evidence": [
+    "The troon is not not connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0268",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true nand false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0269",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All squibs are yotz. All yotz are muntz. All muntz are hobbs. Are all squibs hobbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0270",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The blix is open.",
+   "evidence": [
+    "The blix is not not open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0271",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is awake.",
+    "The zorp is awake and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0272",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The fleep is enabled.",
+   "evidence": [
+    "The fleep is red.",
+    "The fleep is enabled.",
+    "The fleep is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0273",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {11, 15, 18, 45, 74} and {25, 38, 55, 79, 81}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0274",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is active.",
+    "The wibble is active and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0275",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The tachyon drive is quenched.",
+   "evidence": [
+    "The tachyon drive is not quenched per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0276",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The blix is charged.",
+   "evidence": [
+    "The blix is charged and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0277",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The zorp is running.",
+   "evidence": [
+    "The zorp might be running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0278",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All gronks are pilts. All pilts are loams. All loams are muntz. Are all gronks muntz?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0279",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The gloop was launched in 1990.",
+   "evidence": [
+    "Records say the gloop was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0280",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 137 * 561 * 31?",
+   "evidence": [],
+   "expected": "2382567",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0281",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is awake.",
+    "The wibble is awake and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0282",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The fleep is locked.",
+    "The fleep is not locked."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0283",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The troon is running.",
+    "The troon is running and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0284",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0285",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The fleep is enabled.",
+   "evidence": [
+    "It is false that the fleep is enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0286",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0287",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The troon is open.",
+   "evidence": [
+    "The troon could be open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0288",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false xor false",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0289",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is enabled.",
+   "evidence": [
+    "The wibble is enabled and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0290",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0291",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {1, 3, 5} and {2, 3, 7}?",
+   "evidence": [],
+   "expected": [
+    1,
+    2,
+    3,
+    5,
+    7
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0292",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The daxel is open.",
+    "The daxel is not open."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0293",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {33, 49, 56, 71, 89} and {37, 52, 55, 69, 80}?",
+   "evidence": [],
+   "expected": [
+    33,
+    37,
+    49,
+    52,
+    55,
+    56,
+    69,
+    71,
+    80,
+    89
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0294",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The gloop is active.",
+    "The gloop is not active."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0295",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The troon was launched in 1990.",
+   "evidence": [
+    "Records say the troon was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0296",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is active.",
+   "evidence": [
+    "Source A says the quark is active.",
+    "Source B says the quark is not active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0297",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The neural lattice is quenched.",
+   "evidence": [
+    "The neural lattice is not quenched per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0298",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true xor true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0299",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false and true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0300",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is enabled.",
+   "evidence": [
+    "The gloop is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0301",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0302",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {8, 11, 45, 47, 68} and {18, 72, 78, 81, 92}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0303",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All yotz are loams. All loams are vexes. All vexes are zwaps. Are all yotz zwaps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0304",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is faster than Ben. Ben is faster than Chris. Is Alex faster than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0305",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {21, 26, 61, 73, 81} and {33, 72, 90, 97, 99}?",
+   "evidence": [],
+   "expected": [
+    21,
+    26,
+    33,
+    61,
+    72,
+    73,
+    81,
+    90,
+    97,
+    99
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0306",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the fleep count was 37.",
+    "Report 2 says the fleep count was 52."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0307",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The fleep is locked.",
+   "evidence": [
+    "The fleep is red.",
+    "The fleep is locked.",
+    "The fleep is yellow."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0308",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {37, 62, 66, 70, 93} and {34, 43, 63, 66, 82}?",
+   "evidence": [],
+   "expected": [
+    34,
+    37,
+    43,
+    62,
+    63,
+    66,
+    70,
+    82,
+    93
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0309",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp might be enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0310",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 173 minus 56?",
+   "evidence": [],
+   "expected": "117",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0311",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The zorp is locked.",
+   "evidence": [
+    "The zorp is locked and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0312",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 140 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0313",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The quark is running.",
+    "The quark is not running."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0314",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand true",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0315",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0316",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The gloop is awake.",
+   "evidence": [
+    "The gloop may be awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0317",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The quark was launched in 1990.",
+   "evidence": [
+    "Records say the quark was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0318",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All troons are quarks. All quarks are wibbles. Are all wibbles troons?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0319",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 23, 16, 9, 2, ?",
+   "evidence": [],
+   "expected": "-5",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0320",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the daxel is enabled, the daxel is enabled.",
+   "evidence": [
+    "The daxel is enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0321",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is open.",
+    "The wibble is open and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0322",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The troon is active.",
+   "evidence": [
+    "The troon may be active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0323",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All troons are daxels. All daxels are wibbles. Are all troons wibbles?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0324",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is awake.",
+   "evidence": [
+    "The daxel is not awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0325",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All loams are squibs. All squibs are gronks. All gronks are zwaps. Are all loams zwaps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0326",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 84 - 451 - 790?",
+   "evidence": [],
+   "expected": "-1157",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0327",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the troon is running, the troon is running.",
+   "evidence": [
+    "The troon is running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0328",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Alex is older than Ben. Frank is older than Chris. Is Alex older than Chris?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0329",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel is locked and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0330",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All zorbs are greeps. All greeps are daxels. Are all daxels zorbs?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0331",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is connected.",
+   "evidence": [
+    "Source A says the quark is connected.",
+    "Source B says the quark is not connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0332",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {4, 10} and {1, 2, 8}?",
+   "evidence": [],
+   "expected": [
+    1,
+    2,
+    4,
+    8,
+    10
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0333",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 24 divided by 6?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0334",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The fleep is active.",
+   "evidence": [
+    "It is false that the fleep is active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0335",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The gloop is charged.",
+   "evidence": [
+    "The gloop is not not charged."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0336",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 72 plus 24?",
+   "evidence": [],
+   "expected": "96",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0337",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The wibble is locked.",
+   "evidence": [
+    "It is false that the wibble is locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0338",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the blix is open, the blix is open.",
+   "evidence": [
+    "The blix is open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0339",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The troon is active.",
+   "evidence": [
+    "The troon is not active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0340",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The zorp is connected.",
+   "evidence": [
+    "The zorp could be connected."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0341",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 44 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0342",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The blix was launched in 1990.",
+   "evidence": [
+    "Records say the blix was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0343",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is open.",
+   "evidence": [
+    "The daxel could be open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0344",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 15, 7, -1, -9, ?",
+   "evidence": [],
+   "expected": "-17",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0345",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The blix is charged.",
+   "evidence": [
+    "The blix is not not charged."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0346",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the daxel count was 45.",
+    "Report 2 says the daxel count was 57."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0347",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -20, 22, 64, 106, ?",
+   "evidence": [],
+   "expected": "148",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0348",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The zorp is connected.",
+   "evidence": [
+    "The zorp is not not connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0349",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The cryo module is calibrated.",
+   "evidence": [
+    "The cryo module is calibrated per diagnostic log 7."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0350",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are greeps. All greeps are daxels. Are all quarks daxels?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0351",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The fleep is open.",
+   "evidence": [
+    "Source A says the fleep is open.",
+    "Source B says the fleep is not open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0352",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the fleep is charged, the fleep is charged.",
+   "evidence": [
+    "The fleep is charged."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0353",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The blix is running.",
+   "evidence": [
+    "The blix is not not running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0354",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0355",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The fleep is open.",
+   "evidence": [
+    "The fleep is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0356",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the zorp count was 78.",
+    "Report 2 says the zorp count was 83."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0357",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The blix is running.",
+   "evidence": [
+    "The blix is not running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0358",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 120 divided by 10?",
+   "evidence": [],
+   "expected": "12",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0359",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {21, 27, 63, 75, 95} and {21, 50, 53, 82, 83}?",
+   "evidence": [],
+   "expected": [
+    21,
+    27,
+    50,
+    53,
+    63,
+    75,
+    82,
+    83,
+    95
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0360",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true or false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0361",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "The daxel possibly is enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0362",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false and true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0363",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The fleep is running.",
+   "evidence": [
+    "The fleep could be running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0364",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The blix is enabled.",
+   "evidence": [
+    "The blix is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0365",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -147, -120, -93, -66, ?",
+   "evidence": [],
+   "expected": "-39",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0366",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All snorps are klaxes. No klaxes are wibbles. Are any snorps wibbles?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0367",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the zorp is running, the zorp is running.",
+   "evidence": [
+    "The zorp is running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0368",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is locked and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0369",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -74, -26, 22, 70, ?",
+   "evidence": [],
+   "expected": "118",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0370",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The fleep is locked.",
+   "evidence": [
+    "The fleep is locked and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0371",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All gronks are squibs. All squibs are hobbs. All hobbs are vexes. Are all gronks vexes?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0372",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The blix is open.",
+   "evidence": [
+    "The blix is not not open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0373",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The daxel is connected.",
+    "The daxel is not connected."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0374",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the wibble is connected, the wibble is connected.",
+   "evidence": [
+    "The wibble is connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0375",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or false)",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0376",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0377",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true or true",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0378",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is locked.",
+   "evidence": [
+    "Source A says the quark is locked.",
+    "Source B says the quark is not locked."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0379",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is taller than Bo. Bo is taller than Cy. Cy is taller than Dee. Is Ada taller than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0380",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 93 times 31?",
+   "evidence": [],
+   "expected": "2883",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0381",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or false)",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0382",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 16, 17, 18, 19, ?",
+   "evidence": [],
+   "expected": "20",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0383",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 20 plus 84?",
+   "evidence": [],
+   "expected": "104",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0384",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 183 plus 35?",
+   "evidence": [],
+   "expected": "218",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0385",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The cryo module is polarized.",
+   "evidence": [
+    "The cryo module is not polarized per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0386",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {2, 8} and {3, 7, 8, 9}?",
+   "evidence": [],
+   "expected": [
+    8
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0387",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is heavier than Beth. Beth is heavier than Cole. Is Aaron heavier than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0388",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All greeps are quarks. All quarks are wibbles. Are all wibbles greeps?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0389",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The fleep is running.",
+   "evidence": [
+    "Source A says the fleep is running.",
+    "Source B says the fleep is not running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0390",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The troon was launched in 1990.",
+   "evidence": [
+    "Records say the troon was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0391",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is older than Beth. Beth is older than Cole. Is Aaron older than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0392",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "It is false that the daxel is enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0393",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 52 plus 12?",
+   "evidence": [],
+   "expected": "64",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0394",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All wibbles are quarks. All quarks are greeps. Are all greeps wibbles?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0395",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Alex is older than Ben. Eve is older than Chris. Is Alex older than Chris?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0396",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The wibble is open.",
+   "evidence": [
+    "Source A says the wibble is open.",
+    "Source B says the wibble is not open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0397",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0398",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The zorp is connected.",
+   "evidence": [
+    "The zorp is red.",
+    "The zorp is connected.",
+    "The zorp is yellow."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0399",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The cryo module is polarized.",
+   "evidence": [
+    "The cryo module is polarized per diagnostic log 7."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0400",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the blix count was 36.",
+    "Report 2 says the blix count was 53."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0401",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0402",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is open.",
+   "evidence": [
+    "The wibble is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0403",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All klaxes are glorps. No glorps are quuxes. Are any klaxes quuxes?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0404",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 128 times 47?",
+   "evidence": [],
+   "expected": "6016",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0405",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is active.",
+   "evidence": [
+    "Source A says the daxel is active.",
+    "Source B says the daxel is not active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0406",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 11, 17, 23, 29, ?",
+   "evidence": [],
+   "expected": "35",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0407",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -156, -114, -72, -30, ?",
+   "evidence": [],
+   "expected": "12",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0408",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or false)",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0409",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The fleep is running.",
+   "evidence": [
+    "It is false that the fleep is running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0410",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The wibble was launched in 1990.",
+   "evidence": [
+    "Records say the wibble was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0411",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the fleep is running, the fleep is running.",
+   "evidence": [
+    "The fleep is running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0412",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0413",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The fleep is connected.",
+   "evidence": [
+    "The fleep is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0414",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The quark is connected.",
+   "evidence": [
+    "The quark is not not connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0415",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The plasma vane is calibrated.",
+   "evidence": [
+    "The plasma vane is not calibrated per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0416",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 16 divided by 4?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0417",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0418",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "Source A says the daxel is enabled.",
+    "Source B says the daxel is not enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0419",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The zorp is awake.",
+   "evidence": [
+    "The zorp is green.",
+    "The zorp is awake.",
+    "The zorp is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0420",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All fleeps are bloops. All bloops are troons. Are all fleeps troons?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0421",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is connected.",
+   "evidence": [
+    "The wibble is connected and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0422",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 16, 19, 22, 25, ?",
+   "evidence": [],
+   "expected": "28",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0423",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0424",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The quark is connected.",
+   "evidence": [
+    "The quark is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0425",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The zorp is charged.",
+   "evidence": [
+    "The zorp is green.",
+    "The zorp is charged.",
+    "The zorp is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0426",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is locked.",
+   "evidence": [
+    "It is false that the zorp is locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0427",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is open.",
+   "evidence": [
+    "The wibble is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0428",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is older than Ben. Ben is older than Chris. Is Alex older than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0429",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The quark is locked.",
+   "evidence": [
+    "The quark is green.",
+    "The quark is locked.",
+    "The quark is red."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0430",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0431",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The blix is awake.",
+   "evidence": [
+    "The blix may be awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0432",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All zorbs are bloops. All bloops are quarks. Are all zorbs quarks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0433",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All blerts are morphs. No morphs are wibbles. Are any blerts wibbles?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0434",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 7, 17, 27, 37, ?",
+   "evidence": [],
+   "expected": "47",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0435",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The wibble is locked.",
+   "evidence": [
+    "It is false that the wibble is locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0436",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are troons. All troons are daxels. Are all quarks daxels?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0437",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is enabled.",
+    "The wibble is not enabled."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0438",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 575 - 560 - 427?",
+   "evidence": [],
+   "expected": "-412",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0439",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 175 times 55?",
+   "evidence": [],
+   "expected": "9625",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0440",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -122, -127, -132, -137, ?",
+   "evidence": [],
+   "expected": "-142",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0441",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0442",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0443",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All daxels are zorbs. All zorbs are troons. Are all daxels troons?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0444",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All quarks are zorbs. All zorbs are daxels. Are all quarks daxels?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0445",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is not not open."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0446",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is heavier than Bo. Bo is heavier than Cy. Cy is heavier than Dee. Is Ada heavier than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0447",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 19, 28, 37, 46, ?",
+   "evidence": [],
+   "expected": "55",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0448",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is open and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0449",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The fleep is enabled.",
+   "evidence": [
+    "The fleep is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0450",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the wibble count was 65.",
+    "Report 2 says the wibble count was 86."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0451",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All vexes are squibs. All squibs are krell. All krell are loams. Are all vexes loams?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0452",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 15, 26, 37, 48, ?",
+   "evidence": [],
+   "expected": "59",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0453",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The daxel is locked.",
+   "evidence": [
+    "The daxel is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0454",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 39 minus 63?",
+   "evidence": [],
+   "expected": "-24",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0455",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All quarks are daxels. All daxels are troons. Are all troons quarks?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0456",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The blix is open.",
+   "evidence": [
+    "The blix is green.",
+    "The blix is open.",
+    "The blix is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0457",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The daxel is active.",
+   "evidence": [
+    "The daxel is red.",
+    "The daxel is active.",
+    "The daxel is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0458",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The wibble is active.",
+   "evidence": [
+    "The wibble possibly is active."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0459",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The gloop is charged.",
+   "evidence": [
+    "The gloop may be charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0460",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is active.",
+   "evidence": [
+    "The gloop is not active."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0461",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The troon is charged.",
+   "evidence": [
+    "Source A says the troon is charged.",
+    "Source B says the troon is not charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0462",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All yotz are gronks. All gronks are krell. All krell are muntz. Are all yotz muntz?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0463",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All troons are zorbs. All zorbs are quarks. Are all troons quarks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0464",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 45 divided by 9?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0465",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All bloops are zorbs. All zorbs are troons. Are all bloops troons?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0466",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0467",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The blix is open.",
+   "evidence": [
+    "The blix is red and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0468",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is heavier than Brian. Brian is heavier than Cathy. Is Amy heavier than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0469",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Alice is faster than Bob. Frank is faster than Carol. Is Alice faster than Carol?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0470",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 16, 8, 0, -8, ?",
+   "evidence": [],
+   "expected": "-16",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0471",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is enabled.",
+    "The wibble is enabled and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0472",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the union of {1, 3, 52, 79, 80} and {17, 18, 33, 52, 93}?",
+   "evidence": [],
+   "expected": [
+    1,
+    3,
+    17,
+    18,
+    33,
+    52,
+    79,
+    80,
+    93
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0473",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 118 times 45?",
+   "evidence": [],
+   "expected": "5310",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0474",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is running.",
+   "evidence": [
+    "The wibble is not running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0475",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is faster than Beth. Beth is faster than Cole. Is Aaron faster than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0476",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 29, 33, 37, 41, ?",
+   "evidence": [],
+   "expected": "45",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0477",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The neural lattice is synchronized.",
+   "evidence": [
+    "The neural lattice is not synchronized per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0478",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The gloop is connected.",
+   "evidence": [
+    "The gloop is green.",
+    "The gloop is connected.",
+    "The gloop is yellow."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0479",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {29, 41, 63, 69, 91} and {25, 36, 71, 72, 99}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0480",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The wibble is open.",
+   "evidence": [
+    "The wibble is green.",
+    "The wibble is open.",
+    "The wibble is red."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0481",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 66.",
+    "Report 2 says the gloop count was 71."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0482",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is older than Brian. Brian is older than Cathy. Is Amy older than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0483",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The blix is running.",
+   "evidence": [
+    "The blix is not running."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0484",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is faster than Bob. Bob is faster than Carol. Is Alice faster than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0485",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Alice is older than Bob. Eve is older than Carol. Is Alice older than Carol?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0486",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0487",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -200, -168, -136, -104, ?",
+   "evidence": [],
+   "expected": "-72",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0488",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The zorp is active.",
+   "evidence": [
+    "The zorp is active and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0489",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All troons are daxels. All daxels are wibbles. Are all wibbles troons?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0490",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The zorp is running.",
+   "evidence": [
+    "Source A says the zorp is running.",
+    "Source B says the zorp is not running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0491",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false xor false",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0492",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The fleep is enabled.",
+   "evidence": [
+    "The fleep is not not enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0493",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Aaron is older than Beth. Frank is older than Cole. Is Aaron older than Cole?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0494",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 22, 19, 16, 13, ?",
+   "evidence": [],
+   "expected": "10",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0495",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is enabled.",
+   "evidence": [
+    "The gloop is not enabled."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0496",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The zorp was launched in 1990.",
+   "evidence": [
+    "Records say the zorp was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0497",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The fleep is running.",
+   "evidence": [
+    "The fleep is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0498",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The wibble was launched in 1990.",
+   "evidence": [
+    "Records say the wibble was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0499",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the daxel is running, the daxel is running.",
+   "evidence": [
+    "The daxel is running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0500",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All troons are bloops. All bloops are zorbs. Are all troons zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0501",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 14, 17, 20, 23, ?",
+   "evidence": [],
+   "expected": "26",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0502",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The daxel is charged.",
+   "evidence": [
+    "The daxel is not not charged."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0503",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The quark was launched in 1990.",
+   "evidence": [
+    "Records say the quark was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0504",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Aaron is older than Beth. Frank is older than Cole. Is Aaron older than Cole?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0505",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (false or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0506",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quark is active.",
+   "evidence": [
+    "The quark is active and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0507",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 12, 6, 0, -6, ?",
+   "evidence": [],
+   "expected": "-12",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0508",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0509",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The troon is enabled.",
+   "evidence": [
+    "The troon is not not enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0510",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is older than Ben. Ben is older than Chris. Is Alex older than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0511",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The zorp is enabled.",
+   "evidence": [
+    "The zorp is enabled and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0512",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 11, 7, 3, -1, ?",
+   "evidence": [],
+   "expected": "-5",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0513",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The gloop is awake.",
+   "evidence": [
+    "It is false that the gloop is awake."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0514",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is running.",
+    "The wibble is not running."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0515",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0516",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0517",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 196 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0518",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 206 plus 37?",
+   "evidence": [],
+   "expected": "243",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0519",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The blix is charged.",
+   "evidence": [
+    "It is false that the blix is charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0520",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The troon is enabled.",
+   "evidence": [
+    "The troon is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0521",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 148 minus 75?",
+   "evidence": [],
+   "expected": "73",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0522",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The tachyon drive is polarized.",
+   "evidence": [
+    "The tachyon drive is polarized per diagnostic log 7."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0523",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 647 + 97 + 376?",
+   "evidence": [],
+   "expected": "1120",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0524",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0525",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {2, 3, 5, 6} and {1, 3, 7, 11}?",
+   "evidence": [],
+   "expected": [
+    3
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0526",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The wibble is running.",
+   "evidence": [
+    "The wibble possibly is running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0527",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the zorp is connected, the zorp is connected.",
+   "evidence": [
+    "The zorp is connected."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0528",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is open.",
+   "evidence": [
+    "The gloop is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0529",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the zorp count was 38.",
+    "Report 2 says the zorp count was 62."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0530",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 68 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0531",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the blix is awake, the blix is awake.",
+   "evidence": [
+    "The blix is awake."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0532",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The gloop is enabled.",
+   "evidence": [
+    "The gloop may be enabled."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0533",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The wibble is charged.",
+   "evidence": [
+    "The wibble is charged and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0534",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 105 + 124 + 300?",
+   "evidence": [],
+   "expected": "529",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0535",
+   "group": "generalization",
+   "family": "novel_sets",
+   "difficulty": "hard",
+   "query": "What is the intersection of {20, 48, 52, 75, 86} and {5, 8, 9, 79, 80}?",
+   "evidence": [],
+   "expected": [],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0536",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true nand true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0537",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The zorp is open.",
+   "evidence": [
+    "It is false that the zorp is open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0538",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The quantum relay is quenched.",
+   "evidence": [
+    "The quantum relay is not quenched per diagnostic log 7."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0539",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The gloop is charged.",
+   "evidence": [
+    "Source A says the gloop is charged.",
+    "Source B says the gloop is not charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0540",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or true)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0541",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0542",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is running.",
+   "evidence": [
+    "The gloop is running and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0543",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is active.",
+   "evidence": [
+    "The gloop is red and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0544",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The blix is connected.",
+    "The blix is not connected."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0545",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 19, 9, -1, -11, ?",
+   "evidence": [],
+   "expected": "-21",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0546",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The fleep is charged.",
+   "evidence": [
+    "The fleep is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0547",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The troon is active.",
+    "The troon is not active."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0548",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is heavier than Ben. Ben is heavier than Chris. Is Alex heavier than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0549",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {2, 9, 11} and {2, 4, 5, 8}?",
+   "evidence": [],
+   "expected": [
+    2,
+    4,
+    5,
+    8,
+    9,
+    11
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0550",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the daxel is active, the daxel is active.",
+   "evidence": [
+    "The daxel is active."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0551",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is older than Brian. Brian is older than Cathy. Is Amy older than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0552",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -45, -57, -69, -81, ?",
+   "evidence": [],
+   "expected": "-93",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0553",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {1, 9} and {3, 9}?",
+   "evidence": [],
+   "expected": [
+    9
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0554",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is locked.",
+    "The wibble is not locked."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0555",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All wibbles are fleeps. All fleeps are zorbs. Are all wibbles zorbs?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0556",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All squibs are krell. All krell are loams. All loams are gronks. Are all squibs gronks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0557",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Amy is taller than Brian. Brian is taller than Cathy. Is Amy taller than Cathy?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0558",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is faster than Ben. Ben is faster than Chris. Is Alex faster than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0559",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The zorp is charged.",
+   "evidence": [
+    "The zorp is not charged."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0560",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 215 plus 79?",
+   "evidence": [],
+   "expected": "294",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0561",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 144 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0562",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The troon is open.",
+   "evidence": [
+    "Source A says the troon is open.",
+    "Source B says the troon is not open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0563",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true nand false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0564",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0565",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The daxel is charged.",
+   "evidence": [
+    "The daxel is green and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0566",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is awake.",
+   "evidence": [
+    "Source A says the daxel is awake.",
+    "Source B says the daxel is not awake."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0567",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The blix is locked.",
+    "The blix is locked and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0568",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 675 * 786 * 393?",
+   "evidence": [],
+   "expected": "208506150",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0569",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 32 divided by 4?",
+   "evidence": [],
+   "expected": "8",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0570",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ana is heavier than Bob. Bob is heavier than Cid. Cid is heavier than Don. Is Ana heavier than Don?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0571",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 194 + 94 + 413?",
+   "evidence": [],
+   "expected": "701",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0572",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 179 times 47?",
+   "evidence": [],
+   "expected": "8413",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0573",
+   "group": "generalization",
+   "family": "novel_claim",
+   "difficulty": "medium",
+   "query": "The cryo module is polarized.",
+   "evidence": [
+    "The cryo module is polarized per diagnostic log 7."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0574",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 180 times 90?",
+   "evidence": [],
+   "expected": "16200",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0575",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 430 + 885 + 828?",
+   "evidence": [],
+   "expected": "2143",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0576",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The daxel is active.",
+   "evidence": [
+    "The daxel is not not active."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0577",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All wibbles are greeps. All greeps are fleeps. Are all fleeps wibbles?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0578",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The zorp is awake.",
+   "evidence": [
+    "The zorp is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0579",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0580",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 182 + 289 + 886?",
+   "evidence": [],
+   "expected": "1357",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0581",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The wibble is enabled.",
+   "evidence": [
+    "The wibble is yellow.",
+    "The wibble is enabled.",
+    "The wibble is blue."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0582",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The daxel was launched in 1990.",
+   "evidence": [
+    "Records say the daxel was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0583",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0584",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All wibbles are bloops. All bloops are troons. Are all troons wibbles?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0585",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 57.",
+    "Report 2 says the gloop count was 67."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0586",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the wibble is enabled, the wibble is enabled.",
+   "evidence": [
+    "The wibble is enabled."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0587",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the blix count was 86.",
+    "Report 2 says the blix count was 103."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0588",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The blix is active.",
+   "evidence": [
+    "The blix is yellow.",
+    "The blix is active.",
+    "The blix is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0589",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 168 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0590",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The fleep is charged.",
+   "evidence": [
+    "The fleep is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0591",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All morphs are klaxes. No klaxes are glorps. Are any morphs glorps?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0592",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -153, -102, -51, 0, ?",
+   "evidence": [],
+   "expected": "51",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0593",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Ada is older than Bo. Bo is older than Cy. Cy is older than Dee. Is Ada older than Dee?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0594",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -155, -188, -221, -254, ?",
+   "evidence": [],
+   "expected": "-287",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0595",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is locked and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0596",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All snorps are klaxes. No klaxes are glorps. Are any snorps glorps?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0597",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The daxel is connected.",
+   "evidence": [
+    "It is false that the daxel is connected."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0598",
+   "group": "generalization",
+   "family": "deep_transitivity",
+   "difficulty": "hard",
+   "query": "Amy is heavier than Ben. Ben is heavier than Cole. Cole is heavier than Dan. Is Amy heavier than Dan?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0599",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 373 * 297 * 785?",
+   "evidence": [],
+   "expected": "86963085",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0600",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The troon is connected.",
+   "evidence": [
+    "The troon is blue and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0601",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -83, -35, 13, 61, ?",
+   "evidence": [],
+   "expected": "109",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0602",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the wibble is locked, the wibble is locked.",
+   "evidence": [
+    "The wibble is locked."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0603",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is open.",
+   "evidence": [
+    "Source A says the quark is open.",
+    "Source B says the quark is not open."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0604",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 92 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0605",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The blix is locked.",
+   "evidence": [
+    "The blix is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0606",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The daxel is awake.",
+    "The daxel is awake and operational."
+   ],
+   "expected": "consistent",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0607",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The zorp is charged.",
+    "The zorp is not charged."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0608",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The gloop is open.",
+    "The gloop is not open."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0609",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the wibble is active, the wibble is active.",
+   "evidence": [
+    "The wibble is active."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0610",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The daxel is active.",
+   "evidence": [
+    "The daxel is green and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0611",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The quark is running.",
+   "evidence": [
+    "The quark is red and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0612",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false or false",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0613",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All snorps are fimps. No fimps are klaxes. Are any snorps klaxes?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0614",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The fleep is awake.",
+   "evidence": [
+    "The fleep is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0615",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Aaron is taller than Beth. Beth is taller than Cole. Is Aaron taller than Cole?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0616",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is taller than Bob. Bob is taller than Carol. Is Alice taller than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0617",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The quark is charged.",
+   "evidence": [
+    "Source A says the quark is charged.",
+    "Source B says the quark is not charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0618",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 99 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0619",
+   "group": "ambiguity",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The blix is active.",
+   "evidence": [
+    "The blix is yellow and quiet."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0620",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The gloop is locked.",
+   "evidence": [
+    "The gloop is not not locked."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0621",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0622",
+   "group": "ambiguity",
+   "family": "conflicting_sources",
+   "difficulty": "hard",
+   "query": "The daxel is running.",
+   "evidence": [
+    "Source A says the daxel is running.",
+    "Source B says the daxel is not running."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0623",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All fimps are quuxes. No quuxes are klaxes. Are any fimps klaxes?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0624",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The fleep was launched in 1990.",
+   "evidence": [
+    "Records say the fleep was launched around 1992."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0625",
+   "group": "multi_step",
+   "family": "neg_syllogism",
+   "difficulty": "hard",
+   "query": "All morphs are quuxes. No quuxes are wibbles. Are any morphs wibbles?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0626",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The wibble is enabled.",
+    "The wibble is not enabled."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0627",
+   "group": "adversarial",
+   "family": "distractor_padding",
+   "difficulty": "hard",
+   "query": "The daxel is enabled.",
+   "evidence": [
+    "The daxel is yellow.",
+    "The daxel is enabled.",
+    "The daxel is green."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0628",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The blix is active.",
+    "The blix is not active."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0629",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All greeps are wibbles. All wibbles are quarks. Are all greeps quarks?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0630",
+   "group": "multi_step",
+   "family": "chain_syllogism_fallacy",
+   "difficulty": "hard",
+   "query": "All zorbs are bloops. All bloops are quarks. Are all quarks zorbs?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0631",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -149, -132, -115, -98, ?",
+   "evidence": [],
+   "expected": "-81",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0632",
+   "group": "basic_logic",
+   "family": "set_subset",
+   "difficulty": "medium",
+   "query": "Is {5, 10, 64} a subset of {5, 7, 10, 11}?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0633",
+   "group": "ambiguity",
+   "family": "hedged_claim",
+   "difficulty": "hard",
+   "query": "The wibble is charged.",
+   "evidence": [
+    "The wibble could be charged."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0634",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 11, 5, -1, -7, ?",
+   "evidence": [],
+   "expected": "-13",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0635",
+   "group": "basic_logic",
+   "family": "prime",
+   "difficulty": "easy",
+   "query": "Is 50 prime?",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0636",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The blix is locked.",
+   "evidence": [
+    "The blix is not locked."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0637",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "not false",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0638",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false and false",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0639",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The wibble was launched in 1990.",
+   "evidence": [
+    "Records say the wibble was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0640",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 80 divided by 4?",
+   "evidence": [],
+   "expected": "20",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0641",
+   "group": "generalization",
+   "family": "novel_sequence",
+   "difficulty": "hard",
+   "query": "What comes next: -86, -31, 24, 79, ?",
+   "evidence": [],
+   "expected": "134",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0642",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The blix was launched in 1990.",
+   "evidence": [
+    "Records say the blix was launched around 1989."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0643",
+   "group": "evidence",
+   "family": "statement_pair",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "The quark is running.",
+    "The quark is not running."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0644",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the daxel count was 59.",
+    "Report 2 says the daxel count was 87."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0645",
+   "group": "adversarial",
+   "family": "explicit_negation",
+   "difficulty": "medium",
+   "query": "The quark is open.",
+   "evidence": [
+    "It is false that the quark is open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0646",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "true xor true",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0647",
+   "group": "basic_logic",
+   "family": "set_union",
+   "difficulty": "easy",
+   "query": "What is the union of {4, 7} and {2, 3}?",
+   "evidence": [],
+   "expected": [
+    2,
+    3,
+    4,
+    7
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0648",
+   "group": "adversarial",
+   "family": "circular_claim",
+   "difficulty": "hard",
+   "query": "Because the blix is charged, the blix is charged.",
+   "evidence": [
+    "The blix is charged."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0649",
+   "group": "multi_step",
+   "family": "transitivity_gap",
+   "difficulty": "hard",
+   "query": "Amy is faster than Brian. Gina is faster than Cathy. Is Amy faster than Cathy?",
+   "evidence": [],
+   "expected": "unknown",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0650",
+   "group": "evidence",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quark is awake.",
+   "evidence": [
+    "The quark is awake and running smoothly."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0651",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 94 times 12?",
+   "evidence": [],
+   "expected": "1128",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0652",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 178 plus 30?",
+   "evidence": [],
+   "expected": "208",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0653",
+   "group": "ambiguity",
+   "family": "uncertain_date",
+   "difficulty": "hard",
+   "query": "The gloop was launched in 1990.",
+   "evidence": [
+    "Records say the gloop was launched around 1991."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0654",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the troon count was 59.",
+    "Report 2 says the troon count was 64."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0655",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alice is heavier than Bob. Bob is heavier than Carol. Is Alice heavier than Carol?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0656",
+   "group": "basic_logic",
+   "family": "arithmetic",
+   "difficulty": "easy",
+   "query": "What is 191 plus 82?",
+   "evidence": [],
+   "expected": "273",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0657",
+   "group": "basic_logic",
+   "family": "boolean",
+   "difficulty": "easy",
+   "query": "false nand true",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0658",
+   "group": "multi_step",
+   "family": "transitivity",
+   "difficulty": "medium",
+   "query": "Alex is taller than Ben. Ben is taller than Chris. Is Alex taller than Chris?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0659",
+   "group": "adversarial",
+   "family": "double_negation",
+   "difficulty": "hard",
+   "query": "The gloop is running.",
+   "evidence": [
+    "The gloop is not not running."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0660",
+   "group": "generalization",
+   "family": "multi_term_arithmetic",
+   "difficulty": "hard",
+   "query": "What is 275 * 647 * 129?",
+   "evidence": [],
+   "expected": "22952325",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0661",
+   "group": "basic_logic",
+   "family": "sequence",
+   "difficulty": "easy",
+   "query": "What comes next: 17, 22, 27, 32, ?",
+   "evidence": [],
+   "expected": "37",
+   "mode": "int",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0662",
+   "group": "generalization",
+   "family": "nested_boolean",
+   "difficulty": "hard",
+   "query": "not (true or false)",
+   "evidence": [],
+   "expected": "no",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0663",
+   "group": "evidence",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The wibble is open.",
+   "evidence": [
+    "The wibble is not open."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true
+  },
+  {
+   "id": "sb_0664",
+   "group": "basic_logic",
+   "family": "set_intersection",
+   "difficulty": "easy",
+   "query": "What is the intersection of {4, 7, 9, 10} and {6, 10, 11}?",
+   "evidence": [],
+   "expected": [
+    10
+   ],
+   "mode": "set",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0665",
+   "group": "multi_step",
+   "family": "chain_syllogism",
+   "difficulty": "medium",
+   "query": "All bloops are quarks. All quarks are greeps. Are all bloops greeps?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0666",
+   "group": "generalization",
+   "family": "deep_syllogism",
+   "difficulty": "hard",
+   "query": "All pilts are hobbs. All hobbs are squibs. All squibs are yotz. Are all pilts yotz?",
+   "evidence": [],
+   "expected": "yes",
+   "mode": "yesno",
+   "query_is_claim": false
+  },
+  {
+   "id": "sb_0667",
+   "group": "adversarial",
+   "family": "numeric_conflict",
+   "difficulty": "medium",
+   "query": "Compare these two statements.",
+   "evidence": [
+    "Report 1 says the gloop count was 34.",
+    "Report 2 says the gloop count was 53."
+   ],
+   "expected": "contradiction",
+   "mode": "pair",
+   "query_is_claim": false
+  }
+ ]
+}

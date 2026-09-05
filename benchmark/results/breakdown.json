@@ -1,0 +1,63 @@
+{
+ "mode": {
+  "pair": {
+   "total": 58,
+   "correct": 58,
+   "sum_lat": 10304.315,
+   "accuracy": 1.0,
+   "mean_latency_ms": 177.661
+  },
+  "claim": {
+   "total": 283,
+   "correct": 283,
+   "sum_lat": 118.64500000000004,
+   "accuracy": 1.0,
+   "mean_latency_ms": 0.419
+  },
+  "yesno": {
+   "total": 201,
+   "correct": 201,
+   "sum_lat": 483.48199999999997,
+   "accuracy": 1.0,
+   "mean_latency_ms": 2.405
+  },
+  "set": {
+   "total": 31,
+   "correct": 31,
+   "sum_lat": 72.819,
+   "accuracy": 1.0,
+   "mean_latency_ms": 2.349
+  },
+  "int": {
+   "total": 95,
+   "correct": 95,
+   "sum_lat": 296.4480000000001,
+   "accuracy": 1.0,
+   "mean_latency_ms": 3.121
+  }
+ },
+ "difficulty": {
+  "medium": {
+   "total": 195,
+   "correct": 195,
+   "sum_lat": 10548.403999999999,
+   "accuracy": 1.0,
+   "mean_latency_ms": 54.094
+  },
+  "easy": {
+   "total": 200,
+   "correct": 200,
+   "sum_lat": 306.5780000000001,
+   "accuracy": 1.0,
+   "mean_latency_ms": 1.533
+  },
+  "hard": {
+   "total": 273,
+   "correct": 273,
+   "sum_lat": 420.72700000000015,
+   "accuracy": 1.0,
+   "mean_latency_ms": 1.541
+  }
+ },
+ "top_failures": []
+}

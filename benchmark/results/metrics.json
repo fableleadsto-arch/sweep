@@ -1,0 +1,172 @@
+{
+ "per_group": {
+  "adversarial": {
+   "total": 110,
+   "accuracy": 1.0,
+   "per_class": {
+    "consistent": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    },
+    "contradiction": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unknown": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    }
+   },
+   "abstention": {
+    "expected_unknown": 0,
+    "correct_abstentions": 0,
+    "abstention_accuracy": null
+   }
+  },
+  "evidence": {
+   "total": 108,
+   "accuracy": 1.0,
+   "per_class": {
+    "supported": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "refuted": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unknown": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    }
+   },
+   "abstention": {
+    "expected_unknown": 0,
+    "correct_abstentions": 0,
+    "abstention_accuracy": null
+   }
+  },
+  "generalization": {
+   "total": 105,
+   "accuracy": 1.0,
+   "per_class": {
+    "yes": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "no": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unknown": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    }
+   },
+   "abstention": {
+    "expected_unknown": 0,
+    "correct_abstentions": 0,
+    "abstention_accuracy": null
+   }
+  },
+  "basic_logic": {
+   "total": 132,
+   "accuracy": 1.0,
+   "per_class": {
+    "yes": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "no": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unknown": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    }
+   },
+   "abstention": {
+    "expected_unknown": 0,
+    "correct_abstentions": 0,
+    "abstention_accuracy": null
+   }
+  },
+  "ambiguity": {
+   "total": 108,
+   "accuracy": 1.0,
+   "per_class": {
+    "supported": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    },
+    "refuted": {
+     "precision": null,
+     "recall": null,
+     "f1": null
+    },
+    "unknown": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    }
+   },
+   "abstention": {
+    "expected_unknown": 108,
+    "correct_abstentions": 108,
+    "abstention_accuracy": 1.0
+   }
+  },
+  "multi_step": {
+   "total": 105,
+   "accuracy": 1.0,
+   "per_class": {
+    "yes": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "no": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unknown": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    }
+   },
+   "abstention": {
+    "expected_unknown": 21,
+    "correct_abstentions": 21,
+    "abstention_accuracy": 1.0
+   }
+  }
+ },
+ "calibration": {
+  "n_scored": 668,
+  "mean_conf_correct": 0.8464,
+  "mean_conf_wrong": null,
+  "ece": 0.1424,
+  "hallucination_rate_high_conf": 0.0,
+  "hallucination_count_high_conf": 0,
+  "overconfidence_rate": 0.0
+ },
+ "contradiction_rate": 0.253,
+ "abstention_rate": 0.1931,
+ "wrong_total": 0
+}

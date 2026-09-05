@@ -1,0 +1,42 @@
+{
+ "1": {
+  "accuracy": 0.6111,
+  "median": 163.641,
+  "p95": 327.828,
+  "p99": 365.419,
+  "throughput": 7.84,
+  "threads": 1
+ },
+ "2": {
+  "accuracy": 0.6111,
+  "median": 103.713,
+  "p95": 215.089,
+  "p99": 293.67,
+  "throughput": 12.47,
+  "threads": 2
+ },
+ "4": {
+  "accuracy": 0.6111,
+  "median": 68.478,
+  "p95": 104.895,
+  "p99": 125.44,
+  "throughput": 21.54,
+  "threads": 4
+ },
+ "physical(10)": {
+  "accuracy": 0.6111,
+  "median": 60.069,
+  "p95": 146.494,
+  "p99": 288.156,
+  "throughput": 19.45,
+  "threads": 10
+ },
+ "logical(12)": {
+  "accuracy": 0.6111,
+  "median": 80.346,
+  "p95": 261.414,
+  "p99": 516.625,
+  "throughput": 13.12,
+  "threads": 12
+ }
+}

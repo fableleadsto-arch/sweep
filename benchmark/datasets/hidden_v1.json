@@ -1,0 +1,3705 @@
+{
+ "version": "1.0.0",
+ "role": "hidden",
+ "seed": 20260905,
+ "generator": "sweep_benchmark.hidden",
+ "frozen_on": "2026-09-05",
+ "total": 270,
+ "per_group": {
+  "hidden_content": {
+   "total": 60,
+   "families": [
+    "claim_conflicting",
+    "claim_hedged",
+    "claim_irrelevant",
+    "claim_refute",
+    "claim_support"
+   ]
+  },
+  "hidden_evidence": {
+   "total": 40,
+   "families": [
+    "duration_grounding"
+   ]
+  },
+  "hidden_logic": {
+   "total": 90,
+   "families": [
+    "minmax",
+    "modulo",
+    "set_count"
+   ]
+  },
+  "hidden_quantifier": {
+   "total": 40,
+   "families": [
+    "quantifier_grounding"
+   ]
+  },
+  "hidden_temporal": {
+   "total": 40,
+   "families": [
+    "event_ordering"
+   ]
+  }
+ },
+ "protocol": {
+  "access": "protocol-frozen; one reference run recorded; final evals only",
+  "scoring": "sweep_benchmark.scoring (deterministic, no LLM judge)",
+  "environment": "offline, CPU-only, fresh process per run"
+ },
+ "cases": [
+  {
+   "id": "hb_0000",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The gadjit outage lasted 7 hours.",
+   "evidence": [
+    "Harbor Desk logs show the gadjit outage began at 13:00 and ended at 19:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0001",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The vorpan is grounded.",
+   "evidence": [
+    "The vorpan might be grounded."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0002",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The veltrix is sealed.",
+   "evidence": [
+    "Holder Alpha reports the veltrix is sealed.",
+    "Holder Beta reports the veltrix is not sealed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0003",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 263 divided by 2?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0004",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The veltrix is deployed.",
+   "evidence": [
+    "The veltrix is deployed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0005",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 137 divided by 12?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0006",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The veltrix outage lasted 5 hours.",
+   "evidence": [
+    "Harbor Desk logs show the veltrix outage began at 11:00 and ended at 16:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0007",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quindle is deployed.",
+   "evidence": [
+    "The quindle is deployed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0008",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No vorpans are online.",
+   "evidence": [
+    "The dashboard shows 13 of 20 vorpans are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0009",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 555 divided by 7?",
+   "evidence": [],
+   "expected": "2",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0010",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 3 of 12 quindles are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0011",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No sorbeks are online.",
+   "evidence": [
+    "The dashboard shows 9 of 10 sorbeks are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0012",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened after the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-03-10.",
+    "The patch for the vorpan was deployed on 2024-03-28."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0013",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 8 hours.",
+   "evidence": [
+    "Kestrel Group logs show the plinx outage began at 08:00 and ended at 18:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0014",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {12, 16, 34, 43, 58} and {21, 23, 34, 47}?",
+   "evidence": [],
+   "expected": "8",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0015",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No thilses are online.",
+   "evidence": [
+    "The dashboard shows 2 of 10 thilses are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0016",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened before the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-09-04.",
+    "The patch for the quindle was deployed on 2024-09-20."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0017",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 838 divided by 5?",
+   "evidence": [],
+   "expected": "3",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0018",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 137 divided by 2?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0019",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 607 divided by 5?",
+   "evidence": [],
+   "expected": "2",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0020",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 7 hours.",
+   "evidence": [
+    "Harbor Desk logs show the thilse outage began at 12:00 and ended at 19:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0021",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most plinxs are online.",
+   "evidence": [
+    "The dashboard shows 15 of 20 plinxs are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0022",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 299, 135 and 127?",
+   "evidence": [],
+   "expected": "127",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0023",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the thilse outage began at 13:00 and ended at 17:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0024",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The quindle is deployed.",
+   "evidence": [
+    "The quindle is deployed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0025",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gadjit is clamped.",
+   "evidence": [
+    "The gadjit is not clamped."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0026",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The thilse is flushed.",
+   "evidence": [
+    "The thilse is deployed and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0027",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {9, 12, 17, 35} and {13, 24, 46}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0028",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The vorpan is deployed.",
+   "evidence": [
+    "The vorpan possibly is deployed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0029",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 7 hours.",
+   "evidence": [
+    "Talon Crew logs show the plinx outage began at 10:00 and ended at 15:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0030",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The sorbek incident happened before the patch.",
+   "evidence": [
+    "The sorbek incident occurred on 2024-08-20.",
+    "The patch for the sorbek was deployed on 2024-09-12."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0031",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 6 hours.",
+   "evidence": [
+    "Harbor Desk logs show the plinx outage began at 08:00 and ended at 14:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0032",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The gadjit incident happened after the patch.",
+   "evidence": [
+    "The gadjit incident occurred on 2024-12-06.",
+    "The patch for the gadjit was deployed on 2024-12-13."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0033",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {3, 31, 35, 37, 40} and {23, 45}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0034",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The quindle is deployed.",
+   "evidence": [
+    "The quindle possibly is deployed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0035",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The gadjit outage lasted 5 hours.",
+   "evidence": [
+    "Talon Crew logs show the gadjit outage began at 06:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0036",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 79 divided by 12?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0037",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The vorpan is mirrored.",
+   "evidence": [
+    "The vorpan is grounded and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0038",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {30, 38, 40} and {9, 21}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0039",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The marnex incident happened after the patch.",
+   "evidence": [
+    "The marnex incident occurred on 2024-08-23.",
+    "The patch for the marnex was deployed on 2024-09-22."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0040",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The marnex incident happened after the patch.",
+   "evidence": [
+    "The marnex incident occurred on 2024-12-04.",
+    "The patch for the marnex was deployed on 2024-12-18."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0041",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No sorbeks are online.",
+   "evidence": [
+    "The dashboard shows 3 of 10 sorbeks are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0042",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most marnexs are online.",
+   "evidence": [
+    "The dashboard shows 6 of 12 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0043",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most gadjits are online.",
+   "evidence": [
+    "The dashboard shows 1 of 12 gadjits are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0044",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No sorbeks are online.",
+   "evidence": [
+    "The dashboard shows 7 of 12 sorbeks are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0045",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The sorbek is flushed.",
+   "evidence": [
+    "The sorbek is not flushed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0046",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 335 divided by 5?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0047",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The vorpan outage lasted 8 hours.",
+   "evidence": [
+    "Talon Crew logs show the vorpan outage began at 10:00 and ended at 16:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0048",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The gadjit is sealed.",
+   "evidence": [
+    "The gadjit may be sealed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0049",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The sorbek is mirrored.",
+   "evidence": [
+    "The sorbek is mirrored and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0050",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 329 divided by 3?",
+   "evidence": [],
+   "expected": "2",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0051",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {8, 11, 14, 49} and {3, 50}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0052",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The vorpan is sealed.",
+   "evidence": [
+    "The vorpan is sealed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0053",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The gadjit is zoned.",
+   "evidence": [
+    "Holder Alpha reports the gadjit is zoned.",
+    "Holder Beta reports the gadjit is not zoned."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0054",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 237, 186 and 550?",
+   "evidence": [],
+   "expected": "186",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0055",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 416, 485 and 592?",
+   "evidence": [],
+   "expected": "416",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0056",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 572 divided by 8?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0057",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The vorpan outage lasted 7 hours.",
+   "evidence": [
+    "Meridian Office logs show the vorpan outage began at 12:00 and ended at 20:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0058",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened before the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2025-01-18.",
+    "The patch for the quindle was deployed on 2025-02-12."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0059",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {23, 40, 43, 44, 51} and {12, 26}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0060",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The veltrix incident happened before the patch.",
+   "evidence": [
+    "The veltrix incident occurred on 2024-01-30.",
+    "The patch for the veltrix was deployed on 2024-02-14."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0061",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The gadjit outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the gadjit outage began at 08:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0062",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The marnex incident happened after the patch.",
+   "evidence": [
+    "The marnex incident occurred on 2024-11-09.",
+    "The patch for the marnex was deployed on 2024-11-26."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0063",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most marnexs are online.",
+   "evidence": [
+    "The dashboard shows 6 of 20 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0064",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 895 divided by 12?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0065",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No quindles are online.",
+   "evidence": [
+    "The dashboard shows 8 of 12 quindles are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0066",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 220, 77 and 123?",
+   "evidence": [],
+   "expected": "220",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0067",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The thilse incident happened after the patch.",
+   "evidence": [
+    "The thilse incident occurred on 2024-03-31.",
+    "The patch for the thilse was deployed on 2024-04-13."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0068",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened before the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-03-23.",
+    "The patch for the quindle was deployed on 2024-04-03."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0069",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most gadjits are online.",
+   "evidence": [
+    "The dashboard shows 11 of 12 gadjits are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0070",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The plinx is sealed.",
+   "evidence": [
+    "The plinx is mirrored and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0071",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 3 hours.",
+   "evidence": [
+    "Talon Crew logs show the thilse outage began at 15:00 and ended at 18:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0072",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 730, 543 and 219?",
+   "evidence": [],
+   "expected": "219",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0073",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The sorbek is mirrored.",
+   "evidence": [
+    "Holder Alpha reports the sorbek is mirrored.",
+    "Holder Beta reports the sorbek is not mirrored."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0074",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The veltrix is clamped.",
+   "evidence": [
+    "The veltrix might be clamped."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0075",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 871, 509 and 860?",
+   "evidence": [],
+   "expected": "509",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0076",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The quindle is flushed.",
+   "evidence": [
+    "The quindle is heated and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0077",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {36, 37, 46} and {19, 21, 39}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0078",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The thilse incident happened after the patch.",
+   "evidence": [
+    "The thilse incident occurred on 2024-04-01.",
+    "The patch for the thilse was deployed on 2024-04-19."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0079",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {2, 10, 15, 48, 49} and {25, 59}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0080",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The veltrix is zoned.",
+   "evidence": [
+    "The veltrix is not zoned."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0081",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The vorpan is sealed.",
+   "evidence": [
+    "The vorpan is not sealed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0082",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened after the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-08-11.",
+    "The patch for the quindle was deployed on 2024-09-05."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0083",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The sorbek incident happened before the patch.",
+   "evidence": [
+    "The sorbek incident occurred on 2024-08-03.",
+    "The patch for the sorbek was deployed on 2024-08-19."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0084",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The plinx is grounded.",
+   "evidence": [
+    "The plinx is clamped and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0085",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 69 divided by 12?",
+   "evidence": [],
+   "expected": "9",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0086",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {8, 18, 37, 40, 55} and {10, 25}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0087",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The veltrix incident happened before the patch.",
+   "evidence": [
+    "The veltrix incident occurred on 2024-02-07.",
+    "The patch for the veltrix was deployed on 2024-03-02."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0088",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The plinx is deployed.",
+   "evidence": [
+    "The plinx is heated and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0089",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No quindles are online.",
+   "evidence": [
+    "The dashboard shows 7 of 20 quindles are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0090",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The veltrix is clamped.",
+   "evidence": [
+    "The veltrix is not clamped."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0091",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No plinxs are online.",
+   "evidence": [
+    "The dashboard shows 6 of 10 plinxs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0092",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No marnexs are online.",
+   "evidence": [
+    "The dashboard shows 7 of 20 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0093",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 8 hours.",
+   "evidence": [
+    "Meridian Office logs show the sorbek outage began at 09:00 and ended at 17:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0094",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The thilse incident happened after the patch.",
+   "evidence": [
+    "The thilse incident occurred on 2024-09-10.",
+    "The patch for the thilse was deployed on 2024-10-05."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0095",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 269, 547 and 597?",
+   "evidence": [],
+   "expected": "269",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0096",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {10, 11, 14, 53} and {1, 53}?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0097",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 47, 188 and 106?",
+   "evidence": [],
+   "expected": "188",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0098",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened before the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2024-07-19.",
+    "The patch for the plinx was deployed on 2024-07-30."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0099",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most plinxs are online.",
+   "evidence": [
+    "The dashboard shows 9 of 12 plinxs are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0100",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {15, 26, 28, 58} and {28, 43, 46}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0101",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {6, 32, 56} and {3, 40, 45}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0102",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The quindle outage lasted 8 hours.",
+   "evidence": [
+    "Kestrel Group logs show the quindle outage began at 11:00 and ended at 20:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0103",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The sorbek is clamped.",
+   "evidence": [
+    "Holder Alpha reports the sorbek is clamped.",
+    "Holder Beta reports the sorbek is not clamped."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0104",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened before the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-09-05.",
+    "The patch for the vorpan was deployed on 2024-09-11."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0105",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 236 divided by 11?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0106",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 983 divided by 11?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0107",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 3 hours.",
+   "evidence": [
+    "Harbor Desk logs show the marnex outage began at 07:00 and ended at 09:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0108",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The sorbek is deployed.",
+   "evidence": [
+    "Holder Alpha reports the sorbek is deployed.",
+    "Holder Beta reports the sorbek is not deployed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0109",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gadjit is zoned.",
+   "evidence": [
+    "The gadjit is heated and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0110",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gadjit is mirrored.",
+   "evidence": [
+    "The gadjit is mirrored and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0111",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The thilse is zoned.",
+   "evidence": [
+    "The thilse is zoned and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0112",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 7 hours.",
+   "evidence": [
+    "Delta Unit logs show the sorbek outage began at 15:00 and ended at 24:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0113",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No quindles are online.",
+   "evidence": [
+    "The dashboard shows 4 of 10 quindles are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0114",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 73 divided by 3?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0115",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 462 divided by 11?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0116",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 631 divided by 6?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0117",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 3 hours.",
+   "evidence": [
+    "Talon Crew logs show the marnex outage began at 06:00 and ended at 09:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0118",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The sorbek is grounded.",
+   "evidence": [
+    "Holder Alpha reports the sorbek is grounded.",
+    "Holder Beta reports the sorbek is not grounded."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0119",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {19, 21, 27, 45} and {30, 52}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0120",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No vorpans are online.",
+   "evidence": [
+    "The dashboard shows 12 of 20 vorpans are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0121",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No plinxs are online.",
+   "evidence": [
+    "The dashboard shows 2 of 12 plinxs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0122",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 634 divided by 12?",
+   "evidence": [],
+   "expected": "10",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0123",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the sorbek outage began at 11:00 and ended at 12:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0124",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most marnexs are online.",
+   "evidence": [
+    "The dashboard shows 9 of 20 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0125",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {8, 12, 24, 27, 57} and {6, 20, 53, 58}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0126",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No thilses are online.",
+   "evidence": [
+    "The dashboard shows 4 of 10 thilses are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0127",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No plinxs are online.",
+   "evidence": [
+    "The dashboard shows 1 of 12 plinxs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0128",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {6, 7, 44} and {17, 51}?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0129",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No vorpans are online.",
+   "evidence": [
+    "The dashboard shows 3 of 12 vorpans are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0130",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No vorpans are online.",
+   "evidence": [
+    "The dashboard shows 3 of 10 vorpans are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0131",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The marnex is zoned.",
+   "evidence": [
+    "The marnex possibly is zoned."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0132",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most plinxs are online.",
+   "evidence": [
+    "The dashboard shows 2 of 12 plinxs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0133",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 4 hours.",
+   "evidence": [
+    "Delta Unit logs show the sorbek outage began at 12:00 and ended at 16:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0134",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 8 of 12 quindles are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0135",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 575, 801 and 333?",
+   "evidence": [],
+   "expected": "333",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0136",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The marnex is clamped.",
+   "evidence": [
+    "Holder Alpha reports the marnex is clamped.",
+    "Holder Beta reports the marnex is not clamped."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0137",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The thilse is flushed.",
+   "evidence": [
+    "The thilse is flushed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0138",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 802 divided by 8?",
+   "evidence": [],
+   "expected": "2",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0139",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The vorpan outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the vorpan outage began at 08:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0140",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The vorpan is flushed.",
+   "evidence": [
+    "The vorpan is flushed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0141",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened after the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-04-15.",
+    "The patch for the quindle was deployed on 2024-05-05."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0142",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 108, 60 and 185?",
+   "evidence": [],
+   "expected": "185",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0143",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {21, 30, 33} and {23, 29, 46}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0144",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The gadjit incident happened before the patch.",
+   "evidence": [
+    "The gadjit incident occurred on 2025-01-23.",
+    "The patch for the gadjit was deployed on 2025-02-22."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0145",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {7, 17, 36} and {9, 28, 37, 44}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0146",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The thilse is deployed.",
+   "evidence": [
+    "Holder Alpha reports the thilse is deployed.",
+    "Holder Beta reports the thilse is not deployed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0147",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened after the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2024-06-16.",
+    "The patch for the plinx was deployed on 2024-07-10."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0148",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The thilse is sealed.",
+   "evidence": [
+    "The thilse might be sealed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0149",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 523, 895 and 297?",
+   "evidence": [],
+   "expected": "895",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0150",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 6 of 10 quindles are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0151",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 3 hours.",
+   "evidence": [
+    "Talon Crew logs show the marnex outage began at 11:00 and ended at 12:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0152",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened before the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-08-02.",
+    "The patch for the vorpan was deployed on 2024-08-30."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0153",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 400, 37 and 91?",
+   "evidence": [],
+   "expected": "37",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0154",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The thilse is flushed.",
+   "evidence": [
+    "Holder Alpha reports the thilse is flushed.",
+    "Holder Beta reports the thilse is not flushed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0155",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The veltrix incident happened after the patch.",
+   "evidence": [
+    "The veltrix incident occurred on 2024-04-11.",
+    "The patch for the veltrix was deployed on 2024-04-18."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0156",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {32, 42, 48} and {1, 28, 40, 56}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0157",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 8 hours.",
+   "evidence": [
+    "Delta Unit logs show the sorbek outage began at 10:00 and ended at 18:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0158",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The sorbek outage lasted 4 hours.",
+   "evidence": [
+    "Kestrel Group logs show the sorbek outage began at 07:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0159",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 57, 567 and 155?",
+   "evidence": [],
+   "expected": "57",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0160",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most marnexs are online.",
+   "evidence": [
+    "The dashboard shows 3 of 20 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0161",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 10 of 12 quindles are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0162",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 300, 421 and 649?",
+   "evidence": [],
+   "expected": "300",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0163",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The plinx is heated.",
+   "evidence": [
+    "The plinx may be heated."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0164",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 77, 50 and 245?",
+   "evidence": [],
+   "expected": "245",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0165",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 7 hours.",
+   "evidence": [
+    "Talon Crew logs show the marnex outage began at 08:00 and ended at 16:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0166",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The veltrix incident happened before the patch.",
+   "evidence": [
+    "The veltrix incident occurred on 2024-12-23.",
+    "The patch for the veltrix was deployed on 2025-01-19."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0167",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The sorbek is flushed.",
+   "evidence": [
+    "Holder Alpha reports the sorbek is flushed.",
+    "Holder Beta reports the sorbek is not flushed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0168",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened after the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2024-06-20.",
+    "The patch for the plinx was deployed on 2024-07-20."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0169",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The vorpan outage lasted 5 hours.",
+   "evidence": [
+    "Kestrel Group logs show the vorpan outage began at 10:00 and ended at 15:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0170",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened after the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-02-26.",
+    "The patch for the vorpan was deployed on 2024-03-04."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0171",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {26, 28, 31, 46, 57} and {23, 59}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0172",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {10, 20, 37, 40, 56} and {6, 32, 39, 49}?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0173",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 869, 35 and 416?",
+   "evidence": [],
+   "expected": "869",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0174",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The marnex is heated.",
+   "evidence": [
+    "Holder Alpha reports the marnex is heated.",
+    "Holder Beta reports the marnex is not heated."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0175",
+   "group": "hidden_content",
+   "family": "claim_conflicting",
+   "difficulty": "hard",
+   "query": "The marnex is flushed.",
+   "evidence": [
+    "Holder Alpha reports the marnex is flushed.",
+    "Holder Beta reports the marnex is not flushed."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0176",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The marnex is clamped.",
+   "evidence": [
+    "The marnex possibly is clamped."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0177",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The veltrix outage lasted 7 hours.",
+   "evidence": [
+    "Talon Crew logs show the veltrix outage began at 11:00 and ended at 17:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0178",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {9, 21, 40} and {2, 16}?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0179",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The sorbek incident happened after the patch.",
+   "evidence": [
+    "The sorbek incident occurred on 2024-03-23.",
+    "The patch for the sorbek was deployed on 2024-04-21."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0180",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened before the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-10-08.",
+    "The patch for the quindle was deployed on 2024-10-24."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0181",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The veltrix is mirrored.",
+   "evidence": [
+    "The veltrix is zoned and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0182",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 203, 328 and 661?",
+   "evidence": [],
+   "expected": "203",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0183",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The gadjit is grounded.",
+   "evidence": [
+    "The gadjit is flushed and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0184",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gadjit is sealed.",
+   "evidence": [
+    "The gadjit is not sealed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0185",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The sorbek incident happened after the patch.",
+   "evidence": [
+    "The sorbek incident occurred on 2025-01-06.",
+    "The patch for the sorbek was deployed on 2025-01-14."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0186",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 747, 63 and 105?",
+   "evidence": [],
+   "expected": "63",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0187",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The vorpan is mirrored.",
+   "evidence": [
+    "The vorpan is not mirrored."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0188",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The thilse incident happened before the patch.",
+   "evidence": [
+    "The thilse incident occurred on 2024-08-23.",
+    "The patch for the thilse was deployed on 2024-08-28."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0189",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {30, 33, 49} and {32, 33}?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0190",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The gadjit is grounded.",
+   "evidence": [
+    "The gadjit is grounded and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0191",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The quindle outage lasted 3 hours.",
+   "evidence": [
+    "Kestrel Group logs show the quindle outage began at 13:00 and ended at 16:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0192",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 307, 686 and 597?",
+   "evidence": [],
+   "expected": "686",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0193",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most thilses are online.",
+   "evidence": [
+    "The dashboard shows 9 of 12 thilses are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0194",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No thilses are online.",
+   "evidence": [
+    "The dashboard shows 9 of 10 thilses are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0195",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most vorpans are online.",
+   "evidence": [
+    "The dashboard shows 8 of 10 vorpans are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0196",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {10, 27, 45, 48} and {27, 41}?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0197",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The vorpan outage lasted 5 hours.",
+   "evidence": [
+    "Talon Crew logs show the vorpan outage began at 11:00 and ended at 16:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0198",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 36 divided by 5?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0199",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 500, 869 and 458?",
+   "evidence": [],
+   "expected": "458",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0200",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The gadjit is clamped.",
+   "evidence": [
+    "The gadjit is not clamped."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0201",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The quindle is zoned.",
+   "evidence": [
+    "The quindle possibly is zoned."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0202",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The marnex incident happened before the patch.",
+   "evidence": [
+    "The marnex incident occurred on 2024-10-25.",
+    "The patch for the marnex was deployed on 2024-11-11."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0203",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 8 hours.",
+   "evidence": [
+    "Delta Unit logs show the thilse outage began at 15:00 and ended at 21:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0204",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 891, 315 and 331?",
+   "evidence": [],
+   "expected": "315",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0205",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened after the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2025-01-05.",
+    "The patch for the plinx was deployed on 2025-01-26."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0206",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No marnexs are online.",
+   "evidence": [
+    "The dashboard shows 7 of 10 marnexs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0207",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most gadjits are online.",
+   "evidence": [
+    "The dashboard shows 1 of 10 gadjits are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0208",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 949 divided by 9?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0209",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 7 hours.",
+   "evidence": [
+    "Kestrel Group logs show the plinx outage began at 13:00 and ended at 20:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0210",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {6, 25, 39, 52} and {19, 26, 43}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0211",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 6 hours.",
+   "evidence": [
+    "Meridian Office logs show the marnex outage began at 13:00 and ended at 20:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0212",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The gadjit incident happened before the patch.",
+   "evidence": [
+    "The gadjit incident occurred on 2024-07-11.",
+    "The patch for the gadjit was deployed on 2024-07-13."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0213",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened after the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2025-02-04.",
+    "The patch for the plinx was deployed on 2025-02-14."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0214",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The vorpan is mirrored.",
+   "evidence": [
+    "The vorpan is grounded and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0215",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 399, 796 and 103?",
+   "evidence": [],
+   "expected": "103",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0216",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 686 divided by 7?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0217",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The vorpan is mirrored.",
+   "evidence": [
+    "The vorpan is not mirrored."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0218",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No plinxs are online.",
+   "evidence": [
+    "The dashboard shows 16 of 20 plinxs are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0219",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened before the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-04-19.",
+    "The patch for the vorpan was deployed on 2024-05-10."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0220",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 287, 445 and 576?",
+   "evidence": [],
+   "expected": "576",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0221",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {3, 42, 51, 58} and {29, 33, 50}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0222",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The quindle is zoned.",
+   "evidence": [
+    "The quindle possibly is zoned."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0223",
+   "group": "hidden_content",
+   "family": "claim_hedged",
+   "difficulty": "hard",
+   "query": "The thilse is heated.",
+   "evidence": [
+    "The thilse could be heated."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0224",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The marnex is grounded.",
+   "evidence": [
+    "The marnex is grounded and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0225",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 625 divided by 4?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0226",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The quindle incident happened after the patch.",
+   "evidence": [
+    "The quindle incident occurred on 2024-02-08.",
+    "The patch for the quindle was deployed on 2024-02-25."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0227",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {17, 29, 37} and {16, 17, 37, 43}?",
+   "evidence": [],
+   "expected": "2",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0228",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 547, 640 and 423?",
+   "evidence": [],
+   "expected": "423",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0229",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 8 hours.",
+   "evidence": [
+    "Delta Unit logs show the thilse outage began at 15:00 and ended at 23:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0230",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 4 hours.",
+   "evidence": [
+    "Harbor Desk logs show the plinx outage began at 13:00 and ended at 17:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0231",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The plinx outage lasted 4 hours.",
+   "evidence": [
+    "Delta Unit logs show the plinx outage began at 09:00 and ended at 11:00."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0232",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most vorpans are online.",
+   "evidence": [
+    "The dashboard shows 16 of 20 vorpans are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0233",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The marnex incident happened before the patch.",
+   "evidence": [
+    "The marnex incident occurred on 2025-01-19.",
+    "The patch for the marnex was deployed on 2025-02-18."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0234",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The thilse outage lasted 4 hours.",
+   "evidence": [
+    "Kestrel Group logs show the thilse outage began at 07:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0235",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The veltrix outage lasted 7 hours.",
+   "evidence": [
+    "Talon Crew logs show the veltrix outage began at 08:00 and ended at 15:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0236",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 215 divided by 10?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0237",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 160, 711 and 530?",
+   "evidence": [],
+   "expected": "711",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0238",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 68 divided by 2?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0239",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The thilse is clamped.",
+   "evidence": [
+    "The thilse is zoned and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0240",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 865, 565 and 790?",
+   "evidence": [],
+   "expected": "565",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0241",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 4 hours.",
+   "evidence": [
+    "Delta Unit logs show the marnex outage began at 12:00 and ended at 16:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0242",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The vorpan incident happened after the patch.",
+   "evidence": [
+    "The vorpan incident occurred on 2024-11-19.",
+    "The patch for the vorpan was deployed on 2024-11-25."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0243",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 301, 351 and 250?",
+   "evidence": [],
+   "expected": "351",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0244",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 598 divided by 3?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0245",
+   "group": "hidden_content",
+   "family": "claim_support",
+   "difficulty": "easy",
+   "query": "The sorbek is sealed.",
+   "evidence": [
+    "The sorbek is sealed and fully operational."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0246",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {23, 29, 37, 39} and {33, 35, 48, 55}?",
+   "evidence": [],
+   "expected": "8",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0247",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 115 divided by 11?",
+   "evidence": [],
+   "expected": "5",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0248",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The quindle is deployed.",
+   "evidence": [
+    "The quindle is not deployed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0249",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The thilse is sealed.",
+   "evidence": [
+    "The thilse is not sealed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0250",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 770, 761 and 534?",
+   "evidence": [],
+   "expected": "770",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0251",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {1, 8, 14, 35, 47} and {39, 57}?",
+   "evidence": [],
+   "expected": "7",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0252",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The veltrix outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the veltrix outage began at 08:00 and ended at 11:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0253",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 3 hours.",
+   "evidence": [
+    "Delta Unit logs show the marnex outage began at 07:00 and ended at 10:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0254",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most sorbeks are online.",
+   "evidence": [
+    "The dashboard shows 11 of 12 sorbeks are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0255",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the intersection of {48, 57, 58} and {32, 35, 41, 58}?",
+   "evidence": [],
+   "expected": "1",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0256",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The plinx incident happened before the patch.",
+   "evidence": [
+    "The plinx incident occurred on 2024-11-05.",
+    "The patch for the plinx was deployed on 2024-11-29."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0257",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the largest of 759, 74 and 592?",
+   "evidence": [],
+   "expected": "759",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0258",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 61 divided by 11?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0259",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 160 divided by 2?",
+   "evidence": [],
+   "expected": "0",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0260",
+   "group": "hidden_temporal",
+   "family": "event_ordering",
+   "difficulty": "hard",
+   "query": "The gadjit incident happened after the patch.",
+   "evidence": [
+    "The gadjit incident occurred on 2024-11-29.",
+    "The patch for the gadjit was deployed on 2024-12-18."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0261",
+   "group": "hidden_content",
+   "family": "claim_irrelevant",
+   "difficulty": "medium",
+   "query": "The marnex is zoned.",
+   "evidence": [
+    "The marnex is clamped and idle."
+   ],
+   "expected": "unknown",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0262",
+   "group": "hidden_logic",
+   "family": "minmax",
+   "difficulty": "easy",
+   "query": "What is the smallest of 578, 606 and 403?",
+   "evidence": [],
+   "expected": "403",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0263",
+   "group": "hidden_content",
+   "family": "claim_refute",
+   "difficulty": "easy",
+   "query": "The marnex is flushed.",
+   "evidence": [
+    "The marnex is not flushed."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0264",
+   "group": "hidden_evidence",
+   "family": "duration_grounding",
+   "difficulty": "hard",
+   "query": "The marnex outage lasted 4 hours.",
+   "evidence": [
+    "Talon Crew logs show the marnex outage began at 14:00 and ended at 18:00."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0265",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 3 of 12 quindles are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0266",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "No thilses are online.",
+   "evidence": [
+    "The dashboard shows 7 of 10 thilses are online."
+   ],
+   "expected": "refuted",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0267",
+   "group": "hidden_logic",
+   "family": "set_count",
+   "difficulty": "medium",
+   "query": "How many elements are in the union of {6, 23, 47, 52} and {8, 54}?",
+   "evidence": [],
+   "expected": "6",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0268",
+   "group": "hidden_quantifier",
+   "family": "quantifier_grounding",
+   "difficulty": "hard",
+   "query": "Most quindles are online.",
+   "evidence": [
+    "The dashboard shows 6 of 10 quindles are online."
+   ],
+   "expected": "supported",
+   "mode": "claim",
+   "query_is_claim": true,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  },
+  {
+   "id": "hb_0269",
+   "group": "hidden_logic",
+   "family": "modulo",
+   "difficulty": "easy",
+   "query": "What is the remainder of 868 divided by 12?",
+   "evidence": [],
+   "expected": "4",
+   "mode": "int",
+   "query_is_claim": false,
+   "contamination": "POSSIBLY_CONTAMINATED"
+  }
+ ]
+}

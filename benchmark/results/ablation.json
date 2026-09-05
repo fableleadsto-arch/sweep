@@ -1,0 +1,391 @@
+{
+ "configs": {
+  "A_baseline_rules": {
+   "label": "A_baseline_rules",
+   "thread_config": "default",
+   "num_cases": 108,
+   "accuracy": 0.4722,
+   "correct": 51,
+   "by_group": {
+    "adversarial": {
+     "total": 18,
+     "correct": 11,
+     "accuracy": 0.6111,
+     "mean_latency_ms": 19.822
+    },
+    "ambiguity": {
+     "total": 18,
+     "correct": 0,
+     "accuracy": 0.0,
+     "mean_latency_ms": 14.605
+    },
+    "basic_logic": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 0.576
+    },
+    "evidence": {
+     "total": 18,
+     "correct": 13,
+     "accuracy": 0.7222,
+     "mean_latency_ms": 18.303
+    },
+    "generalization": {
+     "total": 18,
+     "correct": 7,
+     "accuracy": 0.3889,
+     "mean_latency_ms": 7.595
+    },
+    "multi_step": {
+     "total": 18,
+     "correct": 3,
+     "accuracy": 0.1667,
+     "mean_latency_ms": 11.526
+    }
+   },
+   "latency_ms": {
+    "mean": 12.071,
+    "median_p50": 12.199,
+    "p90": 20.32,
+    "p95": 26.091,
+    "p99": 51.293,
+    "min": 0.077,
+    "max": 105.155,
+    "stdev": 12.672
+   },
+   "confidence": {
+    "mean": 0.5734,
+    "min": 0.0,
+    "max": 0.99
+   },
+   "throughput_per_sec": 82.84,
+   "startup_ms": 0.0,
+   "warmup_block_ms": 0.0,
+   "measured_block_ms": 1303.711,
+   "total_elapsed_s": 1.303711,
+   "ram": {
+    "peak_rss_mb": 1229.6,
+    "mean_rss_mb": 1228.8,
+    "n_samples": 55,
+    "startup_rss_mb": 1226.6
+   }
+  },
+  "B_gi": {
+   "label": "B_gi",
+   "thread_config": "default",
+   "num_cases": 108,
+   "accuracy": 0.4722,
+   "correct": 51,
+   "by_group": {
+    "adversarial": {
+     "total": 18,
+     "correct": 11,
+     "accuracy": 0.6111,
+     "mean_latency_ms": 16.313
+    },
+    "ambiguity": {
+     "total": 18,
+     "correct": 0,
+     "accuracy": 0.0,
+     "mean_latency_ms": 16.779
+    },
+    "basic_logic": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 2.097
+    },
+    "evidence": {
+     "total": 18,
+     "correct": 13,
+     "accuracy": 0.7222,
+     "mean_latency_ms": 27.909
+    },
+    "generalization": {
+     "total": 18,
+     "correct": 7,
+     "accuracy": 0.3889,
+     "mean_latency_ms": 18.185
+    },
+    "multi_step": {
+     "total": 18,
+     "correct": 3,
+     "accuracy": 0.1667,
+     "mean_latency_ms": 14.973
+    }
+   },
+   "latency_ms": {
+    "mean": 16.043,
+    "median_p50": 16.678,
+    "p90": 29.693,
+    "p95": 38.741,
+    "p99": 77.297,
+    "min": 0.277,
+    "max": 84.803,
+    "stdev": 14.449
+   },
+   "confidence": {
+    "mean": 0.5734,
+    "min": 0.0,
+    "max": 0.99
+   },
+   "throughput_per_sec": 62.33,
+   "startup_ms": 0.0,
+   "warmup_block_ms": 0.0,
+   "measured_block_ms": 1732.612,
+   "total_elapsed_s": 1.732612,
+   "ram": {
+    "peak_rss_mb": 1230.7,
+    "mean_rss_mb": 1230.6,
+    "n_samples": 72,
+    "startup_rss_mb": 1230.3
+   }
+  },
+  "C_neural_mesh": {
+   "label": "C_neural_mesh",
+   "thread_config": "default",
+   "num_cases": 108,
+   "accuracy": 0.5093,
+   "correct": 55,
+   "by_group": {
+    "adversarial": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 124.936
+    },
+    "ambiguity": {
+     "total": 18,
+     "correct": 0,
+     "accuracy": 0.0,
+     "mean_latency_ms": 94.294
+    },
+    "basic_logic": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 1.39
+    },
+    "evidence": {
+     "total": 18,
+     "correct": 12,
+     "accuracy": 0.6667,
+     "mean_latency_ms": 91.8
+    },
+    "generalization": {
+     "total": 18,
+     "correct": 6,
+     "accuracy": 0.3333,
+     "mean_latency_ms": 15.114
+    },
+    "multi_step": {
+     "total": 18,
+     "correct": 3,
+     "accuracy": 0.1667,
+     "mean_latency_ms": 13.376
+    }
+   },
+   "latency_ms": {
+    "mean": 56.818,
+    "median_p50": 60.644,
+    "p90": 102.206,
+    "p95": 185.04,
+    "p99": 323.379,
+    "min": 0.089,
+    "max": 429.622,
+    "stdev": 67.702
+   },
+   "confidence": {
+    "mean": 0.6236,
+    "min": 0.0,
+    "max": 0.991
+   },
+   "throughput_per_sec": 17.6,
+   "startup_ms": 0.0,
+   "warmup_block_ms": 0.0,
+   "measured_block_ms": 6136.378,
+   "total_elapsed_s": 6.136378,
+   "ram": {
+    "peak_rss_mb": 1250.8,
+    "mean_rss_mb": 1249.8,
+    "n_samples": 283,
+    "startup_rss_mb": 1230.7
+   }
+  },
+  "D_full_logic": {
+   "label": "D_full_logic",
+   "thread_config": "default",
+   "num_cases": 108,
+   "accuracy": 0.6481,
+   "correct": 70,
+   "by_group": {
+    "adversarial": {
+     "total": 18,
+     "correct": 11,
+     "accuracy": 0.6111,
+     "mean_latency_ms": 13.737
+    },
+    "ambiguity": {
+     "total": 18,
+     "correct": 0,
+     "accuracy": 0.0,
+     "mean_latency_ms": 14.955
+    },
+    "basic_logic": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 1.478
+    },
+    "evidence": {
+     "total": 18,
+     "correct": 13,
+     "accuracy": 0.7222,
+     "mean_latency_ms": 15.535
+    },
+    "generalization": {
+     "total": 18,
+     "correct": 14,
+     "accuracy": 0.7778,
+     "mean_latency_ms": 4.035
+    },
+    "multi_step": {
+     "total": 18,
+     "correct": 15,
+     "accuracy": 0.8333,
+     "mean_latency_ms": 0.942
+    }
+   },
+   "latency_ms": {
+    "mean": 8.447,
+    "median_p50": 2.475,
+    "p90": 18.201,
+    "p95": 20.031,
+    "p99": 21.54,
+    "min": 0.318,
+    "max": 69.688,
+    "stdev": 9.568
+   },
+   "confidence": {
+    "mean": 0.7646,
+    "min": 0.0,
+    "max": 0.99
+   },
+   "throughput_per_sec": 118.39,
+   "startup_ms": 0.0,
+   "warmup_block_ms": 0.0,
+   "measured_block_ms": 912.276,
+   "total_elapsed_s": 0.912276,
+   "ram": {
+    "peak_rss_mb": 1250.8,
+    "mean_rss_mb": 1250.8,
+    "n_samples": 38,
+    "startup_rss_mb": 1250.8
+   }
+  },
+  "E_full_sweep": {
+   "label": "E_full_sweep",
+   "thread_config": "default",
+   "num_cases": 108,
+   "accuracy": 0.6852,
+   "correct": 74,
+   "by_group": {
+    "adversarial": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 123.339
+    },
+    "ambiguity": {
+     "total": 18,
+     "correct": 0,
+     "accuracy": 0.0,
+     "mean_latency_ms": 95.651
+    },
+    "basic_logic": {
+     "total": 18,
+     "correct": 17,
+     "accuracy": 0.9444,
+     "mean_latency_ms": 3.441
+    },
+    "evidence": {
+     "total": 18,
+     "correct": 12,
+     "accuracy": 0.6667,
+     "mean_latency_ms": 95.268
+    },
+    "generalization": {
+     "total": 18,
+     "correct": 13,
+     "accuracy": 0.7222,
+     "mean_latency_ms": 11.121
+    },
+    "multi_step": {
+     "total": 18,
+     "correct": 15,
+     "accuracy": 0.8333,
+     "mean_latency_ms": 1.199
+    }
+   },
+   "latency_ms": {
+    "mean": 55.003,
+    "median_p50": 53.706,
+    "p90": 163.407,
+    "p95": 218.529,
+    "p99": 344.08,
+    "min": 0.374,
+    "max": 373.064,
+    "stdev": 73.76
+   },
+   "confidence": {
+    "mean": 0.8148,
+    "min": 0.0,
+    "max": 0.991
+   },
+   "throughput_per_sec": 18.18,
+   "startup_ms": 0.0,
+   "warmup_block_ms": 0.0,
+   "measured_block_ms": 5940.354,
+   "total_elapsed_s": 5.940354,
+   "ram": {
+    "peak_rss_mb": 1251.1,
+    "mean_rss_mb": 1250.4,
+    "n_samples": 287,
+    "startup_rss_mb": 1250.8
+   }
+  }
+ },
+ "impacts": {
+  "A_baseline_rules": {
+   "accuracy": 0.4722,
+   "impact_vs_baseline": 0.0,
+   "mean_latency_ms": 12.071,
+   "peak_rss_mb": 1229.6
+  },
+  "B_gi": {
+   "accuracy": 0.4722,
+   "impact_vs_baseline": 0.0,
+   "mean_latency_ms": 16.043,
+   "peak_rss_mb": 1230.7
+  },
+  "C_neural_mesh": {
+   "accuracy": 0.5093,
+   "impact_vs_baseline": 0.0371,
+   "mean_latency_ms": 56.818,
+   "peak_rss_mb": 1250.8
+  },
+  "D_full_logic": {
+   "accuracy": 0.6481,
+   "impact_vs_baseline": 0.1759,
+   "mean_latency_ms": 8.447,
+   "peak_rss_mb": 1250.8
+  },
+  "E_full_sweep": {
+   "accuracy": 0.6852,
+   "impact_vs_baseline": 0.213,
+   "mean_latency_ms": 55.003,
+   "peak_rss_mb": 1251.1
+  }
+ }
+}

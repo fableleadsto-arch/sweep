@@ -1,0 +1,29 @@
+{
+ "version": "1.0.0",
+ "dataset_file": "benchmark/datasets/suite_v1.json",
+ "dataset_sha256": "e16e29d75d580d8af9197b5f630869ba6a400190723458db0d6639f4811dcc1b",
+ "num_cases": 668,
+ "per_group": {
+  "adversarial": {
+   "total": 110
+  },
+  "evidence": {
+   "total": 108
+  },
+  "generalization": {
+   "total": 105
+  },
+  "basic_logic": {
+   "total": 132
+  },
+  "ambiguity": {
+   "total": 108
+  },
+  "multi_step": {
+   "total": 105
+  }
+ },
+ "generated_after_training": true,
+ "generator": "sweep_benchmark.datasets",
+ "note": "Benchmark generated post-hoc with synthetic content; never routed into Sweep's training pipeline."
+}

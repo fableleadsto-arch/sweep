@@ -1,0 +1,243 @@
+{
+ "label": "cpu",
+ "thread_config": "default",
+ "num_cases": 668,
+ "accuracy": 1.0,
+ "correct": 668,
+ "by_group": {
+  "adversarial": {
+   "total": 110,
+   "correct": 110,
+   "accuracy": 1.0,
+   "mean_latency_ms": 41.921
+  },
+  "evidence": {
+   "total": 108,
+   "correct": 108,
+   "accuracy": 1.0,
+   "mean_latency_ms": 53.35
+  },
+  "generalization": {
+   "total": 105,
+   "correct": 105,
+   "accuracy": 1.0,
+   "mean_latency_ms": 2.594
+  },
+  "basic_logic": {
+   "total": 132,
+   "correct": 132,
+   "accuracy": 1.0,
+   "mean_latency_ms": 2.22
+  },
+  "ambiguity": {
+   "total": 108,
+   "correct": 108,
+   "accuracy": 1.0,
+   "mean_latency_ms": 0.407
+  },
+  "multi_step": {
+   "total": 105,
+   "correct": 105,
+   "accuracy": 1.0,
+   "mean_latency_ms": 2.794
+  }
+ },
+ "latency_ms": {
+  "mean": 16.88,
+  "median_p50": 1.123,
+  "p90": 9.827,
+  "p95": 129.191,
+  "p99": 383.743,
+  "min": 0.17,
+  "max": 531.454,
+  "stdev": 60.582
+ },
+ "confidence": {
+  "mean": 0.8464,
+  "min": 0.3,
+  "max": 0.9929
+ },
+ "throughput_per_sec": 59.05,
+ "startup_ms": 1233.9,
+ "warmup_block_ms": 38557.1,
+ "measured_block_ms": 11311.5,
+ "total_elapsed_s": 51.13,
+ "ram": {
+  "peak_rss_mb": 1322.4,
+  "mean_rss_mb": 843.1,
+  "n_samples": 2248,
+  "startup_rss_mb": 59.1
+ },
+ "detailed_metrics": {
+  "per_group": {
+   "adversarial": {
+    "total": 110,
+    "accuracy": 1.0,
+    "per_class": {
+     "consistent": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     },
+     "contradiction": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "unknown": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     }
+    },
+    "abstention": {
+     "expected_unknown": 0,
+     "correct_abstentions": 0,
+     "abstention_accuracy": null
+    }
+   },
+   "evidence": {
+    "total": 108,
+    "accuracy": 1.0,
+    "per_class": {
+     "supported": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "refuted": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "unknown": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     }
+    },
+    "abstention": {
+     "expected_unknown": 0,
+     "correct_abstentions": 0,
+     "abstention_accuracy": null
+    }
+   },
+   "generalization": {
+    "total": 105,
+    "accuracy": 1.0,
+    "per_class": {
+     "yes": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "no": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "unknown": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     }
+    },
+    "abstention": {
+     "expected_unknown": 0,
+     "correct_abstentions": 0,
+     "abstention_accuracy": null
+    }
+   },
+   "basic_logic": {
+    "total": 132,
+    "accuracy": 1.0,
+    "per_class": {
+     "yes": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "no": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "unknown": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     }
+    },
+    "abstention": {
+     "expected_unknown": 0,
+     "correct_abstentions": 0,
+     "abstention_accuracy": null
+    }
+   },
+   "ambiguity": {
+    "total": 108,
+    "accuracy": 1.0,
+    "per_class": {
+     "supported": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     },
+     "refuted": {
+      "precision": null,
+      "recall": null,
+      "f1": null
+     },
+     "unknown": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     }
+    },
+    "abstention": {
+     "expected_unknown": 108,
+     "correct_abstentions": 108,
+     "abstention_accuracy": 1.0
+    }
+   },
+   "multi_step": {
+    "total": 105,
+    "accuracy": 1.0,
+    "per_class": {
+     "yes": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "no": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "unknown": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     }
+    },
+    "abstention": {
+     "expected_unknown": 21,
+     "correct_abstentions": 21,
+     "abstention_accuracy": 1.0
+    }
+   }
+  },
+  "calibration": {
+   "n_scored": 668,
+   "mean_conf_correct": 0.8464,
+   "mean_conf_wrong": null,
+   "ece": 0.1424,
+   "hallucination_rate_high_conf": 0.0,
+   "hallucination_count_high_conf": 0,
+   "overconfidence_rate": 0.0
+  },
+  "contradiction_rate": 0.253,
+  "abstention_rate": 0.1931,
+  "wrong_total": 0
+ }
+}
