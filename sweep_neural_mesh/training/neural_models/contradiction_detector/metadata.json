@@ -1,0 +1,15 @@
+{
+  "model": "bert-base-uncased-finetuned",
+  "task": "contradiction_detection",
+  "input_format": "pair",
+  "labels": [
+    "contradiction",
+    "consistent",
+    "neutral"
+  ],
+  "training_examples": 180,
+  "epochs": 5,
+  "status": "fine-tuned",
+  "provenance_note": "input_format verified 2026-09-05 by code inspection of the training pipeline (pair tokenization) and behavior tests (tests/test_neural_contract.py); artifact predated format declarations",
+  "quality_note": "known limitation: some paraphrase pairs are mislabeled 'contradiction' at ~0.67 confidence (just above the cortex 0.6 gate); tracked in SWEEP_CAPABILITY_AUDIT.md and SWEEP_ROADMAP.md P1"
+}

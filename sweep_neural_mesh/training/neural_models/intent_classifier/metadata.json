@@ -1,0 +1,26 @@
+{
+  "model": "distilbert-base-uncased",
+  "num_labels": 13,
+  "input_format": "single",
+  "labels": {
+    "0": "investigation",
+    "1": "search",
+    "2": "identity_analysis",
+    "3": "evidence_analysis",
+    "4": "comparison",
+    "5": "timeline",
+    "6": "relationship_analysis",
+    "7": "location_analysis",
+    "8": "source_verification",
+    "9": "contradiction_analysis",
+    "10": "summarization",
+    "11": "extraction",
+    "12": "unknown_ambiguous"
+  },
+  "training_examples": 65,
+  "epochs": 5,
+  "best_val_acc": 0.2153846174478531,
+  "status": "fine-tuned-v2",
+  "provenance_note": "input_format verified 2026-09-05 by code inspection of the training pipeline (single-text tokenization); artifact predated format declarations",
+  "quality_note": "weak artifact: best_val_acc 21.5% on 13 classes (near chance); does not gate cortex decisions but should be retrained with more data - see SWEEP_ROADMAP.md P1"
+}

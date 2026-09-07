@@ -1,0 +1,24 @@
+{
+  "model": "bert-base-uncased-pair-finetuned",
+  "task": "evidence_classification",
+  "input_format": "pair",
+  "encoding": "tokenizer(premise, hypothesis) \u2014 matches neural_engine.classify_evidence",
+  "labels": [
+    "supports",
+    "refutes",
+    "neutral"
+  ],
+  "training_examples": 1143,
+  "class_distribution": {
+    "supports": 373,
+    "refutes": 382,
+    "neutral": 388
+  },
+  "epochs": 6,
+  "frozen": "embeddings + encoder layers 0-8",
+  "best_val_accuracy": 1.0,
+  "seed": 13,
+  "trained_by": "sweep_neural_mesh.training.train_evidence_pairs",
+  "status": "fine-tuned",
+  "replaces": "retrain_all.py single-sentence artifact (degenerate; see SWEEP_ARCHITECTURE_AUDIT.md A1)"
+}

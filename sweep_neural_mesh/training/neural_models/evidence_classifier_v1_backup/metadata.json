@@ -1,0 +1,1 @@
+{"model": "bert-base-uncased-finetuned", "task": "evidence_classification", "labels": ["supports", "refutes", "neutral"], "training_examples": 180, "epochs": 5, "status": "fine-tuned"}

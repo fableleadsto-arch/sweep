@@ -91,9 +91,25 @@ class TaskRouter:
             # Unknown: try all handlers
             handlers = [self._logic, self._math, self._evidence, self._temporal, self._causal]
 
+        # Check evidence relevance before processing
+        # If evidence is provided but clearly irrelevant to the query,
+        # reduce confidence to avoid answering from knowledge alone
+        ev_relevant = True
+        if ev:
+            q_words = set(re.findall(r'\b[a-z]{3,}\b', q.lower()))
+            ev_text = ' '.join(ev).lower()
+            ev_words = set(re.findall(r'\b[a-z]{3,}\b', ev_text))
+            overlap = q_words & ev_words
+            if len(overlap) == 0 and len(q_words) > 3:
+                ev_relevant = False
+
         for handler in handlers:
             result = handler.process(q, ev)
             if result.confidence >= 0.5 and result.answer:
+                # If evidence is irrelevant, skip this handler
+                # (don't answer from knowledge alone when evidence doesn't support it)
+                if not ev_relevant:
+                    continue
                 # Determine the actual category from the handler type
                 if isinstance(result, LogicResult):
                     actual_cat = "logic"
@@ -136,7 +152,7 @@ class TaskRouter:
             return "logic", "syllogism"
         if re.search(r"\bno\s+\w+\s+are\b", q_lower):
             return "logic", "syllogism"
-        if re.search(r"\bif\s+.+\s+then\b", q_lower):
+        if re.search(r"\bif\s+.+\s+then\b", q_lower) or re.search(r"\bif\s+\w+.+,\s+\w+", q_lower):
             return "logic", "deduction"
         if re.search(r"\b(true|false)\s+(and|or|xor|nand|nor)\b", q_lower):
             return "logic", "boolean"

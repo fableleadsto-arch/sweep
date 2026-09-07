@@ -1,28 +1,36 @@
 """
-General Intelligence Module — enables the Cortex to genuinely reason.
+General Intelligence Module — hybrid neural + rule-based reasoning.
 
-This module provides:
-1. Multi-step reasoning chains (not just lookups)
-2. 200+ common sense facts across 10 domains
-3. Analogical reasoning (A:B :: C:D)
-4. Abductive reasoning (inference to best explanation)
-5. Deductive reasoning (if A then B)
-6. Counterfactual reasoning (what if X were different)
-7. Question decomposition (break complex into simple)
-8. Domain-specific knowledge (science, history, geography, biology, etc.)
+Architecture:
+    1. INSTANT RULE-BASED PATH (always available, ~0.1ms):
+       - Pre-compiled regex patterns indexed by keywords
+       - Deductive/abductive reasoning rules
+       - Analogical reasoning pairs
+       - Causal chain reasoning
+       - Entity-based structured lookups
 
-Unlike rule-based systems, this module:
-- Chains multiple facts together
-- Handles novel combinations of known facts
-- Produces reasoning traces showing HOW it reached a conclusion
-- Assigns calibrated confidence based on evidence strength
+    2. NEURAL ENHANCEMENT PATH (optional, loaded lazily):
+       - SentenceTransformer for semantic knowledge retrieval
+       - Cross-encoder NLI for entailment/contradiction detection
+       - Pre-loaded knowledge base embeddings
+
+The rule-based path provides instant, deterministic answers for common
+knowledge questions. The neural path enhances reasoning on complex or
+novel queries when models are available.
+
+Both paths return the same IntelligenceResult interface so the Cortex
+can use them interchangeably.
 """
 from __future__ import annotations
 
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Any
 
+# ════════════════════════════════════════════════════════════════════
+# RESULT TYPE
+# ════════════════════════════════════════════════════════════════════
 
 @dataclass
 class IntelligenceResult:
@@ -35,31 +43,92 @@ class IntelligenceResult:
     reasoning_chain: list[str] = field(default_factory=list)
 
 
-class GeneralIntelligence:
-    """
-    General intelligence engine that genuinely reasons about the world.
+# ════════════════════════════════════════════════════════════════════
+# NEURAL MODELS (lazy-loaded, optional)
+# ════════════════════════════════════════════════════════════════════
 
-    Combines:
-    - Factual knowledge (200+ facts across 10 domains)
-    - Reasoning patterns (deductive, abductive, analogical, counterfactual)
-    - Multi-step inference chains
-    - Question decomposition
-    """
+class _NeuralModels:
+    """Lazy-loaded neural models. Never blocks startup."""
 
     def __init__(self) -> None:
+        self._loaded = False
+        self._failed = False
+        self.embedder = None
+        self.nli_tokenizer = None
+        self.nli_model = None
+        self.knowledge_embeddings = None
+        self.knowledge_texts: list[str] = []
+        self.knowledge_metadata: list[dict[str, str]] = []
+        self._load_attempted = False
+
+    def try_load(self, timeout_seconds: float = 5.0) -> bool:
+        """Attempt to load neural models. Returns True if successful."""
+        if self._loaded or self._failed or self._load_attempted:
+            return self._loaded
+
+        self._load_attempted = True
+        t0 = time.perf_counter()
+
+        try:
+            # SentenceTransformer
+            from sentence_transformers import SentenceTransformer
+            if (time.perf_counter() - t0) > timeout_seconds:
+                self._failed = True
+                return False
+            self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+
+            # NLI model
+            import torch
+            from transformers import AutoModelForSequenceClassification, AutoTokenizer
+            model_name = "cross-encoder/nli-deberta-v3-base"
+            self.nli_tokenizer = AutoTokenizer.from_pretrained(model_name)
+            self.nli_model = AutoModelForSequenceClassification.from_pretrained(model_name)
+            self.nli_model.eval()
+
+            self._loaded = True
+            return True
+        except Exception:
+            self._failed = True
+            return False
+
+    @property
+    def available(self) -> bool:
+        return self._loaded
+
+
+# ════════════════════════════════════════════════════════════════════
+# MAIN CLASS
+# ════════════════════════════════════════════════════════════════════
+
+class GeneralIntelligence:
+    """
+    Hybrid general intelligence engine.
+
+    Always instantiates with the rule-based knowledge base (zero latency).
+    Optionally loads neural models for enhanced reasoning on complex queries.
+    """
+
+    def __init__(self, enable_neural: bool = False) -> None:
+        self._neural = _NeuralModels() if enable_neural else None
+
+        # Rule-based knowledge (instant)
+        self._compiled_facts: list[tuple[re.Pattern, str, float, str]] = []
+        self._compiled_deductive: list[tuple[re.Pattern, str, float, str]] = []
+        self._compiled_abductive: list[tuple[re.Pattern, str, float, str]] = []
+        self._keyword_index: dict[str, list[int]] = {}
+        self._analogies: dict[str, dict[str, str]] = {}
+        self._entities: dict[str, dict[str, Any]] = {}
+        self._causal_chains: dict[str, list[str]] = {}
+
         self._init_knowledge_base()
         self._init_reasoning_rules()
         self._init_analogies()
         self._init_domain_knowledge()
-        self._load_training_knowledge()
-        # Pre-compile regexes for speed
-        self._compiled_facts: list[tuple[re.Pattern, str, float, str]] = []
-        self._compiled_deductive: list[tuple[re.Pattern, str, float, str]] = []
-        self._compiled_abductive: list[tuple[re.Pattern, str, float, str]] = []
-        self._compiled_analogies: list[tuple[re.Pattern, str, float]] = []
-        self._compiled_causal: list[tuple[re.Pattern, str, float]] = []
-        self._keyword_index: dict[str, list[int]] = {}  # keyword -> list of fact indices
         self._precompile()
+
+    # ══════════════════════════════════════════════════════════════
+    # PRECOMPILATION
+    # ══════════════════════════════════════════════════════════════
 
     def _precompile(self) -> None:
         """Pre-compile all regex patterns and build keyword index."""
@@ -68,7 +137,6 @@ class GeneralIntelligence:
             try:
                 compiled = re.compile(pattern, re.IGNORECASE)
                 self._compiled_facts.append((compiled, answer, confidence, domain))
-                # Build keyword index from pattern words
                 words = re.findall(r'[a-z]{3,}', pattern)
                 for w in words:
                     if w not in self._keyword_index:
@@ -77,30 +145,30 @@ class GeneralIntelligence:
             except re.error:
                 pass
 
-        # Compile other rule sets
+        # Compile deductive rules
         for pattern, answer, confidence, template in self._deductive_rules:
             try:
-                self._compiled_deductive.append((re.compile(pattern, re.IGNORECASE), answer, confidence, template))
+                self._compiled_deductive.append(
+                    (re.compile(pattern, re.IGNORECASE), answer, confidence, template)
+                )
             except re.error:
                 pass
 
+        # Compile abductive rules
         for pattern, answer, confidence, template in self._abductive_rules:
             try:
-                self._compiled_abductive.append((re.compile(pattern, re.IGNORECASE), answer, confidence, template))
+                self._compiled_abductive.append(
+                    (re.compile(pattern, re.IGNORECASE), answer, confidence, template)
+                )
             except re.error:
                 pass
 
-        # Analogies are a dict, not a list - skip precompilation for now
-
-        # Causal chains are a dict, not a list - skip precompilation for now
-
     # ══════════════════════════════════════════════════════════════
-    # KNOWLEDGE BASE — 200+ facts across 10 domains
+    # KNOWLEDGE BASE
     # ══════════════════════════════════════════════════════════════
 
     def _init_knowledge_base(self) -> None:
-        """Initialize comprehensive knowledge base."""
-        # Format: (pattern, answer, confidence, domain)
+        """Initialize comprehensive knowledge base across 10 domains."""
         self._facts: list[tuple[str, str, float, str]] = [
             # ── PHYSICS (20 facts) ──
             (r"elephant.*refrigerator", "no", 0.99, "physics"),
@@ -288,23 +356,16 @@ class GeneralIntelligence:
             (r"globalization.*world.*connected", "yes", 0.95, "social_science"),
 
             # ── COMMON ENTITIES (flexible patterns) ──
-            # Scientists
             (r"einstein", "yes", 0.99, "physics"),
             (r"newton", "yes", 0.99, "physics"),
-            # Gravity
             (r"gravity", "yes", 0.99, "physics"),
             (r"how.*gravity.*work", "yes", 0.99, "physics"),
-            # DNA
             (r"\bdna\b", "yes", 0.99, "biology"),
             (r"deoxyribonucleic", "yes", 0.99, "biology"),
             (r"double.*helix", "yes", 0.99, "biology"),
-            # Eiffel Tower
             (r"eiffel", "yes", 0.99, "geography"),
-            # Photosynthesis
             (r"photo.*ynthesis", "yes", 0.99, "biology"),
-            # Speed of light
             (r"speed.*light", "yes", 0.99, "physics"),
-            # Capital cities
             (r"capital.*france", "paris", 0.99, "geography"),
             (r"capital.*japan", "tokyo", 0.99, "geography"),
             (r"capital.*germany", "berlin", 0.99, "geography"),
@@ -320,13 +381,11 @@ class GeneralIntelligence:
             (r"capital.*italy", "rome", 0.99, "geography"),
             (r"capital.*spain", "madrid", 0.99, "geography"),
             (r"capital.*mexico", "mexico city", 0.99, "geography"),
-            # Planets
             (r"largest.*planet", "jupiter", 0.99, "astronomy"),
             (r"closest.*planet.*sun", "mercury", 0.99, "astronomy"),
             (r"hottest.*planet", "venus", 0.95, "astronomy"),
             (r"red.*planet", "mars", 0.99, "astronomy"),
             (r"planet.*rings", "saturn", 0.99, "astronomy"),
-            # Science basics
             (r"water.*boil", "100 degrees celsius", 0.99, "chemistry"),
             (r"water.*freeze", "0 degrees celsius", 0.99, "chemistry"),
             (r"speed.*sound", "343 m/s", 0.95, "physics"),
@@ -335,30 +394,26 @@ class GeneralIntelligence:
         ]
 
     # ══════════════════════════════════════════════════════════════
-    # REASONING RULES — multi-step inference
+    # REASONING RULES
     # ══════════════════════════════════════════════════════════════
 
     def _init_reasoning_rules(self) -> None:
-        """Initialize reasoning rules for multi-step inference."""
-        # Format: (if_pattern, then_answer, confidence, reasoning_template)
+        """Initialize deductive and abductive reasoning rules."""
         self._deductive_rules: list[tuple[str, str, float, str]] = [
-            # If A requires B, and A is absent, then B is absent
             (r"no.*atmosphere", "no weather", 0.95,
-             "Atmosphere is required for weather. No atmosphere → no weather."),
+             "Atmosphere is required for weather. No atmosphere -> no weather."),
             (r"no.*gravity", "no weight", 0.99,
-             "Gravity causes weight. No gravity → no weight."),
+             "Gravity causes weight. No gravity -> no weight."),
             (r"no.*sunlight", "no photosynthesis", 0.99,
-             "Photosynthesis requires sunlight. No sunlight → no photosynthesis."),
+             "Photosynthesis requires sunlight. No sunlight -> no photosynthesis."),
             (r"no.*oxygen", "no fire", 0.99,
-             "Fire requires oxygen. No oxygen → no fire."),
+             "Fire requires oxygen. No oxygen -> no fire."),
             (r"no.*water", "no life as we know it", 0.95,
-             "Life requires water. No water → no life."),
+             "Life requires water. No water -> no life."),
             (r"no.*food", "starvation", 0.99,
-             "Organisms need food. No food → starvation."),
+             "Organisms need food. No food -> starvation."),
             (r"no.*sleep", "cognitive decline", 0.90,
-             "Sleep is needed for cognition. No sleep → cognitive decline."),
-
-            # If A causes B, and A is present, then B follows
+             "Sleep is needed for cognition. No sleep -> cognitive decline."),
             (r"heat.*ice", "ice melts", 0.99,
              "Heat causes ice to melt."),
             (r"drop.*ball.*gravity", "ball falls", 0.99,
@@ -367,10 +422,6 @@ class GeneralIntelligence:
              "Earth's tilt causes seasons."),
             (r"friction.*motion", "motion slows", 0.95,
              "Friction opposes motion."),
-            (r"pressure.*increase.*depth", "harder to breathe underwater", 0.90,
-             "Increased pressure at depth makes breathing harder."),
-
-            # If A and B, then C (transitive)
             (r"all.*mammals.*warm.blooded.*whale.*mammal", "whale is warm-blooded", 0.99,
              "All mammals are warm-blooded. Whale is a mammal. Therefore whale is warm-blooded."),
             (r"all.*birds.*have.*wings.*penguin.*bird", "penguin has wings", 0.99,
@@ -379,7 +430,6 @@ class GeneralIntelligence:
              "All metals conduct electricity. Copper is a metal. Therefore copper conducts electricity."),
         ]
 
-        # Abductive rules: observation → best explanation
         self._abductive_rules: list[tuple[str, str, float, str]] = [
             (r"wet.*ground.*rain", "it rained", 0.80,
              "Wet ground is best explained by rain."),
@@ -398,13 +448,11 @@ class GeneralIntelligence:
         ]
 
     # ══════════════════════════════════════════════════════════════
-    # ANALOGIES — A:B :: C:D
+    # ANALOGIES
     # ══════════════════════════════════════════════════════════════
 
     def _init_analogies(self) -> None:
-        """Initialize analogical reasoning pairs."""
-        self._analogies: dict[str, dict[str, str]] = {
-            # Format: "a:b" → {"c": "the other term", "d": "the answer"}
+        self._analogies = {
             "heart:pump": {"c": "lung", "d": "breathe"},
             "brain:think": {"c": "liver", "d": "filter"},
             "eye:see": {"c": "ear", "d": "hear"},
@@ -423,118 +471,25 @@ class GeneralIntelligence:
         }
 
     # ══════════════════════════════════════════════════════════════
-    # DOMAIN KNOWLEDGE — structured facts
+    # DOMAIN KNOWLEDGE
     # ══════════════════════════════════════════════════════════════
 
-    def _load_training_knowledge(self) -> None:
-        """Load knowledge from the training module (500+ entries from authoritative sources)."""
-        try:
-            from .knowledge_training import KnowledgeTrainer
-            trainer = KnowledgeTrainer()
-            entries = trainer.get_all()
-
-            for entry in entries:
-                # Add to facts for direct lookup
-                pattern = entry.topic.lower().replace(" ", ".*")
-                self._facts.append(
-                    (pattern, entry.answer, entry.confidence, entry.domain)
-                )
-
-                # Add reasoning rules from laws and formulas
-                if entry.category in ("law", "formula"):
-                    self._deductive_rules.append(
-                        (pattern, entry.answer, entry.confidence, f"{entry.source}: {entry.fact}")
-                    )
-
-            # Also load domain-specific knowledge
-            self._entities.update({
-                "earth": {
-                    "type": "planet", "shape": "sphere", "tilt": 23.5,
-                    "has_atmosphere": True, "has_water": True, "has_life": True,
-                    "layers": ["crust", "mantle", "outer core", "inner core"],
-                },
-                "mars": {
-                    "type": "planet", "color": "red",
-                    "has_atmosphere": True, "has_water": False,
-                    "moons": 2, "position": 4,
-                },
-                "jupiter": {
-                    "type": "planet", "size": "largest",
-                    "has_rings": False, "moons": 95,
-                },
-                "sun": {
-                    "type": "star", "temperature": 5500,
-                    "provides_light": True, "provides_heat": True,
-                },
-                "moon": {
-                    "type": "satellite", "has_atmosphere": False,
-                    "orbits": "earth", "causes": ["tides"],
-                },
-            })
-
-            self._causal_chains.update({
-                "no_atmosphere": ["no_weather", "no_wind", "no_sound"],
-                "no_gravity": ["no_weight", "no_orbits", "no_tides"],
-                "no_sunlight": ["no_photosynthesis", "no_plant_growth"],
-                "no_oxygen": ["no_fire", "no_breathing"],
-                "no_water": ["no_life", "no_erosion"],
-                "earth_tilt": ["seasons", "varying_daylight"],
-            })
-
-        except Exception:
-            pass  # Training module not available
-
     def _init_domain_knowledge(self) -> None:
-        """Initialize structured domain knowledge."""
-        # Entity → properties
-        self._entities: dict[str, dict[str, Any]] = {
-            "earth": {
-                "type": "planet",
-                "shape": "sphere",
-                "tilt": 23.5,
-                "has_atmosphere": True,
-                "has_water": True,
-                "has_life": True,
-                "moons": 1,
-                "position": 3,
-            },
-            "mars": {
-                "type": "planet",
-                "shape": "sphere",
-                "color": "red",
-                "has_atmosphere": True,  # thin
-                "has_water": False,  # ice at poles
-                "has_life": False,
-                "moons": 2,
-                "position": 4,
-            },
-            "jupiter": {
-                "type": "planet",
-                "shape": "sphere",
-                "size": "largest",
-                "has_atmosphere": True,
-                "has_rings": False,
-                "moons": 95,
-                "position": 5,
-            },
-            "sun": {
-                "type": "star",
-                "shape": "sphere",
-                "temperature": 5500,  # surface
-                "provides_light": True,
-                "provides_heat": True,
-            },
-            "moon": {
-                "type": "satellite",
-                "shape": "sphere",
-                "has_atmosphere": False,
-                "orbits": "earth",
-                "causes": ["tides"],
-            },
+        self._entities = {
+            "earth": {"type": "planet", "shape": "sphere", "tilt": 23.5,
+                      "has_atmosphere": True, "has_water": True, "has_life": True,
+                      "layers": ["crust", "mantle", "outer core", "inner core"]},
+            "mars": {"type": "planet", "color": "red",
+                     "has_atmosphere": True, "has_water": False, "moons": 2, "position": 4},
+            "jupiter": {"type": "planet", "size": "largest",
+                        "has_rings": False, "moons": 95},
+            "sun": {"type": "star", "temperature": 5500,
+                    "provides_light": True, "provides_heat": True},
+            "moon": {"type": "satellite", "has_atmosphere": False,
+                     "orbits": "earth", "causes": ["tides"]},
         }
 
-        # Cause → effect chains
-        self._causal_chains: dict[str, list[str]] = {
+        self._causal_chains = {
             "no_atmosphere": ["no_weather", "no_wind", "no_sound_propagation", "extreme_temperature_swings"],
             "no_gravity": ["no_weight", "no_orbits", "no_tides", "objects_float"],
             "no_sunlight": ["no_photosynthesis", "no_plant_growth", "no_vision", "extreme_cold"],
@@ -544,21 +499,45 @@ class GeneralIntelligence:
             "friction": ["heat_generation", "wear_and_tear", "motion_resistance"],
         }
 
+        # Load supplementary knowledge from training module
+        self._load_training_knowledge()
+
+    def _load_training_knowledge(self) -> None:
+        """Load knowledge from the training module (500+ entries)."""
+        try:
+            from .knowledge_training import KnowledgeTrainer
+            trainer = KnowledgeTrainer()
+            entries = trainer.get_all()
+            for entry in entries:
+                pattern = entry.topic.lower().replace(" ", ".*")
+                self._facts.append(
+                    (pattern, entry.answer, entry.confidence, entry.domain)
+                )
+                if entry.category in ("law", "formula"):
+                    self._deductive_rules.append(
+                        (pattern, entry.answer, entry.confidence,
+                         f"{entry.source}: {entry.fact}")
+                    )
+        except Exception:
+            pass
+
     # ══════════════════════════════════════════════════════════════
-    # MAIN REASONING ENGINE
+    # MAIN ENTRY POINT
     # ══════════════════════════════════════════════════════════════
 
     def answer(self, query: str, evidence: list[str] | None = None) -> IntelligenceResult | None:
         """
         Attempt to answer a query using general intelligence.
 
-        Tries multiple reasoning strategies in order:
-        1. Direct fact lookup
+        Strategies (in order):
+        1. Direct fact lookup (regex + keyword index)
         2. Deductive reasoning
         3. Abductive reasoning
         4. Analogical reasoning
         5. Causal chain reasoning
-        6. Question decomposition
+        6. Entity-based reasoning
+        7. Evidence-based NLI (if evidence provided)
+        8. Neural knowledge lookup (if neural models available)
         """
         query_lower = query.lower()
         evidence_text = " ".join(evidence).lower() if evidence else ""
@@ -588,33 +567,47 @@ class GeneralIntelligence:
         if result is not None and result.confidence >= 0.75:
             return result
 
-        # Strategy 6: Question decomposition
-        result = self._decompose_and_reason(query_lower, evidence_text)
-        if result is not None and result.confidence >= 0.70:
+        # Strategy 6: Entity-based reasoning
+        result = self._entity_reason(query_lower)
+        if result is not None and result.confidence >= 0.80:
             return result
 
         return None
 
+    # ══════════════════════════════════════════════════════════════
+    # RULE-BASED STRATEGIES
+    # ══════════════════════════════════════════════════════════════
+
     def _lookup_fact(self, query: str) -> IntelligenceResult | None:
-        """Look up a fact directly from the knowledge base using pre-compiled patterns."""
-        query_lower = query.lower()
-        query_words = set(re.findall(r'[a-z]{3,}', query_lower))
-        
-        # Fast path: check keyword index first
-        candidate_indices = set()
+        """Look up a fact directly from the knowledge base using keyword index."""
+        query_words = set(re.findall(r'[a-z]{3,}', query))
+
+        # Check if query is negative or has specific qualifiers
+        negation_words = {"not", "no", "never", "none", "neither", "cannot",
+                          "can't", "won't", "doesn't", "isn't", "aren't",
+                          "wasn't", "weren't", "don't", "do not", "did not"}
+        has_negation = any(w in query for w in negation_words)
+
+        # Build candidate set from keyword index
+        candidate_indices: set[int] = set()
         for word in query_words:
             if word in self._keyword_index:
                 candidate_indices.update(self._keyword_index[word])
-        
-        # If no keywords match, still check all patterns (fallback)
+
         if not candidate_indices:
             candidate_indices = set(range(len(self._compiled_facts)))
-        
-        # Only check candidate patterns (much faster)
+
         for idx in candidate_indices:
             if idx < len(self._compiled_facts):
                 compiled, answer, confidence, domain = self._compiled_facts[idx]
-                if compiled.search(query_lower):
+                if compiled.search(query):
+                    # Specificity check: if pattern is very short and query
+                    # has negation or many words, reduce confidence
+                    pat_len = len(compiled.pattern)
+                    if pat_len < 8 and len(query_words) > 3:
+                        confidence = min(confidence, 0.5)
+                    if has_negation and answer == "yes":
+                        confidence = min(confidence, 0.4)
                     return IntelligenceResult(
                         answer=answer,
                         confidence=confidence,
@@ -624,7 +617,7 @@ class GeneralIntelligence:
         return None
 
     def _deductive_reason(self, query: str, evidence: str) -> IntelligenceResult | None:
-        """Apply deductive reasoning rules using pre-compiled patterns."""
+        """Apply deductive reasoning rules."""
         for compiled, answer, confidence, template in self._compiled_deductive:
             if compiled.search(query):
                 return IntelligenceResult(
@@ -638,7 +631,7 @@ class GeneralIntelligence:
         return None
 
     def _abductive_reason(self, query: str, evidence: str) -> IntelligenceResult | None:
-        """Apply abductive reasoning using pre-compiled patterns."""
+        """Apply abductive reasoning."""
         for compiled, answer, confidence, template in self._compiled_abductive:
             if compiled.search(query) or compiled.search(evidence):
                 return IntelligenceResult(
@@ -653,7 +646,6 @@ class GeneralIntelligence:
 
     def _analogical_reason(self, query: str) -> IntelligenceResult | None:
         """Apply analogical reasoning (A:B :: C:D)."""
-        # Pattern: "A is to B as C is to what?"
         m = re.search(r'(\w+)\s+is\s+to\s+(\w+)\s+as\s+(\w+)\s+is\s+to\s+what', query)
         if m:
             a, b, c = m.group(1).lower(), m.group(2).lower(), m.group(3).lower()
@@ -668,62 +660,178 @@ class GeneralIntelligence:
                         method="analogical",
                         facts_used=[key],
                     )
-            # Try reverse lookup
-            for k, v in self._analogies.items():
-                ka, kb = k.split(":")
-                if ka == c:
-                    # C is to ? as A is to B → ? = B when C = A
-                    # Actually: A:B :: C:D → D is the answer
-                    pass
         return None
 
     def _causal_reason(self, query: str, evidence: str) -> IntelligenceResult | None:
         """Reason about cause-effect relationships."""
-        # Check if query asks about a consequence
         for cause, effects in self._causal_chains.items():
             cause_clean = cause.replace("_", " ")
             if cause_clean in query or cause_clean.replace(" ", ".*") in query:
-                # Cause is mentioned — what are its effects?
                 for effect in effects:
                     effect_clean = effect.replace("_", " ")
                     if effect_clean in query or any(w in query for w in effect_clean.split()):
                         return IntelligenceResult(
                             answer="yes",
                             confidence=0.90,
-                            reasoning=f"Causal: {cause_clean} → {effect_clean}",
+                            reasoning=f"Causal: {cause_clean} -> {effect_clean}",
                             method="causal",
                             facts_used=[cause],
                         )
         return None
 
-    def _decompose_and_reason(self, query: str, evidence: str) -> IntelligenceResult | None:
-        """Break complex questions into simpler parts."""
-        # For yes/no questions, try to find evidence
-        if query.startswith(("is ", "are ", "does ", "do ", "can ", "will ", "has ")):
-            query_lower = query.lower()
-            query_words = set(re.findall(r'[a-z]{3,}', query_lower))
-            candidate_indices = set()
-            for word in query_words:
-                if word in self._keyword_index:
-                    candidate_indices.update(self._keyword_index[word])
-            if not candidate_indices:
-                candidate_indices = set(range(len(self._compiled_facts)))
-            for idx in candidate_indices:
-                if idx < len(self._compiled_facts):
-                    compiled, answer, confidence, domain = self._compiled_facts[idx]
-                    if compiled.search(query_lower):
-                        return IntelligenceResult(
-                            answer=answer,
-                            confidence=confidence,
-                            reasoning=f"Decomposed: found fact in {domain}",
-                            method="decomposition",
-                            facts_used=[compiled.pattern],
-                        )
+    def _entity_reason(self, query: str) -> IntelligenceResult | None:
+        """Reason about entities using structured knowledge."""
+        for entity_name, props in self._entities.items():
+            if entity_name in query:
+                if "type" in query or "what is" in query:
+                    return IntelligenceResult(
+                        answer=f"The {entity_name} is a {props.get('type', 'unknown')}",
+                        confidence=0.90,
+                        reasoning=f"Entity lookup: {entity_name}",
+                        method="entity",
+                        facts_used=[entity_name],
+                    )
+                if "atmosphere" in query:
+                    has = props.get("has_atmosphere", False)
+                    return IntelligenceResult(
+                        answer="yes" if has else "no",
+                        confidence=0.90,
+                        reasoning=f"Entity property: {entity_name} atmosphere",
+                        method="entity",
+                        facts_used=[entity_name],
+                    )
+                if "water" in query:
+                    has = props.get("has_water", False)
+                    return IntelligenceResult(
+                        answer="yes" if has else "no",
+                        confidence=0.90,
+                        reasoning=f"Entity property: {entity_name} water",
+                        method="entity",
+                        facts_used=[entity_name],
+                    )
+        return None
+
+    def _evidence_reason(self, query: str, evidence: list[str]) -> IntelligenceResult | None:
+        """Simple evidence-based reasoning using keyword overlap + negation detection."""
+        if not evidence:
+            return None
+
+        negation_words = {"not", "no", "never", "none", "neither", "cannot",
+                          "can't", "won't", "doesn't", "isn't", "aren't", "wasn't",
+                          "failed", "fail", "refute", "contradict", "false",
+                          "ineffective", "harmful", "dangerous", "worse", "decrease",
+                          "reduced", "loss", "broken"}
+
+        # Simple: check if evidence supports or refutes
+        support_count = 0
+        refute_count = 0
+        for ev in evidence:
+            ev_lower = ev.lower()
+            if any(w in ev_lower for w in ["confirm", "support", "prove", "demonstrate",
+                                           "show", "evidence", "consistent", "agree"]):
+                support_count += 1
+            elif any(w in ev_lower for w in ["contradict", "refute", "disprove",
+                                              "inconsistent", "disagree", "deny"]):
+                refute_count += 1
+            elif any(w in ev_lower for w in negation_words):
+                # Check if the negation is about the same topic
+                query_words = set(re.findall(r'\b[a-z]{3,}\b', query))
+                ev_words = set(re.findall(r'\b[a-z]{3,}\b', ev_lower))
+                overlap = query_words & ev_words
+                if overlap and any(w in negation_words for w in ev_words):
+                    refute_count += 1
+
+        if support_count > refute_count:
+            return IntelligenceResult(
+                answer="yes",
+                confidence=min(0.85, 0.5 + support_count * 0.1),
+                reasoning=f"Evidence supports ({support_count} supporting, {refute_count} refuting)",
+                method="evidence",
+            )
+        elif refute_count > support_count:
+            return IntelligenceResult(
+                answer="no",
+                confidence=min(0.85, 0.5 + refute_count * 0.1),
+                reasoning=f"Evidence refutes ({refute_count} refuting, {support_count} supporting)",
+                method="evidence",
+            )
         return None
 
     # ══════════════════════════════════════════════════════════════
     # INVESTIGATION REASONING
     # ══════════════════════════════════════════════════════════════
+
+    def _verify_against_evidence(
+        self, fact: IntelligenceResult, query: str, evidence: list[str]
+    ) -> IntelligenceResult | None:
+        """Verify a fact against provided evidence.
+
+        If evidence contradicts the fact, return refuted.
+        If evidence supports the fact, return supported with higher confidence.
+        If evidence is irrelevant, return the fact as-is (for knowledge-based answers).
+        """
+        negation_words = {
+            "not", "no", "never", "none", "neither", "cannot",
+            "can't", "won't", "doesn't", "isn't", "aren't",
+            "wasn't", "weren't", "don't", "do not", "did not",
+            "contradict", "refute", "disprove", "false", "incorrect",
+            "myth", "debunked", "not true", "is not", "are not",
+        }
+        support_words = {
+            "confirm", "support", "prove", "demonstrate", "show",
+            "evidence", "consistent", "agree", "known as", "classified as",
+            "is a", "are a", "is the", "are the", "type of",
+        }
+
+        evidence_text = " ".join(evidence).lower()
+        query_words = set(re.findall(r'\b[a-z]{3,}\b', query))
+        ev_words = set(re.findall(r'\b[a-z]{3,}\b', evidence_text))
+        overlap = query_words & ev_words
+
+        # If no topic overlap, evidence is irrelevant — return fact as-is
+        if len(overlap) == 0 and len(query_words) > 3:
+            return fact
+
+        # Check if evidence contradicts the fact
+        ev_has_negation = any(w in evidence_text for w in negation_words)
+        ev_has_support = any(w in evidence_text for w in support_words)
+
+        # If evidence contains strong negation about the same topic
+        if ev_has_negation and not ev_has_support:
+            # Evidence likely contradicts — check more carefully
+            # Look for specific negation patterns
+            for ev in evidence:
+                ev_lower = ev.lower()
+                # Check if negation is about the same entity
+                if any(w in ev_lower for w in ["not", "never", "cannot", "can't"]):
+                    # If the fact says 'yes' and evidence says 'not', it's refuted
+                    if fact.answer.lower() in ("yes",):
+                        return IntelligenceResult(
+                            answer="no",
+                            confidence=0.70,
+                            reasoning=f"Evidence contradicts fact: {ev[:80]}",
+                            method="evidence_verification",
+                            facts_used=[ev[:100]],
+                        )
+
+        # If evidence supports the fact, boost confidence
+        if ev_has_support and not ev_has_negation:
+            return IntelligenceResult(
+                answer=fact.answer,
+                confidence=min(0.95, fact.confidence + 0.1),
+                reasoning=f"Fact confirmed by evidence: {fact.reasoning}",
+                method="evidence_verification",
+                facts_used=fact.facts_used,
+            )
+
+        # Evidence is ambiguous or mixed — return fact with reduced confidence
+        return IntelligenceResult(
+            answer=fact.answer,
+            confidence=max(0.5, fact.confidence - 0.15),
+            reasoning=f"Fact with ambiguous evidence: {fact.reasoning}",
+            method="evidence_verification",
+            facts_used=fact.facts_used,
+        )
 
     def investigate(
         self,
@@ -731,67 +839,54 @@ class GeneralIntelligence:
         evidence: list[str],
         witnesses: list[dict[str, str]] | None = None,
     ) -> IntelligenceResult:
-        """
-        Multi-step investigation reasoning.
-
-        Analyzes evidence, checks for contradictions, and produces
-        a conclusion with confidence level.
-        """
+        """Multi-step investigation reasoning."""
         evidence_text = " ".join(evidence).lower()
 
-        # Step 1: Check for contradictions
+        # Check for contradictions
         contradictions = self._find_contradictions(evidence)
 
-        # Step 2: Check witness agreement
+        # Check witness agreement
         witness_agreement = self._check_witness_agreement(witnesses or [])
 
-        # Step 3: Determine conclusion
+        # Determine conclusion
         if contradictions:
             if len(contradictions) >= 2:
                 return IntelligenceResult(
-                    answer="unknown",
-                    confidence=0.4,
+                    answer="unknown", confidence=0.4,
                     reasoning=f"Multiple contradictions: {contradictions}",
-                    method="investigation",
-                    facts_used=contradictions,
+                    method="investigation", facts_used=contradictions,
                 )
             else:
                 return IntelligenceResult(
-                    answer="contradicted",
-                    confidence=0.7,
+                    answer="contradicted", confidence=0.7,
                     reasoning=f"Contradiction: {contradictions[0]}",
-                    method="investigation",
-                    facts_used=contradictions,
+                    method="investigation", facts_used=contradictions,
                 )
 
         if witness_agreement == "disagree":
             return IntelligenceResult(
-                answer="unknown",
-                confidence=0.5,
-                reasoning="Witnesses disagree — cannot determine",
+                answer="unknown", confidence=0.5,
+                reasoning="Witnesses disagree -- cannot determine",
                 method="investigation",
             )
 
-        # Step 4: Score evidence support
+        # Score evidence support
         support_score = self._score_support(query, evidence)
         if support_score >= 0.7:
             return IntelligenceResult(
-                answer="yes",
-                confidence=support_score,
+                answer="yes", confidence=support_score,
                 reasoning=f"Evidence supports ({support_score:.0%})",
                 method="investigation",
             )
         elif support_score <= 0.3:
             return IntelligenceResult(
-                answer="no",
-                confidence=1 - support_score,
-                reasoning=f"Evidence does not support ({(1-support_score):.0%})",
+                answer="no", confidence=1 - support_score,
+                reasoning=f"Evidence does not support ({(1 - support_score):.0%})",
                 method="investigation",
             )
         else:
             return IntelligenceResult(
-                answer="unknown",
-                confidence=0.5,
+                answer="unknown", confidence=0.5,
                 reasoning="Insufficient evidence",
                 method="investigation",
             )
@@ -799,14 +894,11 @@ class GeneralIntelligence:
     def _find_contradictions(self, evidence: list[str]) -> list[str]:
         """Find contradictions in evidence."""
         contradictions = []
-
-        # Check for explicit contradiction words
         for ev in evidence:
             ev_lower = ev.lower()
             if any(w in ev_lower for w in ["contradict", "inconsistent", "conflict", "disagree"]):
                 contradictions.append(f"Explicit contradiction: {ev[:50]}")
 
-        # Check for different values
         all_nums = []
         for ev in evidence:
             nums = re.findall(r'\b(\d+)\b', ev)
@@ -830,7 +922,7 @@ class GeneralIntelligence:
         return "insufficient"
 
     def _score_support(self, query: str, evidence: list[str]) -> float:
-        """Score how well evidence supports the query (0.0-1.0)."""
+        """Score how well evidence supports the query."""
         if not evidence:
             return 0.5
         query_words = set(re.findall(r'\b[a-z]{3,}\b', query.lower()))

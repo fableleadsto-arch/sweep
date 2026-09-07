@@ -1,0 +1,198 @@
+{
+  "task": "evidence_classification",
+  "method": "temperature_scaling",
+  "reference": "Guo et al. 2017, arXiv:1706.04599",
+  "temperature": 1.106452,
+  "ece_before": 0.047707,
+  "ece_after": 0.051486,
+  "heldout_accuracy": 0.854895,
+  "calibration_seed": 4242,
+  "fit_pairs": 571,
+  "eval_pairs": 572,
+  "bins_before": [
+    {
+      "bin": "[0.00-0.07)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.07-0.13)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.13-0.20)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.20-0.27)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.27-0.33)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.33-0.40)",
+      "count": 9,
+      "mean_conf": 0.377,
+      "accuracy": 0.5556
+    },
+    {
+      "bin": "[0.40-0.47)",
+      "count": 12,
+      "mean_conf": 0.4344,
+      "accuracy": 0.25
+    },
+    {
+      "bin": "[0.47-0.53)",
+      "count": 26,
+      "mean_conf": 0.5028,
+      "accuracy": 0.2308
+    },
+    {
+      "bin": "[0.53-0.60)",
+      "count": 26,
+      "mean_conf": 0.5654,
+      "accuracy": 0.5
+    },
+    {
+      "bin": "[0.60-0.67)",
+      "count": 24,
+      "mean_conf": 0.6296,
+      "accuracy": 0.375
+    },
+    {
+      "bin": "[0.67-0.73)",
+      "count": 16,
+      "mean_conf": 0.696,
+      "accuracy": 0.6875
+    },
+    {
+      "bin": "[0.73-0.80)",
+      "count": 18,
+      "mean_conf": 0.7636,
+      "accuracy": 0.7222
+    },
+    {
+      "bin": "[0.80-0.87)",
+      "count": 32,
+      "mean_conf": 0.8302,
+      "accuracy": 0.9375
+    },
+    {
+      "bin": "[0.87-0.93)",
+      "count": 71,
+      "mean_conf": 0.903,
+      "accuracy": 0.9014
+    },
+    {
+      "bin": "[0.93-1.00)",
+      "count": 338,
+      "mean_conf": 0.9788,
+      "accuracy": 0.9911
+    }
+  ],
+  "bins_after": [
+    {
+      "bin": "[0.00-0.07)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.07-0.13)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.13-0.20)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.20-0.27)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.27-0.33)",
+      "count": 0,
+      "mean_conf": null,
+      "accuracy": null
+    },
+    {
+      "bin": "[0.33-0.40)",
+      "count": 11,
+      "mean_conf": 0.3774,
+      "accuracy": 0.4545
+    },
+    {
+      "bin": "[0.40-0.47)",
+      "count": 14,
+      "mean_conf": 0.4392,
+      "accuracy": 0.2857
+    },
+    {
+      "bin": "[0.47-0.53)",
+      "count": 32,
+      "mean_conf": 0.5022,
+      "accuracy": 0.3125
+    },
+    {
+      "bin": "[0.53-0.60)",
+      "count": 30,
+      "mean_conf": 0.5734,
+      "accuracy": 0.4667
+    },
+    {
+      "bin": "[0.60-0.67)",
+      "count": 19,
+      "mean_conf": 0.6391,
+      "accuracy": 0.4737
+    },
+    {
+      "bin": "[0.67-0.73)",
+      "count": 16,
+      "mean_conf": 0.7072,
+      "accuracy": 0.6875
+    },
+    {
+      "bin": "[0.73-0.80)",
+      "count": 25,
+      "mean_conf": 0.7732,
+      "accuracy": 0.88
+    },
+    {
+      "bin": "[0.80-0.87)",
+      "count": 41,
+      "mean_conf": 0.8401,
+      "accuracy": 0.9024
+    },
+    {
+      "bin": "[0.87-0.93)",
+      "count": 86,
+      "mean_conf": 0.906,
+      "accuracy": 0.9535
+    },
+    {
+      "bin": "[0.93-1.00)",
+      "count": 298,
+      "mean_conf": 0.9751,
+      "accuracy": 0.9899
+    }
+  ],
+  "fit_on": "fresh-seed pairs from train_evidence_pairs.generate_pairs (never training instances)",
+  "fit_date": "2026-09-05"
+}

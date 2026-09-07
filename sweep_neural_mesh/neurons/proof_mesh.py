@@ -483,7 +483,10 @@ class Reasoner:
                     return res("mixed", 0.9, f"{a} and {b} mutually comparable (cycle) — ambiguous", "AMBIGUOUS")
                 if chain:
                     return res("supported", 0.9, f"{a} {phrase} {b} derivable", "YES", chain)
-                return res("refuted", 0.8, "ordering not derivable", "NO")
+                # No derivable ordering: the relation is underdetermined, not
+                # false. "Is Aaron faster than Cole?" with no connecting link
+                # is UNKNOWN, not "no".
+                return res("insufficient", 0.3, f"ordering between {a} and {b} not derivable — cannot determine")
 
         # ---- Q3: causal "Did A cause B?" ----
         m = re.search(rf"did\s+({_ENTITY})\s+(?:indirectly\s+)?cause\s+({_ENTITY})", ql)

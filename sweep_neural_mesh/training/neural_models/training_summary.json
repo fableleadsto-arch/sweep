@@ -1,0 +1,29 @@
+{
+  "training_time_seconds": 310.1237162000034,
+  "models": {
+    "evidence_classifier": {
+      "path": "C:\\Users\\mansh\\OneDrive\\Desktop\\MyStuff\\sweep\\sweep_neural_mesh\\training\\neural_models\\evidence_classifier",
+      "training_examples": 75,
+      "labels": [
+        "supports",
+        "refutes",
+        "neutral"
+      ]
+    },
+    "contradiction_detector": {
+      "path": "C:\\Users\\mansh\\OneDrive\\Desktop\\MyStuff\\sweep\\sweep_neural_mesh\\training\\neural_models\\contradiction_detector",
+      "training_examples": 65,
+      "labels": [
+        "contradiction",
+        "consistent",
+        "neutral"
+      ]
+    },
+    "intent_classifier": {
+      "path": "C:\\Users\\mansh\\OneDrive\\Desktop\\MyStuff\\sweep\\sweep_neural_mesh\\training\\neural_models\\intent_classifier",
+      "training_examples": 65,
+      "num_labels": 13
+    }
+  },
+  "status": "trained"
+}

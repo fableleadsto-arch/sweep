@@ -76,6 +76,26 @@ class LogicHandler:
         """Handle categorical syllogisms (All A are B, X is A -> X is B)."""
         # Normalize: strip punctuation so periods don't break regex
         q_clean = re.sub(r'[.?!]', ' ', q.lower())
+        
+        # Detect INVALID syllogisms: "All A are B. Some B are C. Are all A C?"
+        # This is the fallacy of the undistributed middle
+        some_are = re.findall(r'some\s+(\w+)\s+are\s+(\w+)', q_clean)
+        if some_are and 'are all' in q_clean:
+            # Check if the question asks about all A being C, where only SOME B are C
+            for some_subj, some_cat in some_are:
+                # If the question asks "Are all X [some_cat]?" and the evidence is "Some [some_subj] are [some_cat]"
+                if re.search(rf'are\s+all\s+\w+\s+{some_cat}', q_clean):
+                    return LogicResult(
+                        answer=f"no, only some {some_subj} are {some_cat}",
+                        confidence=0.90,
+                        method="invalid_syllogism",
+                        reasoning_chain=[
+                            f"Premise: Some {some_subj} are {some_cat} (not all)",
+                            f"Conclusion: Cannot conclude all are {some_cat}",
+                            "Fallacy: undistributed middle",
+                        ],
+                        latency_ms=(time.perf_counter() - t0) * 1000,
+                    )
 
         # Extract premises: "All A are B" (B can be multi-word like "living things")
         # Match up to double-space (sentence boundary) or next keyword
@@ -159,25 +179,91 @@ class LogicHandler:
         """Handle modus ponens, modus tollens, hypothetical syllogisms."""
         q_lower = q.lower()
 
-        # Modus ponens: "If P then Q. P is true. Is Q true?"
+        # Modus ponens: "If P then Q. P is true. Is Q true?" or "If P, Q."
         if_then = re.findall(r'if\s+(.+?)\s+then\s+(.+?)(?:[.?]|$)', q_lower)
+        if not if_then:
+            # Also handle "If P, Q." format
+            if_then = re.findall(r'if\s+(.+?),\s+(.+?)(?:[.?]|$)', q_lower)
         if if_then:
             antecedent, consequent = if_then[0]
-            # Check if antecedent is affirmed in evidence or query
-            for e in ev + [q_lower]:
-                if antecedent.strip() in e and ("true" in e or "is " in e):
-                    chain = [
-                        f"If {antecedent} then {consequent}",
-                        f"{antecedent} is true",
-                        f"Conclusion: {consequent}",
-                    ]
-                    return LogicResult(
-                        answer=consequent.strip(),
-                        confidence=0.90,
-                        method="modus_ponens",
-                        reasoning_chain=chain,
-                        latency_ms=(time.perf_counter() - t0) * 1000,
-                    )
+            antecedent_clean = antecedent.strip()
+            consequent_clean = consequent.strip()
+            
+            # Check if antecedent is affirmed ONLY in evidence (not the query itself)
+            # Exclude evidence that is the conditional statement itself
+            antecedent_confirmed = False
+            consequent_confirmed = False
+            conditional_pattern = re.compile(r'if\s+.+?\s+(?:then\s+)?\s*.+', re.IGNORECASE)
+            
+            def _fuzzy_match(needle: str, haystack: str) -> bool:
+                """Check if needle words appear in haystack (allows morphological variation)."""
+                if needle in haystack:
+                    return True
+                # Check if core content words appear
+                needle_words = set(needle.split()) - {'a', 'an', 'the', 'is', 'are', 'was', 'were', 'it', 'that', 'this'}
+                haystack_words = set(haystack.split())
+                if len(needle_words) == 0:
+                    return False
+                # At least 70% of content words must appear
+                matched = needle_words & haystack_words
+                # Also check for word stems (e.g., "sounds" matches "sounding")
+                for nw in needle_words:
+                    for hw in haystack_words:
+                        if nw.startswith(hw[:4]) or hw.startswith(nw[:4]):
+                            matched.add(nw)
+                            break
+                return len(matched) / len(needle_words) >= 0.7
+            
+            for e in ev:
+                e_lower = e.lower()
+                # Skip if this evidence IS the conditional statement
+                if conditional_pattern.match(e_lower.strip()):
+                    if _fuzzy_match(consequent_clean, e_lower):
+                        consequent_confirmed = True
+                    continue
+                # This is a separate statement - check for antecedent confirmation
+                if _fuzzy_match(antecedent_clean, e_lower):
+                    antecedent_confirmed = True
+                if _fuzzy_match(consequent_clean, e_lower):
+                    consequent_confirmed = True
+            
+            # Also check if antecedent is explicitly stated as true
+            for e in ev:
+                e_lower = e.lower()
+                if conditional_pattern.match(e_lower.strip()):
+                    continue
+                if _fuzzy_match(antecedent_clean, e_lower) and any(w in e_lower for w in ["is true", "is occurring", "happened", "occurred", "is the case", "is sounding", "is raining"]):
+                    antecedent_confirmed = True
+            
+            if antecedent_confirmed:
+                # Valid modus ponens: antecedent is affirmed -> conclude consequent
+                chain = [
+                    f"If {antecedent_clean} then {consequent_clean}",
+                    f"{antecedent_clean} is true (from evidence)",
+                    f"Conclusion: {consequent_clean}",
+                ]
+                return LogicResult(
+                    answer=consequent_clean,
+                    confidence=0.90,
+                    method="modus_ponens",
+                    reasoning_chain=chain,
+                    latency_ms=(time.perf_counter() - t0) * 1000,
+                )
+            elif consequent_confirmed and not antecedent_confirmed:
+                # Affirming the consequent: only Q is confirmed, not P
+                # This is a logical fallacy -- answer is unknown
+                chain = [
+                    f"If {antecedent_clean} then {consequent_clean}",
+                    f"{consequent_clean} is confirmed (but not {antecedent_clean})",
+                    f"Cannot conclude: affirming the consequent is a fallacy",
+                ]
+                return LogicResult(
+                    answer="unknown",
+                    confidence=0.85,
+                    method="affirming_consequent_fallacy",
+                    reasoning_chain=chain,
+                    latency_ms=(time.perf_counter() - t0) * 1000,
+                )
 
         # Modus tollens: "If P then Q. Not Q. Therefore not P."
         if if_then:
@@ -227,7 +313,8 @@ class LogicHandler:
         q_lower = q.lower()
 
         # "What comes next: 2, 4, 6, 8, ?" -> 10
-        nums = re.findall(r'(\d+)', q_lower)
+        # (signed numbers so negative steps/values work: "18, 9, 0, -9" -> -18)
+        nums = re.findall(r'(-?\d+)', q_lower)
         if len(nums) >= 3 and '?' in q_lower:
             nums_int = [int(n) for n in nums]
             # Check arithmetic progression
@@ -242,24 +329,26 @@ class LogicHandler:
                     reasoning_chain=chain,
                     latency_ms=(time.perf_counter() - t0) * 1000,
                 )
-            # Check geometric progression
-            if all(nums_int[i] != 0 and nums_int[i+1] / nums_int[i] == nums_int[1] / nums_int[0]
+            # Check geometric progression (non-zero, constant ratio)
+            if all(nums_int[i] != 0 and nums_int[0] != 0 and
+                   abs(nums_int[i+1] / nums_int[i] - nums_int[1] / nums_int[0]) < 1e-9
                    for i in range(len(nums_int)-1)):
                 ratio = nums_int[1] / nums_int[0]
-                next_val = int(nums_int[-1] * ratio)
-                chain = [f"Sequence: {nums_int}", f"Ratio: {ratio}", f"Next: {next_val}"]
-                return LogicResult(
-                    answer=str(next_val),
-                    confidence=0.90,
-                    method="geometric_progression",
-                    reasoning_chain=chain,
-                    latency_ms=(time.perf_counter() - t0) * 1000,
-                )
+                if float(ratio).is_integer():
+                    next_val = int(nums_int[-1] * ratio)
+                    chain = [f"Sequence: {nums_int}", f"Ratio: {ratio}", f"Next: {next_val}"]
+                    return LogicResult(
+                        answer=str(next_val),
+                        confidence=0.90,
+                        method="geometric_progression",
+                        reasoning_chain=chain,
+                        latency_ms=(time.perf_counter() - t0) * 1000,
+                    )
 
         # "What is the pattern: ..."
-        pattern_match = re.search(r'pattern.*?(\d[\d,.\s]+)', q_lower)
+        pattern_match = re.search(r'pattern.*?(-?\d[\d,.\s-]+)', q_lower)
         if pattern_match and '?' in q_lower:
-            nums_str = re.findall(r'(\d+)', pattern_match.group(1))
+            nums_str = re.findall(r'(-?\d+)', pattern_match.group(1))
             if len(nums_str) >= 2:
                 nums_int = [int(n) for n in nums_str]
                 diffs = [nums_int[i+1] - nums_int[i] for i in range(len(nums_int)-1)]
@@ -382,45 +471,94 @@ class LogicHandler:
     # -- Boolean Logic ----------------------------------------------------
 
     def _try_boolean_logic(self, q: str, t0: float) -> LogicResult | None:
-        """Handle boolean expressions: AND, OR, NOT, XOR, implications."""
-        q_lower = q.lower().strip()
+        """Handle boolean expressions: AND, OR, NOT, XOR, NAND, NOR, parens.
 
-        bool_expr = re.match(
-            r'^(true|false)\s+(and|or|xor|nand|nor)\s+(true|false)$',
-            q_lower,
+        Supports nested / parenthesized expressions such as
+        "not (false or true)" via a small recursive descent evaluator.
+        """
+        q_lower = q.lower().strip().rstrip('.').strip()
+        if not re.search(r'\b(true|false)\b', q_lower):
+            return None
+        if not re.search(r'\b(and|or|xor|nand|nor)\b|\bnot\b|\(', q_lower):
+            return None
+
+        # Tokenize: true/false literals, operators, parens
+        tokens = re.findall(r'true|false|and|or|xor|nand|nor|not|\(|\)|[^\s]+', q_lower)
+        if not tokens:
+            return None
+
+        pos = 0
+
+        def peek():
+            return tokens[pos] if pos < len(tokens) else None
+
+        def parse_primary():
+            nonlocal pos
+            tok = peek()
+            if tok == "not":
+                pos += 1
+                val, expr = parse_primary()
+                return not val, f"not ({expr})"
+            if tok == "(":
+                pos += 1
+                val, expr = parse_or()
+                if peek() == ")":
+                    pos += 1
+                return val, f"({expr})"
+            if tok in ("true", "false"):
+                pos += 1
+                return tok == "true", tok
+            pos += 1
+            return False, ""
+
+        def parse_and():
+            nonlocal pos
+            val, expr = parse_primary()
+            ops = []
+            while peek() in ("and", "nand"):
+                op = tokens[pos]
+                pos += 1
+                rhs, rexpr = parse_primary()
+                if op == "and":
+                    val = val and rhs
+                else:
+                    val = not (val and rhs)
+                ops.append(f"{expr} {op} {rexpr}")
+            return val, " and ".join(ops) if ops else expr
+
+        def parse_or():
+            nonlocal pos
+            val, expr = parse_and()
+            ops = []
+            while peek() in ("or", "xor", "nor"):
+                op = tokens[pos]
+                pos += 1
+                rhs, rexpr = parse_and()
+                if op == "or":
+                    val = val or rhs
+                elif op == "xor":
+                    val = val != rhs
+                else:
+                    val = not (val or rhs)
+                ops.append(f"{expr} {op} {rexpr}")
+            return val, " or ".join(ops) if ops else expr
+
+        try:
+            result, _ = parse_or()
+        except Exception:
+            return None
+        # Ensure the whole expression was consumed
+        if pos != len(tokens):
+            return None
+
+        chain = [f"{q_lower} = {str(result).lower()}"]
+        return LogicResult(
+            answer=str(result).lower(),
+            confidence=0.99,
+            method="boolean",
+            reasoning_chain=chain,
+            latency_ms=(time.perf_counter() - t0) * 1000,
         )
-        if bool_expr:
-            a_str, op, b_str = bool_expr.groups()
-            a, b = a_str == "true", b_str == "true"
-            operations = {
-                "and": a and b,
-                "or": a or b,
-                "xor": a != b,
-                "nand": not (a and b),
-                "nor": not (a or b),
-            }
-            result = operations[op]
-            chain = [f"{a_str} {op} {b_str} = {str(result).lower()}"]
-            return LogicResult(
-                answer=str(result).lower(),
-                confidence=0.99,
-                method="boolean",
-                reasoning_chain=chain,
-                latency_ms=(time.perf_counter() - t0) * 1000,
-            )
-
-        not_expr = re.match(r'^not\s+(true|false)$', q_lower)
-        if not_expr:
-            val = not (not_expr.group(1) == "true")
-            return LogicResult(
-                answer=str(val).lower(),
-                confidence=0.99,
-                method="boolean",
-                reasoning_chain=[f"NOT {not_expr.group(1)} = {str(val).lower()}"],
-                latency_ms=(time.perf_counter() - t0) * 1000,
-            )
-
-        return None
 
     # -- Set Theory -------------------------------------------------------
 

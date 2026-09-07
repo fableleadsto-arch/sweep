@@ -174,6 +174,21 @@ class LogicalInferenceEngine:
                 inference_chain=chain,
             )
 
+        # Step 4c: "Are all X Y?" — direction-aware all-chain check.
+        # Prevents the converse fallacy: from "All A are B. All B are C" we may
+        # NOT conclude "All C are A". If the question direction is derivable
+        # the answer is supported; if only the reverse is derivable the answer
+        # is unknown (converse error).
+        all_chain = self._apply_all_chain(query)
+        if all_chain:
+            chain.extend(all_chain["chain"])
+            return InferenceResult(
+                conclusion=all_chain["conclusion"],
+                confidence=all_chain["confidence"],
+                reasoning=all_chain["reasoning"],
+                inference_chain=chain,
+            )
+
         # Step 5: Apply category closure / syllogisms
         syllogism = self._apply_syllogism(evidence, query)
         if syllogism:
@@ -399,11 +414,52 @@ class LogicalInferenceEngine:
             if m:
                 start = m.group(1).split()[0] if m.group(1) else None
 
+        # Also handle: "If X, does Y grow?" (last sentence of query)
+        if not start or not target:
+            # Find the last "if...does..." sentence
+            sentences = re.split(r'[.?!]', query_lower)
+            for sent in reversed(sentences):
+                sent = sent.strip()
+                if_then_query = re.search(r'if\s+(.+?),\s+does\s+(.+?)\s*$', sent)
+                if if_then_query:
+                    start = if_then_query.group(1).strip()
+                    target = if_then_query.group(2).strip()
+                    break
+        # Also handle: "Does the grass grow?" (implied start from context)
+        if not start or not target:
+            does_match = re.search(r'does\s+(.+?)\s+grow\s*\??$', query_lower)
+            if does_match:
+                target = does_match.group(1).strip()
+                # Try to find start from conditionals
+                for cond in self._conditionals:
+                    if cond.consequent.strip() == target or target in cond.consequent:
+                        start = cond.antecedent.strip()
+                        break
+
         if not start or not target:
             return None
 
         if start not in graph:
             return None
+
+        def _fuzzy_eq(a: str, b: str) -> bool:
+            """Check if two strings are approximately equal."""
+            if a == b:
+                return True
+            # Check if one is a substring of the other
+            if a in b or b in a:
+                return True
+            # Check if they share significant words
+            words_a = set(a.split()) - {'a', 'an', 'the', 'is', 'are', 'does'}
+            words_b = set(b.split()) - {'a', 'an', 'the', 'is', 'are', 'does'}
+            if words_a and words_b and words_a == words_b:
+                return True
+            # Check stem overlap (e.g., "grow" matches "grows")
+            stems_a = {w.rstrip('s') for w in words_a}
+            stems_b = {w.rstrip('s') for w in words_b}
+            if stems_a and stems_b and stems_a == stems_b:
+                return True
+            return False
 
         # BFS reachability from start.
         visited: set[str] = set()
@@ -416,8 +472,8 @@ class LogicalInferenceEngine:
             visited.add(node)
             for nxt in graph.get(node, set()):
                 chain_edges.append((node, nxt))
-                if nxt == target:
-                    edges = [(a, b) for a, b in chain_edges if b in visited or b == target]
+                if _fuzzy_eq(nxt, target):
+                    edges = [(a, b) for a, b in chain_edges if b in visited or _fuzzy_eq(b, target)]
                     return {
                         "conclusion": "supported",
                         "confidence": 0.90,
@@ -444,6 +500,82 @@ class LogicalInferenceEngine:
                 f"Start: {start}",
                 f"Reachable: {sorted(visited)}",
                 f"Target {target} not reachable -> implication refuted",
+            ],
+        }
+
+    def _apply_all_chain(self, query: str) -> dict | None:
+        """Answer 'Are all X Y?' using the direction of the All-X-are-Y chain.
+
+        Builds a directed graph from the "all" memberships (subject ->
+        predicate) and checks whether the question's X can reach Y. If yes,
+        the conclusion is supported. If the reverse direction is derivable but
+        the question direction is not, this is the converse fallacy -> unknown.
+        """
+        ql = query.lower()
+        m = re.search(r"are\s+all\s+(\w+)\s+(\w+)\??$", ql)
+        if not m:
+            return None
+        x, y = m.group(1), m.group(2)
+
+        graph: dict[str, set[str]] = {}
+        for mem in self._memberships:
+            if mem.quantifier == "all":
+                graph.setdefault(mem.subject, set()).add(mem.predicate)
+
+        if not graph:
+            return None
+
+        def reachable(start: str, end: str) -> list[str] | None:
+            if start == end:
+                return [start]
+            seen = {start}
+            stack: list[tuple[str, list[str]]] = [(start, [start])]
+            while stack:
+                cur, path = stack.pop()
+                for nxt in graph.get(cur, set()):
+                    if nxt == end:
+                        return path + [nxt]
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        stack.append((nxt, path + [nxt]))
+            return None
+
+        fwd = reachable(x, y)
+        if fwd:
+            return {
+                "conclusion": "supported",
+                "confidence": 0.90,
+                "reasoning": (
+                    f"All-chain: {' -> '.join(fwd)}; "
+                    f"therefore all {x} are {y}"
+                ),
+                "chain": [
+                    f"Premise: all {a} are {b}" for a, b in zip(fwd, fwd[1:])
+                ] + [f"Conclusion: all {x} are {y}"],
+            }
+
+        rev = reachable(y, x)
+        if rev:
+            return {
+                "conclusion": "insufficient",
+                "confidence": 0.85,
+                "reasoning": (
+                    f"Converse error: we know all {y} are ... all {x} ("
+                    f"{' -> '.join(rev)}), but that does NOT imply all {x} are {y}"
+                ),
+                "chain": [
+                    f"Derivable: {' -> '.join(rev)}",
+                    f"Question asks: all {x} are {y} (reverse — not derivable)",
+                    f"Conclusion: unknown (converse of a chain is not entailed)",
+                ],
+            }
+
+        return {
+            "conclusion": "insufficient",
+            "confidence": 0.7,
+            "reasoning": f"No all-chain connects {x} to {y}",
+            "chain": [
+                f"Cannot derive all {x} are {y} from the given premises",
             ],
         }
 

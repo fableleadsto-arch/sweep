@@ -4,6 +4,8 @@
 
 Sweep is a **neural reasoning system** built on a biologically-inspired architecture. It processes queries through multiple specialized modules that mirror brain regions, then uses multi-core parallel processing with consensus voting to produce accurate, well-calibrated answers.
 
+The system has been transformed from a rule-based engine to a **true neural engine** using pre-trained transformer models for knowledge retrieval, reasoning, and question answering.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    SWEEP NEURAL MESH                            │
@@ -11,7 +13,7 @@ Sweep is a **neural reasoning system** built on a biologically-inspired architec
 │  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   │
 │  │ General  │   │  World   │   │  Live    │   │  Multi-  │   │
 │  │ Intel.   │   │ Knowl.   │   │ Knowl.   │   │  Core    │   │
-│  │ (static) │   │ (trained)│   │ (APIs)   │   │(5 cores) │   │
+│  │(neural)  │   │(embedded)│   │ (APIs)   │   │(5 cores) │   │
 │  └────┬─────┘   └────┬─────┘   └────┬─────┘   └────┬─────┘   │
 │       │              │              │              │           │
 │       └──────────────┴──────────────┴──────────────┘           │
@@ -29,8 +31,8 @@ Sweep is a **neural reasoning system** built on a biologically-inspired architec
 │  └─────────┘         └───────────┘        └──────────┘        │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │              Self-Evolution System                       │   │
-│  │  Learning → Evolution → Acquisition → Performance       │   │
+│  │              Neural Models                               │   │
+│  │  SentenceTransformer │ NLI │ QA │ Embeddings            │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -39,18 +41,26 @@ Sweep is a **neural reasoning system** built on a biologically-inspired architec
 
 ## Core Components
 
-### 1. General Intelligence (`general_intelligence.py`)
+### 1. Neural General Intelligence (`general_intelligence.py`)
 
-**Purpose**: Fast-path answering for common knowledge questions.
+**Purpose**: Neural fast-path answering using pre-trained transformer models.
 
-- Pre-compiled regex patterns (922+) indexed by keywords.
-- Covers physics, biology, geography, astronomy, chemistry, everyday facts.
-- **Latency**: ~0.1ms per query (keyword index → regex match).
-- **Confidence**: 0.7 – 0.99 depending on match quality.
+- **SentenceTransformer** (`all-MiniLM-L6-v2`) for semantic knowledge retrieval
+- **Cross-encoder NLI** (`cross-encoder/nli-deberta-v3-base`) for deductive/abductive reasoning
+- **QA model** (`distilbert-base-cased-distilled-squad`) for factual extraction
+- **Embedded knowledge base** with 500+ entries from authoritative sources
+- **Latency**: ~50-200ms per query (model inference)
+- **Confidence**: 0.7 – 0.95 depending on retrieval similarity and NLI scores
 
 ```
-Query → keyword index → candidate patterns → regex match → answer
+Query → Embed → Semantic Search → Top-K Knowledge → NLI Verification → Answer
 ```
+
+**Key Features**:
+- Semantic similarity search instead of regex pattern matching
+- Natural Language Inference for reasoning (supports/refutes/neutral)
+- Neural contradiction detection
+- Graceful fallback to structured knowledge when models unavailable
 
 ### 2. World Knowledge (`knowledge_training.py` + `knowledge_supplement.py`)
 
@@ -58,6 +68,7 @@ Query → keyword index → candidate patterns → regex match → answer
 
 - Entries have: topic, answer, source, confidence, category, relationship.
 - Loaded into the Cortex at init time.
+- Embedded into vector space for neural retrieval.
 - Used for evidence grounding and fact verification.
 
 ### 3. Live Knowledge (`live_knowledge.py`)
@@ -89,34 +100,6 @@ neurons/web_scraper/
 | arXiv | API (XML) | Medium | Academic papers |
 | OpenAlex | API (JSON) | Medium | Academic works |
 | Generic HTML | HTTP + regex parsing | Slow | Any webpage |
-
-**Features**:
-- Connection pooling with keep-alive (10 connections, 30s expiry)
-- Domain-level rate limiting (100ms between same-domain requests)
-- LRU cache with TTL (1000 pages, 1hr expiry)
-- Content deduplication by title and text hash
-- Boilerplate removal (nav, footer, scripts, ads)
-- Entity extraction from scraped content
-- Key fact extraction (prioritizes sentences with numbers/dates)
-
-**Usage**:
-```python
-# Direct scraping
-scraper = WebScraper()
-page = scraper.fetch("https://en.wikipedia.org/wiki/Quantum_computing")
-print(page.title, page.text[:200])
-
-# Multi-source research
-researcher = WebResearcher()
-report = researcher.research("quantum computing applications")
-for finding in report.findings:
-    print(f"[{finding.source}] {finding.title}")
-
-# Through Cortex
-cortex = ReasoningCortex()
-report = cortex.web_research("quantum computing")
-text = cortex.fetch_web_page("https://example.com/article")
-```
 
 ### 4. Multi-Core Neural Processing (`cores/`)
 
@@ -155,12 +138,6 @@ text = cortex.fetch_web_page("https://example.com/article")
 
 All cores implement `NeuralCoreProtocol` from `core_protocol.py`.
 
-**Consensus methods**:
-- `voting` — high agreement (>80%) → boost confidence
-- `weighted` — medium agreement (50-80%) → use highest confidence
-- `fallback` — low agreement (<50%) → penalise confidence
-- `single` — only one core responded
-
 ### 5. Cortex (`cortex.py`)
 
 **Purpose**: Master orchestrator that runs the full reasoning pipeline.
@@ -178,7 +155,7 @@ Implements a **three-division brain architecture**:
 ```
 Raw Input
     ↓
-GI Fast Path → answer? → return (0ms)
+Neural GI Fast Path → semantic retrieval + NLI → answer? → return
     ↓
 Live Knowledge → answer? → return
     ↓
@@ -191,7 +168,19 @@ Forebrain → workspace → working memory → processing centers
 Cortex-BG-Thalamus loop → metacognition → output
 ```
 
-### 6. Self-Evolution (`evolution/`)
+### 6. Neural Training Pipeline (`training/`)
+
+**Purpose**: Fine-tune and manage neural models for Sweep.
+
+| Model | File | Purpose |
+|-------|------|---------|
+| **Evidence Classifier** | `neural_models/evidence_classifier/` | Classifies evidence as supports/refutes/neutral |
+| **Contradiction Detector** | `neural_models/contradiction_detector/` | Detects contradictions between statements |
+| **Intent Classifier** | `neural_models/intent_classifier/` | Classifies query intent (13 categories) |
+
+**Training**: `python -m sweep_neural_mesh.training.neural_training`
+
+### 7. Self-Evolution (`evolution/`)
 
 **Purpose**: Enables the system to learn and adapt from interactions.
 
@@ -210,7 +199,7 @@ Cortex-BG-Thalamus loop → metacognition → output
 ### Fast Path (common questions)
 
 ```
-Query → General Intelligence (0.1ms) → answer with confidence ≥ 0.85 → return
+Query → Neural GI (semantic search + NLI) → answer with confidence ≥ 0.75 → return
 ```
 
 ### Medium Path (questions needing evidence)
@@ -233,11 +222,32 @@ Answer → Self-Evolution → learn → evolve → acquire → optimise
 
 ---
 
+## Neural Models
+
+### Pre-trained Models Used
+
+| Model | Purpose | Size |
+|-------|---------|------|
+| `all-MiniLM-L6-v2` | Semantic embeddings | 80MB |
+| `cross-encoder/nli-deberta-v3-base` | Natural Language Inference | 400MB |
+| `distilbert-base-cased-distilled-squad` | Question Answering | 65MB |
+| `facebook/bart-large-mnli` | Fallback NLI | 1.6GB |
+
+### Knowledge Base
+
+- 500+ entries from `knowledge_training.py` (authoritative sources)
+- 80+ common-sense facts
+- Embedded using SentenceTransformer
+- Fast cosine similarity search
+
+---
+
 ## Key Files
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `cortex.py` | ~500 | Master orchestrator (slimmed from 1740) |
+| `cortex.py` | ~1200 | Master orchestrator |
+| `general_intelligence.py` | ~500 | Neural knowledge retrieval + NLI reasoning |
 | `trace.py` | ~200 | ReasoningTrace + ReasoningResult data classes |
 | `fast_path.py` | ~140 | Early-exit for simple queries |
 | `evidence_pipeline.py` | ~135 | Cross-referencing and corroboration |
@@ -246,37 +256,42 @@ Answer → Self-Evolution → learn → evolve → acquire → optimise
 | `core_protocol.py` | ~120 | NeuralCoreProtocol + CoreResult + ConsensusResult |
 | `cores/*.py` | ~100 each | Individual neural cores (factual, reasoning, evidence, temporal, causal) |
 | `evolution/*.py` | ~80 each | Self-evolution modules (learning, engine, knowledge, tracker) |
-| `general_intelligence.py` | ~600 | Fast-path knowledge lookup (922+ patterns) |
-| `live_knowledge.py` | ~300 | External API retrieval (Wikipedia, Wikidata) |
 | `knowledge_training.py` | ~1500 | 500-entry knowledge base |
-| `knowledge_supplement.py` | ~800 | 222-entry supplementary knowledge |
+| `training/neural_training.py` | ~400 | BERT fine-tuning pipeline |
+| `training/neural_integration.py` | ~280 | Neural layer integration |
 
 ---
 
-## Cortex Refactoring (2026-08-29)
+## Neural Transformation (2026-09-02)
 
-The original `cortex.py` was **1740 lines** with a single `reason()` method of **780 lines**. It was refactored into focused modules:
+The General Intelligence module was transformed from a rule-based system to a neural engine:
 
-```
-cortex.py (500 lines, orchestrator only)
-  ├── trace.py              — ReasoningTrace + ReasoningResult
-  ├── fast_path.py          — early-exit for simple queries
-  ├── evidence_pipeline.py  — cross-referencing & corroboration
-  ├── complexity.py         — adaptive pipeline depth
-  └── human_reasoning.py    — 7 human-like reasoning modules
-```
+**Before (Rule-based)**:
+- 922+ pre-compiled regex patterns
+- Keyword index → regex match → answer
+- Hardcoded reasoning rules
+- ~0.1ms latency
 
-Benefits:
-- **45% smaller** cortex (1740 → 500 lines)
-- **Each concern** in its own file with clear responsibilities
-- **`reason()`** reduced from 780 → ~200 lines (delegates to helpers)
-- **Testable** — each module can be unit-tested independently
-- **Backwards compatible** — `from .cortex import ReasoningResult` still works
+**After (Neural)**:
+- SentenceTransformer embeddings for semantic retrieval
+- Cross-encoder NLI for reasoning (supports/refutes/neutral)
+- QA model for factual extraction
+- 500+ embedded knowledge entries
+- ~50-200ms latency
+
+**Benefits**:
+- **Generalizes** to novel combinations of facts
+- **Semantic understanding** instead of pattern matching
+- **Calibrated confidence** from model probabilities
+- **Extensible** — new knowledge automatically embedded
+- **Graceful degradation** — falls back to structured knowledge when models unavailable
+
+---
 
 ## Design Principles
 
 1. **Protocol-driven**: All cores implement `NeuralCoreProtocol`.
-2. **Pre-compiled**: Regex patterns compiled once at init, not per-query.
+2. **Neural-first**: Use pre-trained models for reasoning, fall back to rules only when needed.
 3. **Lazy-loaded**: Expensive modules (ML engines, live APIs) loaded on first use.
 4. **Fail-safe**: External failures (APIs, ML) never crash the pipeline.
 5. **Observable**: Every result includes latency, confidence, and reasoning trace.

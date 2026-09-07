@@ -1,0 +1,65 @@
+{
+  "total_samples": 470,
+  "train_samples": 368,
+  "val_samples": 39,
+  "test_samples": 63,
+  "domains": {
+    "source_independence": {
+      "total": 4,
+      "train": 2,
+      "val": 0,
+      "test": 2
+    },
+    "contradiction": {
+      "total": 83,
+      "train": 65,
+      "val": 7,
+      "test": 11
+    },
+    "logic": {
+      "total": 29,
+      "train": 23,
+      "val": 2,
+      "test": 4
+    },
+    "intent": {
+      "total": 189,
+      "train": 150,
+      "val": 18,
+      "test": 21
+    },
+    "evidence": {
+      "total": 83,
+      "train": 65,
+      "val": 6,
+      "test": 12
+    },
+    "entity": {
+      "total": 68,
+      "train": 53,
+      "val": 6,
+      "test": 9
+    },
+    "temporal": {
+      "total": 14,
+      "train": 10,
+      "val": 0,
+      "test": 4
+    }
+  },
+  "splits": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "leakage_check": {
+    "exact_overlap_train_val": 0,
+    "exact_overlap_train_test": 0,
+    "exact_overlap_val_test": 0,
+    "near_overlap_train_val": 2,
+    "near_overlap_train_test": 7,
+    "has_leakage": false
+  },
+  "seed": 42,
+  "generation_time": 1788365047.3307014
+}
