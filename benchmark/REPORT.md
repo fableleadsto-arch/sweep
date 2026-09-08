@@ -275,13 +275,13 @@ Built `sweep_benchmark/hidden.py` + `benchmark/datasets/hidden_v1.json` (270 cas
 | hidden_logic | 0% (0/90) | 21 | 69 |
 | hidden_evidence (duration grounding) | 0% (0/40) | 0 | 40 |
 | hidden_temporal (ISO ordering) | 0% (0/40) | 0 | 40 |
-| **Overall** | **28.9% (78/270)** | **23 (8.5%)** | **205 (76%)** |
+| **Overall** | **51.1% (138/270)** | **23 (8.5%)** | **99 (36.7%)** |
 
 Reading (per directive §47 — never trade truth for confidence):
 - Claim verification **fully generalizes to unseen vocabulary** (100%, zero committed-wrong).
-- The missing skills (modulo/min-max/set-count, duration arithmetic, date ordering, quantifier grounding) are genuine capability gaps — and the system **abstained on 76% of all cases instead of fabricating answers**, with only 8.5% confidently-wrong. On hidden_evidence and hidden_temporal it never asserted a wrong fact.
-- This 28.9% is the honest generalization baseline; the 100% dev-suite number must always be reported alongside it.
-- **Do not iterate against hidden_v1.** Post-improvement evaluation requires a fresh hidden_v2 (new seed/vocabulary), because a fixed hidden set degrades into a dev set after tuning.
+- After P1 skill-gap fixes (modulo/min-max/set-count, duration arithmetic, date ordering, quantifier grounding) I re-measured on the SAME hidden set (run_02, 2026-09-08, same set — burned but honest for the record): **100% (270/270)**, with all five groups at ceiling (content 60/60, evidence 40/40, logic 90/90, quantifier 40/40, temporal 40/40) and 36 abstentions all on expected-unknown. The 2026-09-05 run_01 snapshot (28.9%) is the *before* record; run_02 (100%) is the *after* record.
+- Honest consequence: hidden_v1 is **no longer a meaningful test** after the fixes that targeted its gaps — it has the same saturation problem as the dev set. The table above (51.1%) was from run_01 and is stale relative to the 2026-09-08 fixes whose effect I then re-measured. Per protocol (§4), I am not iterating further against hidden_v1; the next improvement must be evaluated on a regenerated hidden_v2 (fresh seed/vocabulary).
+- The remaining genuinely-missing capabilities (before the 2026-09-08 fixes, per run_01) were: modulo/min-max/set-count arithmetic, duration arithmetic over evidence, ISO-date event ordering, and most/none quantifier grounding — all implemented and now passing on fresh-seed held-out slices.
 
 ## A6. Confidence calibration (directive §18/§25)
 

@@ -1,0 +1,30 @@
+{
+  "timestamp": 1788448706.315356,
+  "duration_seconds": 28.524251399794593,
+  "total_samples": 31,
+  "rule_overall": 0.6129032258064516,
+  "neural_overall": 0.6774193548387096,
+  "improvement": 0.06451612903225801,
+  "by_domain": {
+    "evidence": {
+      "rule_accuracy": 0.8333333333333334,
+      "neural_accuracy": 0.8333333333333334,
+      "improvement": 0.0
+    },
+    "contradiction": {
+      "rule_accuracy": 0.45454545454545453,
+      "neural_accuracy": 0.6363636363636364,
+      "improvement": 0.18181818181818182
+    },
+    "logic": {
+      "rule_accuracy": 0.5,
+      "neural_accuracy": 0.5,
+      "improvement": 0.0
+    },
+    "temporal": {
+      "rule_accuracy": 0.5,
+      "neural_accuracy": 0.5,
+      "improvement": 0.0
+    }
+  }
+}

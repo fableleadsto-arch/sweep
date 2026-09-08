@@ -1,0 +1,22 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1788629629.729711   30120 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1788629635.475589   30120 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Generated 1143 unique pairs; class distribution: supports=373 refutes=382 neutral=388
+Training pair-format evidence classifier on CPU (bert-base-uncased)...
+Trainable parameters: 21.9M (20.0% of model)
+  epoch 1/6: loss=0.9437 train_acc=56.2% val_acc=95.7% (L0:38/41 L1:31/32 L2:41/42) *SAVED*
+  epoch 2/6: loss=0.2901 train_acc=92.0% val_acc=97.4% (L0:38/41 L1:32/32 L2:42/42) *SAVED*
+  epoch 3/6: loss=0.1002 train_acc=95.9% val_acc=99.1% (L0:41/41 L1:32/32 L2:41/42) *SAVED*
+  epoch 4/6: loss=0.0402 train_acc=98.4% val_acc=99.1% (L0:41/41 L1:32/32 L2:41/42) *SAVED*
+  epoch 5/6: loss=0.0225 train_acc=99.0% val_acc=100.0% (L0:41/41 L1:32/32 L2:42/42) *SAVED*
+  epoch 6/6: loss=0.0210 train_acc=99.6% val_acc=100.0% (L0:41/41 L1:32/32 L2:42/42) *SAVED*
+Done in 1112s. Best val accuracy: 100.0%
+Artifact: C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\neural_models\evidence_classifier
+  [MISS] supports@0.44 (expected supports) | The krin is stable and running smoothly.... <-> The krin is stable.
+  [OK] refutes@0.98 (expected refutes) | The vost is not enabled per diagnostic l... <-> The vost is enabled.
+  [OK] neutral@0.99 (expected neutral) | The tremn is awake.... <-> The solk is visible.
+  [OK] neutral@0.85 (expected neutral) | The durn could be locked.... <-> The durn is locked.
+Self-check through production path: 3/4

@@ -130,12 +130,27 @@ class GeneralIntelligence:
     # PRECOMPILATION
     # ══════════════════════════════════════════════════════════════
 
+    @staticmethod
+    def _anchor_pattern(pattern: str) -> str:
+        """Bound a bare keyword pattern so 'mean' cannot match 'meaning'.
+
+        Patterns that already carry anchors or begin/end with non-word
+        characters (e.g. '\\bdna\\b', '^foo') are left untouched.
+        """
+        if not pattern:
+            return pattern
+        if pattern[0].isalnum():
+            pattern = r"\b" + pattern
+        if pattern[-1].isalnum():
+            pattern = pattern + r"\b"
+        return pattern
+
     def _precompile(self) -> None:
         """Pre-compile all regex patterns and build keyword index."""
         # Compile facts
         for pattern, answer, confidence, domain in self._facts:
             try:
-                compiled = re.compile(pattern, re.IGNORECASE)
+                compiled = re.compile(self._anchor_pattern(pattern), re.IGNORECASE)
                 self._compiled_facts.append((compiled, answer, confidence, domain))
                 words = re.findall(r'[a-z]{3,}', pattern)
                 for w in words:
@@ -149,7 +164,8 @@ class GeneralIntelligence:
         for pattern, answer, confidence, template in self._deductive_rules:
             try:
                 self._compiled_deductive.append(
-                    (re.compile(pattern, re.IGNORECASE), answer, confidence, template)
+                    (re.compile(self._anchor_pattern(pattern), re.IGNORECASE),
+                     answer, confidence, template)
                 )
             except re.error:
                 pass
@@ -158,7 +174,8 @@ class GeneralIntelligence:
         for pattern, answer, confidence, template in self._abductive_rules:
             try:
                 self._compiled_abductive.append(
-                    (re.compile(pattern, re.IGNORECASE), answer, confidence, template)
+                    (re.compile(self._anchor_pattern(pattern), re.IGNORECASE),
+                     answer, confidence, template)
                 )
             except re.error:
                 pass

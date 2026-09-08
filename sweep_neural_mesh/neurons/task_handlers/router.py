@@ -88,8 +88,14 @@ class TaskRouter:
         elif category == "causal":
             handlers = [self._causal, self._temporal, self._evidence]
         else:
-            # Unknown: try all handlers
-            handlers = [self._logic, self._math, self._evidence, self._temporal, self._causal]
+            # Unknown: try all handlers except evidence. The evidence
+            # handler's corroboration path answers ANY query that comes with
+            # 2+ similar evidence items, so it must only run for queries
+            # explicitly classified as evidence tasks (corroborate/verify/
+            # contradict/...). Otherwise generic questions with evidence are
+            # answered from one corroboration cluster instead of the full
+            # reasoning pipeline.
+            handlers = [self._logic, self._math, self._temporal, self._causal]
 
         # Check evidence relevance before processing
         # If evidence is provided but clearly irrelevant to the query,
@@ -166,6 +172,15 @@ class TaskRouter:
             return "logic", "set_theory"
         if re.search(r"\bis\s+to\s+.+\s+as\s+.+\s+is\s+to\b", q_lower):
             return "logic", "analogy"
+        # Min/max BEFORE the comma-sequence pattern below, otherwise
+        # "largest of 100, 200 and 300" is misread as a number sequence
+        # and answered with the (wrong) next term.
+        if re.search(r"\b(largest|greatest|biggest|smallest|least|lowest|maximum|minimum|highest)\s+of\b", q_lower):
+            return "math", "minmax"
+        if re.search(r"\bremainder\s+of\b", q_lower):
+            return "math", "arithmetic"
+        if re.search(r"\bhow\s+many\s+elements?\s+in\s+the\s+(union|intersection)\b", q_lower):
+            return "logic", "set_theory"
         if re.search(r"\bpattern\b|\bsequence\b|\bwhat\s+comes\s+next\b", q_lower):
             return "logic", "induction"
         if re.search(r"\d+\s*[,\s]\s*\d+\s*[,\s]\s*\d+\s*[,\s]\s*\d+\s*[,\s]*\s*\?", q_lower):

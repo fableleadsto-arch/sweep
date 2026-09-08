@@ -1,0 +1,457 @@
+{
+  "intent": [
+    {
+      "id": "0b2a9507fad7",
+      "predicted": "document_analysis",
+      "expected": "document_analysis",
+      "correct": true,
+      "latency_ms": 162.15260000899434
+    },
+    {
+      "id": "de5a0b24b244",
+      "predicted": "identity_analysis",
+      "expected": "identity_analysis",
+      "correct": true,
+      "latency_ms": 22.94709999114275
+    },
+    {
+      "id": "d0a29313a7d4",
+      "predicted": "identity_analysis",
+      "expected": "identity_analysis",
+      "correct": true,
+      "latency_ms": 26.920299977064133
+    },
+    {
+      "id": "3878daa4c58e",
+      "predicted": "search",
+      "expected": "search",
+      "correct": true,
+      "latency_ms": 24.5860000140965
+    },
+    {
+      "id": "2b29b57020a5",
+      "predicted": "investigation",
+      "expected": "investigation",
+      "correct": true,
+      "latency_ms": 22.31139992363751
+    },
+    {
+      "id": "ad333b4e8eea",
+      "predicted": "investigation",
+      "expected": "investigation",
+      "correct": true,
+      "latency_ms": 23.56779994443059
+    },
+    {
+      "id": "118c5e6c9bf2",
+      "predicted": "relationship_analysis",
+      "expected": "relationship_analysis",
+      "correct": true,
+      "latency_ms": 19.17759981006384
+    },
+    {
+      "id": "9c973923fe9f",
+      "predicted": "summarization",
+      "expected": "summarization",
+      "correct": true,
+      "latency_ms": 25.91950003989041
+    },
+    {
+      "id": "4f3b078a2133",
+      "predicted": "investigation",
+      "expected": "investigation",
+      "correct": true,
+      "latency_ms": 20.582000026479363
+    },
+    {
+      "id": "3fc57a3cb3c5",
+      "predicted": "contradiction_analysis",
+      "expected": "contradiction_analysis",
+      "correct": true,
+      "latency_ms": 26.707899989560246
+    },
+    {
+      "id": "8d90883c77a7",
+      "predicted": "correlation",
+      "expected": "correlation",
+      "correct": true,
+      "latency_ms": 23.95739988423884
+    },
+    {
+      "id": "530e018adaed",
+      "predicted": "search",
+      "expected": "search",
+      "correct": true,
+      "latency_ms": 21.48490003310144
+    },
+    {
+      "id": "656c92ed6243",
+      "predicted": "search",
+      "expected": "search",
+      "correct": true,
+      "latency_ms": 24.991100188344717
+    },
+    {
+      "id": "3500c5884d4c",
+      "predicted": "identity_analysis",
+      "expected": "identity_analysis",
+      "correct": true,
+      "latency_ms": 21.86529990285635
+    },
+    {
+      "id": "b4263fc255ad",
+      "predicted": "evidence_analysis",
+      "expected": "evidence_analysis",
+      "correct": true,
+      "latency_ms": 28.838700149208307
+    },
+    {
+      "id": "6f3b5d07ca05",
+      "predicted": "comparison",
+      "expected": "comparison",
+      "correct": true,
+      "latency_ms": 20.524700172245502
+    },
+    {
+      "id": "0d8d1d926a3c",
+      "predicted": "investigation",
+      "expected": "investigation",
+      "correct": true,
+      "latency_ms": 21.33090002462268
+    },
+    {
+      "id": "93b1edcffe81",
+      "predicted": "search",
+      "expected": "search",
+      "correct": true,
+      "latency_ms": 18.700199900195003
+    },
+    {
+      "id": "5464de394e0d",
+      "predicted": "extraction",
+      "expected": "extraction",
+      "correct": true,
+      "latency_ms": 22.483300184831023
+    },
+    {
+      "id": "c190c42f62bd",
+      "predicted": "search",
+      "expected": "search",
+      "correct": true,
+      "latency_ms": 23.48660002462566
+    },
+    {
+      "id": "f68186c39d45",
+      "predicted": "investigation",
+      "expected": "investigation",
+      "correct": true,
+      "latency_ms": 22.96050009317696
+    }
+  ],
+  "entity": [
+    {
+      "id": "ba1f43a1059d",
+      "predicted": "{\"PERSON\": [\"Who Repor\"], \"ORG\": [\"The\", \"Who\", \"Repor\", \"From\", \"April\", \"Confirmed\", \"Findings\", \"WHO\"], \"DATE\": [\"April 2024\", \"2024\"]}",
+      "expected": "{\"ORG\": [\"WHO\"], \"DATE\": [\"April 2024\"]}",
+      "correct": true,
+      "latency_ms": 4.0843000169843435
+    },
+    {
+      "id": "882cb7c3bc1d",
+      "predicted": "{\"ORG\": [\"The\", \"Who\", \"Report\", \"From\", \"Apri\", \"Confirmed\", \"Findings\"], \"DATE\": [\"2024\"]}",
+      "expected": "{\"ORG\": [\"WHO\"], \"DATE\": [\"April 2024\"]}",
+      "correct": true,
+      "latency_ms": 0.18669990822672844
+    },
+    {
+      "id": "ba890676a7b5",
+      "predicted": "{\"PERSON\": [\"David Lee\", \"Lis Wang\", \"Nexus Technologies\"], \"ORG\": [\"Founded Nexus Technologies\", \"David\", \"Lee\", \"And\", \"Lis\", \"Wang\", \"Co\", \"Founded\", \"Nexus Technologies\"]}",
+      "expected": "{\"PERSON\": [\"David Lee\", \"Lisa Wang\"], \"ORG\": [\"Nexus Technologies\"]}",
+      "correct": true,
+      "latency_ms": 0.18780003301799297
+    },
+    {
+      "id": "0eeef164b07a",
+      "predicted": "{\"PERSON\": [\"Maria Garcia\"], \"ORG\": [\"Maria Garcia From the University\", \"Maria\", \"Garcia\", \"From\", \"The University\", \"Of\", \"Barcelona\", \"Publishe\", \"Research\", \"On\", \"Crispr\", \"CRISPR\"], \"GPE\": [\"Barcelona\"]}",
+      "expected": "{\"PERSON\": [\"Maria Garcia\"], \"ORG\": [\"University of Barcelona\"]}",
+      "correct": true,
+      "latency_ms": 0.2725000958889723
+    },
+    {
+      "id": "49b6e12093cf",
+      "predicted": "{\"ORG\": [\"Techcorp\", \"Inc\", \"Announced\", \"Quarterl\", \"Earnings\", \"On\", \"March\"], \"DATE\": [\"March 3, 2024\", \"2024\"]}",
+      "expected": "{\"ORG\": [\"TechCorp Inc\"], \"DATE\": [\"March 3, 2024\"]}",
+      "correct": true,
+      "latency_ms": 0.5992997903376818
+    },
+    {
+      "id": "effb7da1ef7a",
+      "predicted": "{\"PERSON\": [\"John Smith\", \"New York\"], \"ORG\": [\"John Smith Works At Techcor Inc\", \"John\", \"Smith\", \"Works\", \"At\", \"Techcor Inc\", \"In\", \"New\", \"York\"], \"GPE\": [\"New York\"]}",
+      "expected": "{\"PERSON\": [\"John Smith\"], \"ORG\": [\"TechCorp Inc\"], \"GPE\": [\"New York\"]}",
+      "correct": true,
+      "latency_ms": 0.17039990052580833
+    },
+    {
+      "id": "e59d63debde4",
+      "predicted": "{\"PERSON\": [\"Mike Johnson\"], \"ORG\": [\"Mike\", \"Johnson\", \"Joined\", \"Amazon\", \"In\", \"Seattle\"], \"GPE\": [\"Seattle\"], \"DATE\": [\"2023\"]}",
+      "expected": "{\"PERSON\": [\"Mike Johnson\"], \"ORG\": [\"Amazon\"], \"GPE\": [\"Seattle\"], \"DATE\": [\"2023\"]}",
+      "correct": true,
+      "latency_ms": 0.14699995517730713
+    },
+    {
+      "id": "4384bc3df499",
+      "predicted": "{\"PERSON\": [\"Alice Chen\"], \"ORG\": [\"Alice\", \"Chen\", \"Publishe\", \"Paper\", \"At\", \"Mit\", \"In\", \"Cambridge\", \"MIT\"], \"GPE\": [\"Cambridge\"]}",
+      "expected": "{\"PERSON\": [\"Alice Chen\"], \"ORG\": [\"MIT\"], \"GPE\": [\"Cambridge\"]}",
+      "correct": true,
+      "latency_ms": 0.18049986101686954
+    },
+    {
+      "id": "011d7c740d82",
+      "predicted": "{\"PERSON\": [\"Emma Brown\", \"United Nation\"], \"ORG\": [\"Emma\", \"Brown\", \"Works\", \"At\", \"The\", \"United\", \"Nation\", \"In\", \"Geneva\"], \"GPE\": [\"Geneva\"]}",
+      "expected": "{\"PERSON\": [\"Emma Brown\"], \"ORG\": [\"United Nations\"], \"GPE\": [\"Geneva\"]}",
+      "correct": true,
+      "latency_ms": 0.1683998852968216
+    }
+  ],
+  "evidence": [
+    {
+      "id": "612a6648e8d8",
+      "predicted": "refutes",
+      "expected": "refutes",
+      "correct": true,
+      "latency_ms": 180.19510013982654
+    },
+    {
+      "id": "9f53ddef30fb",
+      "predicted": "neutral",
+      "expected": "neutral",
+      "correct": true,
+      "latency_ms": 84.51720001176
+    },
+    {
+      "id": "7a982dec85f3",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 95.84039985202253
+    },
+    {
+      "id": "fae7201f5938",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 105.40780005976558
+    },
+    {
+      "id": "34253f0501aa",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 78.79159995354712
+    },
+    {
+      "id": "6c996feafefc",
+      "predicted": "neutral",
+      "expected": "neutral",
+      "correct": true,
+      "latency_ms": 86.69979986734688
+    },
+    {
+      "id": "07c99937348c",
+      "predicted": "neutral",
+      "expected": "neutral",
+      "correct": true,
+      "latency_ms": 78.74609995633364
+    },
+    {
+      "id": "0f083304c20f",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 94.10689980722964
+    },
+    {
+      "id": "e749e3178e1b",
+      "predicted": "neutral",
+      "expected": "neutral",
+      "correct": true,
+      "latency_ms": 153.62900006584823
+    },
+    {
+      "id": "285961d96ccb",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 93.52120012044907
+    },
+    {
+      "id": "c358443c4e05",
+      "predicted": "supports",
+      "expected": "supports",
+      "correct": true,
+      "latency_ms": 71.39480020850897
+    },
+    {
+      "id": "65b714816b9d",
+      "predicted": "refutes",
+      "expected": "refutes",
+      "correct": true,
+      "latency_ms": 129.10180003382266
+    }
+  ],
+  "contradiction": [
+    {
+      "id": "5823548fdcfe",
+      "predicted": "contradiction",
+      "expected": "contradiction",
+      "correct": true,
+      "latency_ms": 143.35699984803796
+    },
+    {
+      "id": "e4c8ef20af2a",
+      "predicted": "contradiction",
+      "expected": "contradiction",
+      "correct": true,
+      "latency_ms": 49.44520001299679
+    },
+    {
+      "id": "f48451116481",
+      "predicted": "contradiction",
+      "expected": "contradiction",
+      "correct": true,
+      "latency_ms": 42.484299978241324
+    },
+    {
+      "id": "170a7d5e9a2f",
+      "predicted": "consistent",
+      "expected": "consistent",
+      "correct": true,
+      "latency_ms": 45.04029988311231
+    },
+    {
+      "id": "093e9dee4241",
+      "predicted": "consistent",
+      "expected": "consistent",
+      "correct": true,
+      "latency_ms": 47.537000151351094
+    },
+    {
+      "id": "778c88db763f",
+      "predicted": "contradiction",
+      "expected": "contradiction",
+      "correct": true,
+      "latency_ms": 54.47530001401901
+    },
+    {
+      "id": "1e129c9c00ae",
+      "predicted": "contradiction",
+      "expected": "contradiction",
+      "correct": true,
+      "latency_ms": 69.60009993053973
+    },
+    {
+      "id": "6a85bffeb10b",
+      "predicted": "consistent",
+      "expected": "consistent",
+      "correct": true,
+      "latency_ms": 62.725799856707454
+    },
+    {
+      "id": "a396cf722ebf",
+      "predicted": "partial",
+      "expected": "partial",
+      "correct": true,
+      "latency_ms": 55.9455999173224
+    },
+    {
+      "id": "e9def5308795",
+      "predicted": "consistent",
+      "expected": "partial",
+      "correct": false,
+      "latency_ms": 58.58689988963306
+    },
+    {
+      "id": "052778ed1dd3",
+      "predicted": "partial",
+      "expected": "partial",
+      "correct": true,
+      "latency_ms": 54.18960005044937
+    }
+  ],
+  "logic": [
+    {
+      "id": "9f4707ba5ea6",
+      "predicted": "yes",
+      "expected": "yes",
+      "correct": true,
+      "latency_ms": 0.48559997230768204
+    },
+    {
+      "id": "242209fce4b2",
+      "predicted": "yes",
+      "expected": "yes",
+      "correct": true,
+      "latency_ms": 2.1736000198870897
+    },
+    {
+      "id": "8581927b7005",
+      "predicted": "yes",
+      "expected": "yes",
+      "correct": true,
+      "latency_ms": 0.03850017674267292
+    },
+    {
+      "id": "23cbf14684ea",
+      "predicted": "no",
+      "expected": "no",
+      "correct": true,
+      "latency_ms": 0.024099834263324738
+    }
+  ],
+  "temporal": [
+    {
+      "id": "ac8d80e822b7",
+      "predicted": "2010, 2015, 2020",
+      "expected": "2010, 2015, 2020",
+      "correct": true,
+      "latency_ms": 0.6055000703781843
+    },
+    {
+      "id": "b7bd54903a7b",
+      "predicted": "wwii",
+      "expected": "WWII",
+      "correct": true,
+      "latency_ms": 0.07810001261532307
+    },
+    {
+      "id": "eec85985af4e",
+      "predicted": "1440",
+      "expected": "1440",
+      "correct": true,
+      "latency_ms": 0.07940013892948627
+    },
+    {
+      "id": "2ea8a204944c",
+      "predicted": "conflict",
+      "expected": "conflict",
+      "correct": true,
+      "latency_ms": 1.3001000043004751
+    }
+  ],
+  "source_independence": [
+    {
+      "id": "dde420bdb1a3",
+      "predicted": "3",
+      "expected": "3",
+      "correct": true,
+      "latency_ms": 0.6630001589655876
+    },
+    {
+      "id": "fa160820053f",
+      "predicted": "1",
+      "expected": "1",
+      "correct": true,
+      "latency_ms": 0.1314000692218542
+    }
+  ]
+}

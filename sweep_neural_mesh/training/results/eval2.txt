@@ -1,0 +1,36 @@
+======================================================================
+SWEEP BASELINE EVALUATION
+======================================================================
+
+  Loaded 63 test samples
+  Cortex initialized (ML disabled for speed)
+
+  Evaluating intent...
+    Neural intent classifier loaded
+    Accuracy: 100.0% (21/21)
+    Avg Latency: 0.2ms
+
+  Evaluating entity...
+    Accuracy: 100.0% (9/9)
+    Avg Latency: 2.2ms
+
+  Evaluating evidence...
+    Neural evidence classifier loaded
+    Accuracy: 100.0% (12/12)
+    Avg Latency: 2.5ms
+
+  Evaluating contradiction...
+    Neural contradiction detector loaded
+    Accuracy: 90.9% (10/11)
+    Avg Latency: 0.4ms
+
+  Evaluating logic...
+    Accuracy: 75.0% (3/4)
+    Avg Latency: 16.9ms
+
+  Evaluating temporal...
+    Accuracy: 100.0% (4/4)
+    Avg Latency: 0.5ms
+
+  Evaluating source_independence...
+ERROR: 'list' object has no attribute 'add'

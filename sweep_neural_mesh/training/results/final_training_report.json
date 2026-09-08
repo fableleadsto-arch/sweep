@@ -1,0 +1,151 @@
+{
+  "training_summary": {
+    "training_cycles": 1,
+    "datasets": [
+      "comprehensive_dataset"
+    ],
+    "training_samples": 33,
+    "validation_samples": 0,
+    "test_samples": 63
+  },
+  "before_vs_after": {
+    "overall": {
+      "before": 0.9841269841269841,
+      "after": 0.6666666666666666,
+      "change": -0.31746031746031744
+    },
+    "by_domain": {
+      "entity": {
+        "before": 1.0,
+        "after": 0,
+        "change": -1.0,
+        "improved": false
+      },
+      "contradiction": {
+        "before": 0.9090909090909091,
+        "after": 0.45454545454545453,
+        "change": -0.45454545454545453,
+        "improved": false
+      },
+      "evidence": {
+        "before": 1.0,
+        "after": 0.8333333333333334,
+        "change": -0.16666666666666663,
+        "improved": false
+      },
+      "intent": {
+        "before": 1.0,
+        "after": 0,
+        "change": -1.0,
+        "improved": false
+      },
+      "source_independence": {
+        "before": 1.0,
+        "after": 1.0,
+        "change": 0.0,
+        "improved": false
+      },
+      "temporal": {
+        "before": 1.0,
+        "after": 0.5,
+        "change": -0.5,
+        "improved": false
+      },
+      "logic": {
+        "before": 1.0,
+        "after": 0.75,
+        "change": -0.25,
+        "improved": false
+      }
+    }
+  },
+  "performance": {
+    "accuracy": 0.6666666666666666,
+    "avg_latency_ms": 44.404311101913216,
+    "evaluation_time_seconds": 0.01134760002605617
+  },
+  "strongest_capabilities": [
+    "evidence",
+    "source_independence"
+  ],
+  "weakest_capabilities": [
+    "entity",
+    "contradiction",
+    "intent",
+    "temporal"
+  ],
+  "regressions": [
+    {
+      "domain": "contradiction",
+      "before": 0.9090909090909091,
+      "after": 0.45454545454545453,
+      "change": -0.45454545454545453
+    },
+    {
+      "domain": "evidence",
+      "before": 1.0,
+      "after": 0.8333333333333334,
+      "change": -0.16666666666666663
+    },
+    {
+      "domain": "temporal",
+      "before": 1.0,
+      "after": 0.5,
+      "change": -0.5
+    },
+    {
+      "domain": "logic",
+      "before": 1.0,
+      "after": 0.75,
+      "change": -0.25
+    }
+  ],
+  "failed_training_attempts": [],
+  "unimplemented_features": [
+    "Visual Person Analysis (requires GPU libraries)",
+    "Video Investigation (requires OpenCV GPU)",
+    "Voice/Audio Intelligence (requires audio models)",
+    "OCR & Document Intelligence (requires pytesseract)"
+  ],
+  "next_training_targets": [
+    {
+      "domain": "contradiction",
+      "impact": "high",
+      "difficulty": "medium",
+      "cost": "low"
+    },
+    {
+      "domain": "logic",
+      "impact": "high",
+      "difficulty": "medium",
+      "cost": "low"
+    },
+    {
+      "domain": "evidence",
+      "impact": "high",
+      "difficulty": "easy",
+      "cost": "low"
+    },
+    {
+      "domain": "source_independence",
+      "impact": "medium",
+      "difficulty": "medium",
+      "cost": "low"
+    }
+  ],
+  "robustness": {
+    "hard_negatives": {
+      "contradiction_accuracy": 0.8666666666666667,
+      "evidence_accuracy": 1.0
+    },
+    "generalization": {
+      "logic_accuracy": 0.3333333333333333,
+      "contradiction_accuracy": 0.8
+    }
+  },
+  "original_benchmark": {
+    "sweep_accuracy": 0.952,
+    "gpt4o_accuracy": 0.821,
+    "note": "From previous benchmark run on 1000-case dataset"
+  }
+}

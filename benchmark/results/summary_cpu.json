@@ -9,63 +9,63 @@
    "total": 110,
    "correct": 110,
    "accuracy": 1.0,
-   "mean_latency_ms": 10.32
+   "mean_latency_ms": 12.571
   },
   "evidence": {
    "total": 108,
    "correct": 108,
    "accuracy": 1.0,
-   "mean_latency_ms": 13.864
+   "mean_latency_ms": 17.175
   },
   "generalization": {
    "total": 105,
    "correct": 105,
    "accuracy": 1.0,
-   "mean_latency_ms": 0.979
+   "mean_latency_ms": 1.335
   },
   "basic_logic": {
    "total": 132,
    "correct": 132,
    "accuracy": 1.0,
-   "mean_latency_ms": 0.932
+   "mean_latency_ms": 1.26
   },
   "ambiguity": {
    "total": 108,
    "correct": 108,
    "accuracy": 1.0,
-   "mean_latency_ms": 0.183
+   "mean_latency_ms": 0.209
   },
   "multi_step": {
    "total": 105,
    "correct": 105,
    "accuracy": 1.0,
-   "mean_latency_ms": 1.217
+   "mean_latency_ms": 1.891
   }
  },
  "latency_ms": {
-  "mean": 4.5,
-  "median_p50": 0.488,
-  "p90": 2.347,
-  "p95": 42.93,
-  "p99": 49.462,
-  "min": 0.097,
-  "max": 110.304,
-  "stdev": 12.825
+  "mean": 5.637,
+  "median_p50": 0.582,
+  "p90": 4.513,
+  "p95": 50.429,
+  "p99": 70.795,
+  "min": 0.078,
+  "max": 106.771,
+  "stdev": 15.858
  },
  "confidence": {
   "mean": 0.8464,
   "min": 0.3,
   "max": 0.9929
  },
- "throughput_per_sec": 221.2,
- "startup_ms": 661.5,
- "warmup_block_ms": 19182.5,
- "measured_block_ms": 3019.9,
- "total_elapsed_s": 22.87,
+ "throughput_per_sec": 176.67,
+ "startup_ms": 699.8,
+ "warmup_block_ms": 19136.0,
+ "measured_block_ms": 3781.0,
+ "total_elapsed_s": 23.64,
  "ram": {
-  "peak_rss_mb": 1323.1,
-  "mean_rss_mb": 776.0,
-  "n_samples": 1001,
-  "startup_rss_mb": 59.5
+  "peak_rss_mb": 1322.1,
+  "mean_rss_mb": 814.8,
+  "n_samples": 1040,
+  "startup_rss_mb": 59.1
  }
 }

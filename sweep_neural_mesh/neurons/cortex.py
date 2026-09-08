@@ -554,6 +554,11 @@ class ReasoningCortex:
     # ════════════════════════════════════════════════════════════
 
     def _try_gi_fast_path(self, query, evidence, t0):
+        # Defer to evidence-based reasoning when evidence was supplied: a
+        # canned knowledge fact must not override (or silently ignore) the
+        # provided evidence. This mirrors the live-knowledge gate below.
+        if evidence:
+            return None
         gi = self._general_intelligence.answer(
             query,
             [e if isinstance(e, str) else e.get("text", "") for e in evidence],
@@ -676,8 +681,14 @@ class ReasoningCortex:
                     ev_texts.append(e.get("text", ""))
             
             # Bare-claim mode: the query itself is the claim to assess
-            # (used to keep verdicts honest below).
-            query_is_claim = not query.strip().endswith("?")
+            # (used to keep verdicts honest below). Only declarative
+            # statements ("the X is Y") qualify — arbitrary non-question
+            # strings like "test" are not claims.
+            try:
+                from sweep_neural_mesh.neurons.claim_evidence import looks_like_claim
+                query_is_claim = looks_like_claim(query)
+            except Exception:
+                query_is_claim = False
             # The neural contradiction branch compares two evidence items to
             # EACH OTHER. That answers "do these sources agree?" — it does not
             # answer arbitrary questions. Only short-circuit when the query is
@@ -1147,12 +1158,32 @@ class ReasoningCortex:
 
         return None
 
+    # Subjective / philosophical questions have no objective answer; live
+    # retrieval would return an encyclopedic non-answer and present it as a
+    # confident verdict. Abstain (let the full pipeline report insufficient)
+    # instead of answering these.
+    _SUBJECTIVE_QUERY_PATTERNS = [
+        r"meaning\s+of\s+(life|existence|the\s+universe)",
+        r"purpose\s+of\s+life",
+        r"what\s+do\s+you\s+think",
+        r"in\s+your\s+opinion",
+        r"what\s+is\s+the\s+best\s+(way|thing)",
+        r"should\s+[a-z]+\s+(do|choose|pick)",
+        r"is\s+it\s+(right|moral|ethical|ok|okay)\s+to",
+        r"is\s+[a-z]+\s+(better|worse)\s+than",
+    ]
+
     def _try_live_knowledge(self, query, evidence, t0):
         gi_has = (self._general_intelligence.answer(
             query,
             [e if isinstance(e, str) else e.get("text", "") for e in evidence],
         ) is not None)
         if not evidence and not gi_has:
+            if re.search(
+                "|".join(f"(?:{p})" for p in self._SUBJECTIVE_QUERY_PATTERNS),
+                query.lower(),
+            ):
+                return None
             try:
                 live = self.retrieve_live_knowledge(query)
                 if live:

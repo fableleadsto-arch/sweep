@@ -1,0 +1,60 @@
+======================================================================
+SWEEP BASELINE EVALUATION
+======================================================================
+
+  Loaded 63 test samples
+  Cortex initialized (ML disabled for speed)
+
+  Evaluating intent...
+    Neural intent classifier loaded
+    Accuracy: 100.0% (21/21)
+    Avg Latency: 0.2ms
+
+  Evaluating entity...
+    Accuracy: 100.0% (9/9)
+    Avg Latency: 2.1ms
+
+  Evaluating evidence...
+    Neural evidence classifier loaded
+    Accuracy: 100.0% (12/12)
+    Avg Latency: 3.7ms
+
+  Evaluating contradiction...
+    Neural contradiction detector loaded
+    Accuracy: 90.9% (10/11)
+    Avg Latency: 1.0ms
+
+  Evaluating logic...
+    Accuracy: 75.0% (3/4)
+    Avg Latency: 15.7ms
+
+  Evaluating temporal...
+    Accuracy: 100.0% (4/4)
+    Avg Latency: 0.7ms
+
+  Evaluating source_independence...
+    Accuracy: 50.0% (1/2)
+    Avg Latency: 0.5ms
+
+======================================================================
+BASELINE RESULTS SUMMARY
+======================================================================
+  ✓ intent                   : 100.0% (21/21) lat=0.2ms
+  ✓ entity                   : 100.0% (9/9) lat=2.1ms
+  ✓ evidence                 : 100.0% (12/12) lat=3.7ms
+  ✓ contradiction            : 90.9% (10/11) lat=1.0ms
+  △ logic                    : 75.0% (3/4) lat=15.7ms
+  ✓ temporal                 : 100.0% (4/4) lat=0.7ms
+  ✗ source_independence      : 50.0% (1/2) lat=0.5ms
+
+  OVERALL                  : 95.2% (60/63)
+  AVG LATENCY              : 2.3ms
+  TOTAL TESTS              : 63
+  EVALUATION TIME          : 23.4s
+
+  Results saved to C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\results\baseline_results.json
+  Detailed results saved to C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\results\baseline_detailed.json
+
+======================================================================
+BASELINE EVALUATION COMPLETE
+======================================================================

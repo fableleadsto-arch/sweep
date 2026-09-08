@@ -574,6 +574,18 @@ class LogicHandler:
             set_a = set(x.strip() for x in union.group(1).split(","))
             set_b = set(x.strip() for x in union.group(2).split(","))
             result = set_a | set_b
+            if "how many" in q_lower:
+                return LogicResult(
+                    answer=str(len(result)),
+                    confidence=0.95,
+                    method="set_union_count",
+                    reasoning_chain=[
+                        f"A = {{{', '.join(sorted(set_a))}}}",
+                        f"B = {{{', '.join(sorted(set_b))}}}",
+                        f"|A U B| = {len(result)}",
+                    ],
+                    latency_ms=(time.perf_counter() - t0) * 1000,
+                )
             sorted_result = sorted(result, key=lambda x: (x.isdigit(), int(x) if x.isdigit() else 0, x))
             formatted = "{" + ", ".join(sorted_result) + "}"
             return LogicResult(
@@ -594,6 +606,14 @@ class LogicHandler:
             set_a = set(x.strip() for x in intersect.group(1).split(","))
             set_b = set(x.strip() for x in intersect.group(2).split(","))
             result = set_a & set_b
+            if "how many" in q_lower:
+                return LogicResult(
+                    answer=str(len(result)),
+                    confidence=0.95,
+                    method="set_intersection_count",
+                    reasoning_chain=[f"|A n B| = {len(result)}"],
+                    latency_ms=(time.perf_counter() - t0) * 1000,
+                )
             sorted_result = sorted(result, key=lambda x: (x.isdigit(), int(x) if x.isdigit() else 0, x))
             formatted = "{" + ", ".join(sorted_result) + "}"
             return LogicResult(

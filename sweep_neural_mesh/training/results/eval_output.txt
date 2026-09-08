@@ -1,0 +1,49 @@
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+    results = run_baseline_evaluation()
+  File "C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\baseline_evaluation.py", line 1188, in run_baseline_evaluation
+    metrics = evaluator(by_domain[domain])
+  File "C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\baseline_evaluation.py", line 1182, in <lambda>
+    "source_independence": lambda data: evaluate_source_independence(data),
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\baseline_evaluation.py", line 1040, in evaluate_source_independence
+    predicted = _analyze_independence(sample["input_text"], sample.get("evidence", []))
+  File "C:\Users\mansh\OneDrive\Desktop\MyStuff\sweep\sweep_neural_mesh\training\baseline_evaluation.py", line 1115, in _analyze_independence
+    seen_content_words.add(frozenset(content_words))
+    ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'add'
+======================================================================
+SWEEP BASELINE EVALUATION
+======================================================================
+
+  Loaded 63 test samples
+  Cortex initialized (ML disabled for speed)
+
+  Evaluating intent...
+    Neural intent classifier loaded
+    Accuracy: 100.0% (21/21)
+    Avg Latency: 0.0ms
+
+  Evaluating entity...
+    Accuracy: 100.0% (9/9)
+    Avg Latency: 0.8ms
+
+  Evaluating evidence...
+    Neural evidence classifier loaded
+    Accuracy: 100.0% (12/12)
+    Avg Latency: 2.3ms
+
+  Evaluating contradiction...
+    Neural contradiction detector loaded
+    Accuracy: 90.9% (10/11)
+    Avg Latency: 0.3ms
+
+  Evaluating logic...
+    Accuracy: 75.0% (3/4)
+    Avg Latency: 18.3ms
+
+  Evaluating temporal...
+    Accuracy: 100.0% (4/4)
+    Avg Latency: 0.4ms
+
+  Evaluating source_independence...

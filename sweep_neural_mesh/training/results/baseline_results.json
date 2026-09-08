@@ -1,0 +1,171 @@
+{
+  "baseline_timestamp": 1788448663.5400057,
+  "total_samples": 63,
+  "total_correct": 62,
+  "overall_accuracy": 0.9841269841269841,
+  "avg_latency_ms": 40.83191745707558,
+  "evaluation_time_seconds": 23.12131580011919,
+  "domains": {
+    "intent": {
+      "accuracy": 1.0,
+      "correct": 21,
+      "total": 21,
+      "avg_latency_ms": 29.785514299181244,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 21,
+          "total": 21
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 21,
+          "total": 21
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 21,
+          "total": 21
+        }
+      }
+    },
+    "entity": {
+      "accuracy": 1.0,
+      "correct": 9,
+      "total": 9,
+      "avg_latency_ms": 0.6663221607191695,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 9,
+          "total": 9
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 9,
+          "total": 9
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 9,
+          "total": 9
+        }
+      }
+    },
+    "evidence": {
+      "accuracy": 1.0,
+      "correct": 12,
+      "total": 12,
+      "avg_latency_ms": 104.32930833970507,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 12,
+          "total": 12
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 12,
+          "total": 12
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 12,
+          "total": 12
+        }
+      }
+    },
+    "contradiction": {
+      "accuracy": 0.9090909090909091,
+      "correct": 10,
+      "total": 11,
+      "avg_latency_ms": 62.12609995749187,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 0.9090909090909091,
+          "correct": 10,
+          "total": 11
+        },
+        "medium": {
+          "accuracy": 0.9090909090909091,
+          "correct": 10,
+          "total": 11
+        },
+        "hard": {
+          "accuracy": 0.9090909090909091,
+          "correct": 10,
+          "total": 11
+        }
+      }
+    },
+    "logic": {
+      "accuracy": 1.0,
+      "correct": 4,
+      "total": 4,
+      "avg_latency_ms": 0.6804500008001924,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        }
+      }
+    },
+    "temporal": {
+      "accuracy": 1.0,
+      "correct": 4,
+      "total": 4,
+      "avg_latency_ms": 0.5157750565558672,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 4,
+          "total": 4
+        }
+      }
+    },
+    "source_independence": {
+      "accuracy": 1.0,
+      "correct": 2,
+      "total": 2,
+      "avg_latency_ms": 0.3972001140937209,
+      "by_difficulty": {
+        "easy": {
+          "accuracy": 1.0,
+          "correct": 2,
+          "total": 2
+        },
+        "medium": {
+          "accuracy": 1.0,
+          "correct": 2,
+          "total": 2
+        },
+        "hard": {
+          "accuracy": 1.0,
+          "correct": 2,
+          "total": 2
+        }
+      }
+    }
+  }
+}

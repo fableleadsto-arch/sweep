@@ -1,0 +1,24 @@
+{
+  "timestamp": 1788351733.9554935,
+  "duration_seconds": 0.008365599904209375,
+  "hard_negatives": {
+    "contradiction": {
+      "correct": 13,
+      "total": 15
+    },
+    "evidence": {
+      "correct": 9,
+      "total": 9
+    }
+  },
+  "generalization": {
+    "logic": {
+      "correct": 1,
+      "total": 3
+    },
+    "contradiction": {
+      "correct": 4,
+      "total": 5
+    }
+  }
+}

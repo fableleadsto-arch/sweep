@@ -12,6 +12,10 @@ from sweep_neural_mesh.neurons.plasticity import SynapticPlasticity, MasteryPhas
 from sweep_neural_mesh.neurons.basal_ganglia import BasalGanglia, ActionProposal, ActionType
 from sweep_neural_mesh.neurons.grading import EvidenceGrader, EvidenceGrade
 from sweep_neural_mesh.neurons.cortex import ReasoningCortex, ReasoningTrace
+from sweep_neural_mesh.neurons.complexity import (
+    classify_query_complexity,
+    select_reasoning_modules,
+)
 
 
 class TestEmbeddingEngine(unittest.TestCase):
@@ -325,40 +329,37 @@ class TestPerEvidenceGrading(unittest.TestCase):
 
 
 class TestAdaptivePipelineDepth(unittest.TestCase):
-    def setUp(self):
-        self.cortex = ReasoningCortex()
-
     def test_trivial_query(self):
-        complexity = self.cortex._classify_query_complexity("hello", 0)
+        complexity = classify_query_complexity("hello", 0)
         self.assertEqual(complexity, "trivial")
 
     def test_simple_query(self):
-        complexity = self.cortex._classify_query_complexity("what is machine learning", 0)
+        complexity = classify_query_complexity("what is machine learning", 0)
         self.assertEqual(complexity, "simple")
 
     def test_complex_query(self):
-        complexity = self.cortex._classify_query_complexity(
+        complexity = classify_query_complexity(
             "analyze the causal relationships between these 10 evidence items",
             10,
         )
         self.assertIn(complexity, ("complex", "deep"))
 
     def test_deep_query_with_counterfactual(self):
-        complexity = self.cortex._classify_query_complexity(
+        complexity = classify_query_complexity(
             "what if the evidence were different", 5,
         )
         self.assertIn(complexity, ("moderate", "complex", "deep"))
 
     def test_select_modules_trivial(self):
-        modules = self.cortex._select_reasoning_modules("trivial", 0)
+        modules = select_reasoning_modules("trivial", 0)
         self.assertEqual(modules, [])
 
     def test_select_modules_simple(self):
-        modules = self.cortex._select_reasoning_modules("simple", 0)
+        modules = select_reasoning_modules("simple", 0)
         self.assertEqual(modules, ["common_sense"])
 
     def test_select_modules_deep(self):
-        modules = self.cortex._select_reasoning_modules("deep", 10)
+        modules = select_reasoning_modules("deep", 10)
         self.assertIn("common_sense", modules)
         self.assertIn("abductive", modules)
         self.assertIn("theory_of_mind", modules)

@@ -1,0 +1,62 @@
+======================================================================
+SWEEP FULL-SYSTEM TRAINING — FINAL REPORT
+======================================================================
+
+Date: 2026-09-03 20:56:48
+
+TRAINING SUMMARY
+----------------------------------------------------------------------
+  Training cycles: 1
+  Test samples: 63
+
+BEFORE vs AFTER
+----------------------------------------------------------------------
+  Domain                        Before      After     Change
+  ------------------------- ---------- ---------- ----------
+  contradiction                  90.9%      45.5%     -45.5%
+  entity                        100.0%        N/A    -100.0%
+  evidence                      100.0%      83.3%     -16.7%
+  intent                        100.0%        N/A    -100.0%
+  logic                         100.0%      75.0%     -25.0%
+  source_independence           100.0%     100.0%        N/A
+  temporal                      100.0%      50.0%     -50.0%
+
+  Overall: 98.4% → 66.7% (-31.7%)
+
+PERFORMANCE
+----------------------------------------------------------------------
+  Accuracy: 66.7%
+  Avg Latency: 44.4ms
+
+STRONGEST CAPABILITIES
+----------------------------------------------------------------------
+  ✓ evidence: 83.3%
+  ✓ source_independence: 100.0%
+
+WEAKEST CAPABILITIES
+----------------------------------------------------------------------
+  ✗ entity: 0.0%
+  ✗ contradiction: 45.5%
+  ✗ intent: 0.0%
+  ✗ temporal: 50.0%
+
+REGRESSIONS
+----------------------------------------------------------------------
+  ⚠ contradiction: 90.9% → 45.5%
+  ⚠ evidence: 100.0% → 83.3%
+  ⚠ temporal: 100.0% → 50.0%
+  ⚠ logic: 100.0% → 75.0%
+
+ROBUSTNESS
+----------------------------------------------------------------------
+  Hard Negatives (Contradiction): 86.7%
+  Hard Negatives (Evidence): 100.0%
+  Generalization (Logic): 33.3%
+  Generalization (Contradiction): 80.0%
+
+NEXT TRAINING TARGETS
+----------------------------------------------------------------------
+  contradiction             impact=high difficulty=medium
+  logic                     impact=high difficulty=medium
+  evidence                  impact=high difficulty=easy
+  source_independence       impact=medium difficulty=medium

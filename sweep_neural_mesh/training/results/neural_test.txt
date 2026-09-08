@@ -1,0 +1,25 @@
+=== NEURAL ENGINE TEST ===
+Initial ready: False
+Waiting for models...
+Models ready: True (took 43.0s)
+
+--- Intent Classification ---
+  "Investigate John Smith background" -> unknown (conf=0.000, 0.0ms)
+  "Compare evidence from these two sources" -> unknown (conf=0.000, 0.0ms)
+  "What evidence supports this claim?" -> unknown (conf=0.000, 0.0ms)
+
+--- Evidence Classification ---
+  Claim: "The drug is effective" | Evidence: "Clinical trials show significant improvement"
+  -> neutral (conf=0.498, 457.3ms)
+  Claim: "The drug is effective" | Evidence: "No significant benefit was observed"
+  -> neutral (conf=0.419, 406.7ms)
+  Claim: "The drug is effective" | Evidence: "Results were mixed with some positive signals"
+  -> supports (conf=0.482, 73.3ms)
+
+--- Contradiction Detection ---
+  A: "Revenue increased 20%" | B: "Revenue decreased 15%"
+  -> unknown (conf=0.581, 847.9ms)
+  A: "The study found a positive correlation" | B: "The effect size was very small"
+  -> unknown (conf=0.624, 44.7ms)
+  A: "The drug works for adults" | B: "The drug works for children"
+  -> unknown (conf=0.583, 48.9ms)

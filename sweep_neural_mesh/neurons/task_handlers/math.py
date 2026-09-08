@@ -37,6 +37,10 @@ class MathHandler:
         q = query.strip()
         ev = evidence or []
 
+        result = self._try_minmax(q, t0)
+        if result:
+            return result
+
         result = self._try_arithmetic(q, t0)
         if result:
             return result
@@ -82,12 +86,25 @@ class MathHandler:
         # Replace word operators
         replacements = {
             "plus": "+", "minus": "-", "times": "*", "multiplied by": "*",
-            "divided by": "/", "over": "/", "mod": "%", "modulo": "%",
+            "divided by": "/", "over": "/", "modulo": "%", "mod": "%",
             "to the power of": "**", "raised to": "**", "squared": "**2",
             "cubed": "**3",
         }
         for word, sym in replacements.items():
             q_clean = q_clean.replace(word, sym)
+
+        # Modulo: "the remainder of A divided by B" -> A %% B
+        rem = re.search(r"remainder\s+of\s+(\d+)\s*/\s*(\d+)", q_clean)
+        if rem:
+            a, b = int(rem.group(1)), int(rem.group(2))
+            if b != 0:
+                result = a % b
+                return MathResult(
+                    answer=str(result), confidence=0.99,
+                    method="modulo",
+                    steps=[f"remainder of {a} / {b} = {result}"],
+                    latency_ms=(time.perf_counter() - t0) * 1000,
+                )
 
         # Factorial
         fact_match = re.match(r"(\d+)!", q_clean)
@@ -133,6 +150,34 @@ class MathHandler:
                 pass
 
         return None
+
+    # ── Min / Max ────────────────────────────────────────
+
+    def _try_minmax(self, q: str, t0: float) -> MathResult | None:
+        """Handle 'largest/smallest of X, Y and Z' style queries."""
+        q_clean = q.lower().strip().rstrip("?")
+        m = re.search(
+            r"\b(largest|greatest|biggest|maximum|highest|"
+            r"smallest|least|minimum|lowest)\s+of\s+(.+?)\s*$",
+            q_clean,
+        )
+        if not m:
+            return None
+        # capture everything after 'of' (numbers may be joined by
+        # ', ' and ' and ') and extract all integer tokens
+        nums = [int(x) for x in re.findall(r"\d+", m.group(2))]
+        if not nums:
+            return None
+        pick_max = m.group(1) in ("largest", "greatest", "biggest",
+                                  "maximum", "highest")
+        result = max(nums) if pick_max else min(nums)
+        label = "max" if pick_max else "min"
+        return MathResult(
+            answer=str(result), confidence=0.99,
+            method=f"minmax_{label}",
+            steps=[f"{'max' if pick_max else 'min'}({', '.join(map(str, nums))}) = {result}"],
+            latency_ms=(time.perf_counter() - t0) * 1000,
+        )
 
     # ── Linear Equations ─────────────────────────────────
 

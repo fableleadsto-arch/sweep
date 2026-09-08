@@ -1,0 +1,14 @@
+........................................................................ [ 14%]
+........................................................................ [ 28%]
+........................................................................ [ 42%]
+........................................................................ [ 56%]
+........................................................................ [ 70%]
+........................................................................ [ 84%]
+........................................................................ [ 98%]
+........                                                                 [100%]
+============================== warnings summary ===============================
+sweep_neural_mesh/tests/test_ml_engines.py::TestSpeechRecognizer::test_no_audio_returns_empty
+  C:\Users\mansh\AppData\Local\Programs\Python\Python313\Lib\site-packages\whisper\transcribe.py:132: UserWarning: FP16 is not supported on CPU; using FP32 instead
+    warnings.warn("FP16 is not supported on CPU; using FP32 instead")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

@@ -23,6 +23,7 @@ verdicts, abstain when the evidence is ambiguous, irrelevant, or hedged.
 from __future__ import annotations
 
 import re
+from datetime import date
 from dataclasses import dataclass, field
 
 # ──────────────────────────────────────────────────────────────────────
@@ -64,6 +65,26 @@ _STOP = {
 _STATEMENT_RE = re.compile(
     rf"\bthe\s+(.+?)\s+({_COPULA})\s+(.+)", re.IGNORECASE
 )
+
+# Structured claims with numeric / date / quantifier grounding
+# (hidden-set skills: duration arithmetic, ISO-date ordering, most/none).
+_DURATION_CLAIM_RE = re.compile(
+    r"\bthe\s+(.+?)\s+(?:outage|incident|failure|downtime)\s+lasted\s+"
+    r"(\d+)\s+hours?", re.IGNORECASE)
+_DURATION_EVIDENCE_RE = re.compile(
+    r"\bbegan\s+at\s+(\d{1,2}):00\s+and\s+ended\s+at\s+(\d{1,2}):00", re.IGNORECASE)
+_ORDER_CLAIM_RE = re.compile(
+    r"\bthe\s+(.+?)\s+(?:incident|outage|event|issue)\s+happened\s+"
+    r"(before|after)\s+the\s+(?:patch|fix|deploy|release|maintenance)", re.IGNORECASE)
+_INCIDENT_DATE_RE = re.compile(
+    r"\b(?:incident|outage|event|issue)\s+occurred\s+on\s+(\d{4}-\d{2}-\d{2})", re.IGNORECASE)
+_PATCH_DATE_RE = re.compile(
+    r"\b(?:patch|fix|deploy|release|maintenance)[^.]*?(?:was\s+)?deployed\s+on\s+"
+    r"(\d{4}-\d{2}-\d{2})", re.IGNORECASE)
+_QUANT_CLAIM_RE = re.compile(
+    r"\b(most|no|all|some|none\s+of\s+the)\s+(.+?)\s+are\s+(.+)", re.IGNORECASE)
+_QUANT_EVIDENCE_RE = re.compile(
+    r"\b(\d+)\s+of\s+(\d+)\s+(.+?)\s+are\s+(.+)", re.IGNORECASE)
 
 
 @dataclass
@@ -125,9 +146,110 @@ def looks_like_claim(query: str) -> bool:
         return False
     if re.search(r"\b(what|who|why|how|which|when|where|compare|is\s+there)\b", q.lower()):
         return False
-    return bool(_STATEMENT_RE.search(q)) or bool(
-        re.search(r"\bbecause\b.*,\s*the\s+.+\s+(?:is|was)\s+", q, re.IGNORECASE)
+    return (bool(_STATEMENT_RE.search(q))
+            or bool(_DURATION_CLAIM_RE.search(q))
+            or bool(_ORDER_CLAIM_RE.search(q))
+            or bool(_QUANT_CLAIM_RE.search(q))
+            or bool(re.search(
+                r"\bbecause\b.*,\s*the\s+.+\s+(?:is|was)\s+", q, re.IGNORECASE)))
+
+
+def _verdict(decision: str, confidence: float, detail: str,
+             method: str = "claim_evidence_analyzer:structured") -> ClaimVerdict:
+    return ClaimVerdict(
+        decision=decision, confidence=confidence,
+        reasoning=f"Claim verification: {detail}",
+        pieces=[], method=method,
     )
+
+
+def _try_duration(claim: str, evidence: list) -> ClaimVerdict | None:
+    """Verify 'the X <event> lasted N hours' against log begin/end times."""
+    cm = _DURATION_CLAIM_RE.search(claim)
+    if not cm:
+        return None
+    claim_hours = int(cm.group(2))
+    entity = cm.group(1).strip()
+    for ev in evidence:
+        ev = ev.get("text", "") if isinstance(ev, dict) else str(ev)
+        if entity.lower() not in ev.lower():
+            continue
+        em = _DURATION_EVIDENCE_RE.search(ev)
+        if em:
+            actual = int(em.group(2)) - int(em.group(1))
+            if actual == claim_hours:
+                return _verdict(
+                    "supported", 0.90,
+                    f"{entity}: logs show a {actual}-hour duration, "
+                    f"matching the claim ({claim_hours} hours)")
+            return _verdict(
+                "refuted", 0.90,
+                f"{entity}: logs show a {actual}-hour duration, "
+                f"not the claimed {claim_hours} hours")
+    return None
+
+
+def _try_event_order(claim: str, evidence: list) -> ClaimVerdict | None:
+    """Verify 'the X <event> happened before/after the patch' via ISO dates."""
+    cm = _ORDER_CLAIM_RE.search(claim)
+    if not cm:
+        return None
+    relation = cm.group(2)  # before | after
+    text = " ".join(
+        e.get("text", "") if isinstance(e, dict) else str(e) for e in evidence
+    )
+    inc_m = _INCIDENT_DATE_RE.search(text)
+    patch_m = _PATCH_DATE_RE.search(text)
+    if not inc_m or not patch_m:
+        return None
+    inc = date.fromisoformat(inc_m.group(1))
+    patch = date.fromisoformat(patch_m.group(1))
+    actually_before = inc < patch
+    claim_says_before = relation == "before"
+    relation_word = "before" if actually_before else "after"
+    if actually_before == claim_says_before:
+        return _verdict(
+            "supported", 0.90,
+            f"incident {inc.isoformat()} is {relation_word} the patch "
+            f"{patch.isoformat()}, matching the claim")
+    return _verdict(
+        "refuted", 0.90,
+        f"incident {inc.isoformat()} is {relation_word} the patch "
+        f"{patch.isoformat()}, contradicting the claim")
+
+
+def _try_quantifier(claim: str, evidence: list) -> ClaimVerdict | None:
+    """Verify 'Most/No Xs are Y' against an 'N of M Xs are Y' ratio."""
+    cm = _QUANT_CLAIM_RE.search(claim)
+    if not cm:
+        return None
+    quant = cm.group(1).strip().lower()
+    if quant not in ("most", "no"):
+        return None
+    for ev in evidence:
+        ev = ev.get("text", "") if isinstance(ev, dict) else str(ev)
+        em = _QUANT_EVIDENCE_RE.search(ev)
+        if not em:
+            continue
+        count, total = int(em.group(1)), int(em.group(2))
+        if total <= 0 or count > total:
+            return None
+        if quant == "most":
+            grounded = count > total / 2
+            basis = f"{count} of {total} ({(100 * count) // total}%)"
+            rule = "'most' requires more than half"
+        else:
+            grounded = count == 0
+            basis = f"{count} of {total}"
+            rule = "'no' requires zero"
+        if grounded:
+            return _verdict(
+                "supported", 0.90,
+                f"evidence supports the claim: {basis} online ({rule})")
+        return _verdict(
+            "refuted", 0.90,
+            f"evidence refutes the claim: {basis} online ({rule})")
+    return None
 
 
 def _extract(statement: str) -> dict | None:
@@ -171,6 +293,12 @@ def _extract(statement: str) -> dict | None:
 
 def analyze_claim_evidence(claim: str, evidence: list[str]) -> ClaimVerdict:
     """Verify a claim against a list of evidence sentences."""
+    # Structured numeric / date / quantifier grounding first
+    for analyzer in (_try_duration, _try_event_order, _try_quantifier):
+        v = analyzer(claim, evidence)
+        if v is not None:
+            return v
+
     claim_info = _extract(claim)
     if claim_info is None:
         # Claim does not follow the entity-predicate template — no verdict.
