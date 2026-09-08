@@ -209,7 +209,8 @@ class SweepInferencePipeline:
         # 4. Fallback
         t0 = time.perf_counter()
         return InferenceResult(
-            answer=query, confidence=0.3, method="passthrough",
+            answer="UNKNOWN: no inference provider produced a result.",
+            confidence=0.0, method="unavailable",
             latency_ms=(time.perf_counter() - t0) * 1000,
         )
 
