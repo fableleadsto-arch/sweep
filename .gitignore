@@ -40,3 +40,7 @@ static/favicon.ico
 .relayhub/
 *.db
 *.sqlite3
+
+# Cognitive system runtime state (do not commit)
+cognition_store/
+gcm-diagnose.log
