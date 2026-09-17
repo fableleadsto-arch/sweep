@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/cli-v3.yml
       - pyproject.toml
+      - setup.py
       - sweep_neural_mesh/terminal.py
       - sweep_neural_mesh/tests/test_cli_v3.py
   workflow_dispatch:
