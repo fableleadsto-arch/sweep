@@ -1,5 +1,5 @@
 {
-  "version": "sweep-clinc150-training/1",
+  "version": "sweep-clinc150-training/2",
   "source": {
     "git_blob_sha1": "7a7b26c5f2dfbbf213f3e67d2dd0727e1af545aa",
     "expected": "7a7b26c5f2dfbbf213f3e67d2dd0727e1af545aa",
@@ -8,33 +8,51 @@
     "attribution_required": true
   },
   "seed": 20260917,
-  "model": "word_1_2gram_tfidf_linear_svc",
+  "model": "word_1_2gram_tfidf_linear_svc_validation_oos_threshold",
   "counts": {
-    "train": 15100,
+    "raw_train": 15000,
+    "train_after_decontamination": 14995,
     "validation": 3100,
     "test": 5500
   },
   "contamination_audit": {
-    "train_validation_exact_text_overlap": 3,
-    "train_test_exact_text_overlap": 2,
-    "validation_test_exact_text_overlap": 0
+    "removed_from_train": 5,
+    "removed_text_sha256": [
+      "51b820b4aea1a0209bd8f6e71c7f7ac736eaca9667730aa8b0d85e2ec6e6a398",
+      "57f71def4036b19dbe3b0ca6d74e74abe50a5ac230d576100cbe07db22bcd2f3",
+      "19d4a0529e23484180d04cb47c6b914912a84a0c6521798c06f68e6363dbc65b",
+      "6659ff389f1898852f26e97b865059f54a61b892542b58c74bd7bdbc1d048cf6",
+      "4cf803e229d7ee0084900f24d01bc6c4a75a0fafda04af0df724b3c0938f73c3"
+    ],
+    "post_train_validation_overlap": 0,
+    "post_train_test_overlap": 0,
+    "validation_test_overlap": 0
   },
-  "baseline_train_majority_fraction": 0.006622516556291391,
+  "calibration": {
+    "source": "validation_only",
+    "objective": "mean(in_scope_accuracy,oos_recall)",
+    "threshold": -0.054285326972552506,
+    "validation_objective": 0.8485,
+    "candidate_count": 501
+  },
+  "baseline_train_majority_fraction": 0.006668889629876626,
   "validation": {
     "examples": 3100,
-    "accuracy": 0.8841935483870967,
-    "macro_f1": 0.8924429305432295,
-    "in_scope_accuracy": 0.9076666666666666,
-    "oos_recall": 0.18
+    "accuracy": 0.8283870967741935,
+    "macro_f1": 0.8749549589397047,
+    "in_scope_accuracy": 0.827,
+    "oos_recall": 0.87,
+    "balanced_in_scope_oos": 0.8485
   },
   "test": {
     "examples": 5500,
-    "accuracy": 0.7647272727272727,
-    "macro_f1": 0.8298897972359637,
-    "in_scope_accuracy": 0.9102222222222223,
-    "oos_recall": 0.11
+    "accuracy": 0.836,
+    "macro_f1": 0.8721316020396831,
+    "in_scope_accuracy": 0.8304444444444444,
+    "oos_recall": 0.861,
+    "balanced_in_scope_oos": 0.8457222222222223
   },
-  "training_seconds": 1.6620679540000083,
+  "training_seconds": 1.7676932130000012,
   "environment": {
     "python": "3.12.14 (main, Aug 13 2026, 02:47:42) [GCC 13.3.0]",
     "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
