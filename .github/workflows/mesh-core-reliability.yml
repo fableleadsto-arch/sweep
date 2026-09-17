@@ -1,0 +1,24 @@
+name: Mesh core reliability
+on:
+  push:
+    branches: [sweep/device-host-integration-20260908]
+    paths:
+      - .github/workflows/mesh-core-reliability.yml
+      - sweep_neural_mesh/core/engine.py
+      - sweep_neural_mesh/core/graph.py
+      - sweep_neural_mesh/core/node.py
+      - sweep_neural_mesh/core/packet.py
+      - sweep_neural_mesh/tests/test_engine_reliability.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest sweep_neural_mesh.tests.test_engine_reliability -v
