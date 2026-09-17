@@ -1,0 +1,56 @@
+Obtaining file:///home/runner/work/sweep/sweep
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build editable did not run successfully.
+  │ exit code: 1
+  ╰─> [22 lines of output]
+      Traceback (most recent call last):
+        File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
+          main()
+        File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 157, in get_requires_for_build_editable
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-17599w4f/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 481, in get_requires_for_build_editable
+          return self.get_requires_for_build_wheel(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-17599w4f/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-17599w4f/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "/tmp/pip-build-env-17599w4f/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())  # noqa: S102 # exec is intentional here
+          ^^^^^^^^^^^^^^^^^^^^
+        File "<string>", line 9, in <module>
+      ModuleNotFoundError: No module named 'pybind11'
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed to build 'file:///home/runner/work/sweep/sweep' when getting requirements to build editable
+test_device_is_plan_only (sweep_neural_mesh.tests.test_terminal.TerminalTests.test_device_is_plan_only) ... ok
+test_neural_delegation (sweep_neural_mesh.tests.test_terminal.TerminalTests.test_neural_delegation) ... ok
+test_device_execution_bypass_is_blocked (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_device_execution_bypass_is_blocked) ... ok
+test_evaluate_missing_is_explicit (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_evaluate_missing_is_explicit) ... ok
+test_explain_missing_is_explicit (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_explain_missing_is_explicit) ... ok
+test_legacy_execute_neural_delegation (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_legacy_execute_neural_delegation) ... ok
+test_models_command_probes_without_loading_weights (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_models_command_probes_without_loading_weights) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.023s
+
+OK
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 6: sweep: command not found
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 7: sweep: command not found
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 8: sweep: command not found
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 9: sweep: command not found
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 10: sweep: command not found
+/home/runner/work/_temp/97439c6e-096f-4948-9c12-20ea0d5e3c47.sh: line 11: sweep: command not found
