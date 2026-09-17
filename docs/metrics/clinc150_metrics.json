@@ -1,0 +1,43 @@
+{
+  "version": "sweep-clinc150-training/1",
+  "source": {
+    "git_blob_sha1": "7a7b26c5f2dfbbf213f3e67d2dd0727e1af545aa",
+    "expected": "7a7b26c5f2dfbbf213f3e67d2dd0727e1af545aa",
+    "pinned": true,
+    "license": "CC-BY-3.0",
+    "attribution_required": true
+  },
+  "seed": 20260917,
+  "model": "word_1_2gram_tfidf_linear_svc",
+  "counts": {
+    "train": 15100,
+    "validation": 3100,
+    "test": 5500
+  },
+  "contamination_audit": {
+    "train_validation_exact_text_overlap": 3,
+    "train_test_exact_text_overlap": 2,
+    "validation_test_exact_text_overlap": 0
+  },
+  "baseline_train_majority_fraction": 0.006622516556291391,
+  "validation": {
+    "examples": 3100,
+    "accuracy": 0.8841935483870967,
+    "macro_f1": 0.8924429305432295,
+    "in_scope_accuracy": 0.9076666666666666,
+    "oos_recall": 0.18
+  },
+  "test": {
+    "examples": 5500,
+    "accuracy": 0.7647272727272727,
+    "macro_f1": 0.8298897972359637,
+    "in_scope_accuracy": 0.9102222222222223,
+    "oos_recall": 0.11
+  },
+  "training_seconds": 1.6620679540000083,
+  "environment": {
+    "python": "3.12.14 (main, Aug 13 2026, 02:47:42) [GCC 13.3.0]",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "scikit_learn": "1.9.1"
+  }
+}
