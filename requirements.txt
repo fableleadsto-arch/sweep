@@ -1,50 +1,29 @@
-# Sweep — Python/C++ Web Intelligence Platform with ML
-# Install: pip install -e . (builds C++ engine)
-# Or: pip install -r requirements.txt
-
-# ── Core ──────────────────────────────────────────────────────────────
 fastapi>=0.115,<1.0
 uvicorn[standard]>=0.29,<1.0
 pydantic>=2.8,<3.0
 pydantic-settings>=2.4,<3.0
 httpx>=0.27,<1.0
 python-dotenv>=1.0,<2.0
-
-# ── Web Scraping ─────────────────────────────────────────────────────
+qdrant-client>=1.9,<2.0
 beautifulsoup4>=4.12,<5.0
 trafilatura>=1.12,<2.0
 lxml>=5.0,<6.0
-
-# ── ML / Deep Learning ──────────────────────────────────────────────
 torch>=2.0
 numpy>=1.26,<3.0
 pandas>=2.2,<3.0
 scipy>=1.13,<2.0
 scikit-learn>=1.5,<2.0
-
-# ── Transformers & Diffusion ────────────────────────────────────────
 transformers>=4.40,<5.0
 accelerate>=0.30,<2.0
 diffusers>=0.28,<1.0
 sentence-transformers>=3.0,<4.0
-
-# ── Graph & Symbolic ────────────────────────────────────────────────
 networkx>=3.3,<4.0
 sympy>=1.13,<2.0
 matplotlib>=3.9,<4.0
 pillow>=10.4,<12.0
-
-# ── Gradient Boosting ──────────────────────────────────────────────
 xgboost>=2.0,<3.0
 lightgbm>=4.3,<5.0
-
-# ── C++ Build ────────────────────────────────────────────────────────
 pybind11>=2.12,<3.0
-
-# ── Intelligence / ML Stack ──────────────────────────────────────────
-transformers>=4.40,<5.0
-accelerate>=0.30,<2.0
-sentence-transformers>=3.0,<4.0
 open-clip-torch>=3.0,<4.0
 ultralytics>=8.0,<9.0
 opencv-python>=4.8,<6.0
@@ -57,6 +36,4 @@ pytesseract>=0.3,<1.0
 pyannote.audio>=3.0,<5.0
 psutil>=5.9,<7.0
 pyyaml>=6.0,<7.0
-
-# ── Tests ────────────────────────────────────────────────────────────
 pytest>=8.0,<10.0

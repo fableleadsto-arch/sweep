@@ -1,0 +1,20 @@
+name: Terminal production memory
+on:
+  push:
+    branches: [sweep/device-host-integration-20260908]
+    paths:
+      - .github/workflows/terminal-memory.yml
+      - sweep_neural_mesh/terminal_memory.py
+      - sweep_neural_mesh/tests/test_terminal_memory.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m unittest sweep_neural_mesh.tests.test_terminal_memory -v
