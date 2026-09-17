@@ -1,0 +1,20 @@
+name: Qwen mesh specialist
+on:
+  push:
+    branches: [sweep/device-host-integration-20260908]
+    paths:
+      - .github/workflows/qwen-specialist.yml
+      - sweep_neural_mesh/specialists/**
+      - sweep_neural_mesh/tests/test_qwen_specialist.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m unittest sweep_neural_mesh.tests.test_qwen_specialist -v
