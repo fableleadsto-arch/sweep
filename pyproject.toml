@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sweep"
 version = "2.0.0"
-description = "Sweep — Python-first web intelligence / OSINT research platform."
+description = "Sweep — multipurpose neural-mesh intelligence and authorized action platform."
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115,<1.0", "uvicorn[standard]>=0.29,<1.0",
@@ -25,12 +25,15 @@ browser = ["playwright>=1.40,<2.0"]
 ai = ["torch>=2.0", "transformers>=4.0", "sentence-transformers>=3.0", "open-clip-torch>=3.0"]
 vision = ["open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16"]
 audio = ["openai-whisper", "pyannote.audio>=3.0", "torchaudio>=2.0"]
-documents = ["layoutlm", "PyMuPDF>=1.23"]
+documents = ["PyMuPDF>=1.23"]
 intelligence = ["torch>=2.0", "transformers>=4.40", "sentence-transformers>=3.0", "open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16", "openai-whisper", "gliner>=0.2", "faiss-cpu>=1.7", "pyannote.audio>=3.0"]
 dev = ["pytest>=8.0,<10.0", "ruff>=0.1"]
 
 [tool.setuptools.packages.find]
 include = ["app*", "companion*", "sweep_neural_mesh*"]
+
+[tool.setuptools.package-data]
+sweep_neural_mesh = ["capability_ledger.json", "training/datasets/*.jsonl", "training/datasets/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "companion/tests", "sweep_neural_mesh/tests"]

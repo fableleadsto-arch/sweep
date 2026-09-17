@@ -1,0 +1,28 @@
+name: Unified CLI v3
+on:
+  push:
+    branches: [sweep/device-host-integration-20260908]
+    paths:
+      - .github/workflows/cli-v3.yml
+      - pyproject.toml
+      - sweep_neural_mesh/terminal.py
+      - sweep_neural_mesh/tests/test_cli_v3.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install -e . --no-deps
+      - run: python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 -v
+      - run: sweep --help
+      - run: sweep status
+      - run: sweep models
+      - run: sweep capabilities
+      - run: sweep device plan 'open chrome and go to example.com'
+      - run: sweep evaluate cognitive-router --metrics docs/metrics/cognitive_router_metrics.json
