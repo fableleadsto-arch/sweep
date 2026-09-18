@@ -129,13 +129,13 @@ Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
 Downloading lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (5.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 183.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 10.2 MB/s  0:00:00
 Using cached numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
 Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 362.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 84.0 MB/s  0:00:00
 Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 295.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 11.4 MB/s  0:00:00
 Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
 Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
 Downloading qdrant_client-1.19.1-py3-none-any.whl (406 kB)
@@ -151,9 +151,9 @@ Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_
 Downloading click-8.5.0-py3-none-any.whl (125 kB)
 Downloading courlan-1.4.0-py3-none-any.whl (34 kB)
 Downloading babel-2.18.0-py3-none-any.whl (10.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 350.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 59.9 MB/s  0:00:00
 Downloading grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 246.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 152.3 MB/s  0:00:00
 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
 Downloading htmldate-1.10.0-py3-none-any.whl (31 kB)
@@ -165,15 +165,15 @@ Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
 Using cached joblib-1.6.0-py3-none-any.whl (306 kB)
 Using cached cloudpickle-3.1.2-py3-none-any.whl (22 kB)
 Downloading justext-3.0.2-py2.py3-none-any.whl (837 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 135.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 13.7 MB/s  0:00:00
 Using cached narwhals-2.26.0-py3-none-any.whl (474 kB)
 Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
 Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 177.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 215.8 MB/s  0:00:00
 Downloading regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (804 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 174.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 202.3 MB/s  0:00:00
 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
 Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
@@ -185,7 +185,7 @@ Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
 Downloading tzdata-2026.4-py2.py3-none-any.whl (347 kB)
 Downloading tzlocal-5.4.4-py3-none-any.whl (18 kB)
 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 315.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 42.7 MB/s  0:00:00
 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
 Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
@@ -193,8 +193,8 @@ Downloading lxml_html_clean-0.4.4-py3-none-any.whl (14 kB)
 Building wheels for collected packages: sweep
   Building editable for sweep (pyproject.toml): started
   Building editable for sweep (pyproject.toml): finished with status 'done'
-  Created wheel for sweep: filename=sweep-2.0.0-0.editable-py3-none-any.whl size=6453 sha256=c9521853ed67b1c51baecac4a98418faeccf54d98305804641e36132716d3260
-  Stored in directory: /tmp/pip-ephem-wheel-cache-w80i49ep/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e
+  Created wheel for sweep: filename=sweep-2.0.0-0.editable-py3-none-any.whl size=6453 sha256=7a7f5e1c7d8528293799897aa1d7eed4a7cd19d9ee179f3b0a15db1759d2115d
+  Stored in directory: /tmp/pip-ephem-wheel-cache-qlsmf9u0/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e
 Successfully built sweep
 Installing collected packages: pytz, websockets, uvloop, urllib3, tzlocal, tzdata, typing-extensions, tld, threadpoolctl, soupsieve, six, regex, pyyaml, python-dotenv, protobuf, portalocker, numpy, narwhals, lxml, idna, hyperframe, httptools, hpack, h11, cloudpickle, click, charset-normalizer, certifi, babel, annotated-types, annotated-doc, uvicorn, typing-inspection, scipy, python-dateutil, pydantic-core, lxml_html_clean, joblib, httpcore, h2, grpcio, courlan, beautifulsoup4, anyio, watchfiles, starlette, scikit-learn, pydantic, pandas, httpx, dateparser, pydantic-settings, justext, htmldate, fastapi, trafilatura, qdrant-client, sweep
 
@@ -215,37 +215,13 @@ test_research_redirect_is_not_followed (sweep_neural_mesh.tests.test_workloads.W
 test_clean_and_forecast (sweep_neural_mesh.tests.test_workloads_extra.ExtraWorkloadTests.test_clean_and_forecast) ... ok
 test_document_compare_and_export (sweep_neural_mesh.tests.test_workloads_extra.ExtraWorkloadTests.test_document_compare_and_export) ... ok
 test_image_missing_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_image_missing_is_explicit) ... ok
-test_missing_whisper_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_missing_whisper_is_explicit) ... ERROR
-test_wav_metadata_is_real (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_wav_metadata_is_real) ... ERROR
-
-======================================================================
-ERROR: test_missing_whisper_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_missing_whisper_is_explicit)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/runner/work/sweep/sweep/sweep_neural_mesh/tests/test_media_workloads.py", line 12, in test_missing_whisper_is_explicit
-    p=Path(d,"audio.wav");p.write_bytes(b"not-audio");out=audio_transcribe(str(p));self.assertEqual(out["status"],"unavailable");self.assertIn("No download",out["reason"])
-                                                          ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/sweep/sweep/sweep_neural_mesh/media_workloads.py", line 38, in audio_transcribe
-    p,error=_path(path)
-    ^^^^^^^
-TypeError: cannot unpack non-iterable PosixPath object
-
-======================================================================
-ERROR: test_wav_metadata_is_real (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_wav_metadata_is_real)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/runner/work/sweep/sweep/sweep_neural_mesh/tests/test_media_workloads.py", line 9, in test_wav_metadata_is_real
-    out=audio_inspect(str(p));self.assertEqual(out["status"],"completed");self.assertEqual(out["duration_seconds"],1.0);self.assertEqual(len(out["sha256"]),64)
-        ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/sweep/sweep/sweep_neural_mesh/media_workloads.py", line 28, in audio_inspect
-    p,error=_path(path)
-    ^^^^^^^
-TypeError: cannot unpack non-iterable PosixPath object
+test_missing_whisper_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_missing_whisper_is_explicit) ... ok
+test_wav_metadata_is_real (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_wav_metadata_is_real) ... ok
 
 ----------------------------------------------------------------------
-Ran 18 tests in 2.550s
+Ran 18 tests in 1.501s
 
-FAILED (errors=2)
+OK
 usage: sweep [-h] [--version]
              {ask,chat,status,models,memory,reason,explain,train,evaluate,device,capabilities,doctor,document,data,numeric,research,export,media}
              ...
