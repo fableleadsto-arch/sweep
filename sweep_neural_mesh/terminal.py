@@ -2,7 +2,7 @@
 from __future__ import annotations
 import argparse,json,platform,sys
 from pathlib import Path
-VERSION="sweep-cli/6"
+VERSION="sweep-cli/7"
 DEFAULT_REASONING=Path.home()/".relayhub"/"sweep-reasoning.jsonl"
 DEFAULT_COGNITIVE_ARTIFACT=Path.home()/".relayhub"/"models"/"cognitive-router"
 def emit(value,pretty=True):print(json.dumps(value,indent=2 if pretty else None,default=str,sort_keys=pretty))
@@ -87,10 +87,12 @@ def run_document(args):
 def run_data(args):
  from sweep_neural_mesh.workloads import data_analyze
  from sweep_neural_mesh.workloads_extra import data_clean,data_forecast
+ from sweep_neural_mesh.plot_workloads import data_plot
  if args.data_command=="analyze":out=data_analyze(args.path,args.group_by)
  elif args.data_command=="clean":out=data_clean(args.path,args.output,args.fill)
- else:out=data_forecast(args.path,args.column,args.steps)
- emit(out);return 0
+ elif args.data_command=="forecast":out=data_forecast(args.path,args.column,args.steps)
+ else:out=data_plot(args.path,args.kind,args.x,args.y,args.output)
+ emit(out);return 0 if out.get("status") in {"completed","unavailable"} else 2
 def run_numeric(args):
  from sweep_neural_mesh.workloads import numeric_describe,numeric_simulate
  if args.numeric_command=="describe":emit(numeric_describe(args.values))
@@ -130,7 +132,7 @@ def parser():
  caps=sub.add_parser("capabilities",help="show verified/candidate/blocked capabilities");caps.set_defaults(func=run_capabilities)
  doctor=sub.add_parser("doctor",help="diagnose local readiness");doctor.set_defaults(func=run_doctor)
  document=sub.add_parser("document",help="inspect extract or compare local documents");doc=document.add_subparsers(dest="document_command",required=True);inspect=doc.add_parser("inspect");inspect.add_argument("path");inspect.set_defaults(func=run_document);extract=doc.add_parser("extract");extract.add_argument("path");extract.add_argument("--query");extract.set_defaults(func=run_document);compare=doc.add_parser("compare");compare.add_argument("left");compare.add_argument("right");compare.set_defaults(func=run_document)
- data=sub.add_parser("data",help="analyze clean or forecast local tabular data");ds=data.add_subparsers(dest="data_command",required=True);analyze=ds.add_parser("analyze");analyze.add_argument("path");analyze.add_argument("--group-by");analyze.set_defaults(func=run_data);clean=ds.add_parser("clean");clean.add_argument("path");clean.add_argument("--output");clean.add_argument("--fill",choices=["empty","zero","mean"],default="empty");clean.set_defaults(func=run_data);forecast=ds.add_parser("forecast");forecast.add_argument("path");forecast.add_argument("column");forecast.add_argument("--steps",type=int,default=5);forecast.set_defaults(func=run_data)
+ data=sub.add_parser("data",help="analyze clean forecast or plot local tabular data");ds=data.add_subparsers(dest="data_command",required=True);analyze=ds.add_parser("analyze");analyze.add_argument("path");analyze.add_argument("--group-by");analyze.set_defaults(func=run_data);clean=ds.add_parser("clean");clean.add_argument("path");clean.add_argument("--output");clean.add_argument("--fill",choices=["empty","zero","mean"],default="empty");clean.set_defaults(func=run_data);forecast=ds.add_parser("forecast");forecast.add_argument("path");forecast.add_argument("column");forecast.add_argument("--steps",type=int,default=5);forecast.set_defaults(func=run_data);plot=ds.add_parser("plot");plot.add_argument("path");plot.add_argument("--kind",choices=["line","bar","scatter","hist"],default="line");plot.add_argument("--x");plot.add_argument("--y");plot.add_argument("--output",required=True);plot.set_defaults(func=run_data)
  numeric=sub.add_parser("numeric",help="numeric summaries and simulations");num=numeric.add_subparsers(dest="numeric_command",required=True);describe=num.add_parser("describe");describe.add_argument("values",nargs="+",type=float);describe.set_defaults(func=run_numeric);simulate=num.add_parser("simulate");simulate.add_argument("kind",choices=["random-walk","logistic-growth"]);simulate.add_argument("--steps",type=int,default=100);simulate.add_argument("--seed",type=int,default=0);simulate.set_defaults(func=run_numeric)
  research=sub.add_parser("research",help="fetch public URLs with safety guards");res=research.add_subparsers(dest="research_command",required=True);fetch=res.add_parser("fetch");fetch.add_argument("url");fetch.add_argument("--max-chars",type=int,default=60000);fetch.set_defaults(func=run_research);compare=res.add_parser("compare");compare.add_argument("urls",nargs="+");compare.add_argument("--max-chars",type=int,default=12000);compare.set_defaults(func=run_research)
  export=sub.add_parser("export",help="export JSON results");ex=export.add_subparsers(dest="export_command",required=True);j=ex.add_parser("json");j.add_argument("input");j.add_argument("output");j.set_defaults(func=run_export)
