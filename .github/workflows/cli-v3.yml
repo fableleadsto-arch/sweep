@@ -35,6 +35,11 @@ jobs:
           {
             python -m pip install -e .
             python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 sweep_neural_mesh.tests.test_workloads sweep_neural_mesh.tests.test_workloads_extra sweep_neural_mesh.tests.test_media_workloads -v
+            python -m venv /tmp/sweep-wheel-venv
+            /tmp/sweep-wheel-venv/bin/python -m pip install --upgrade pip
+            python -m pip wheel . --no-deps -w artifacts/cli-v6/wheel
+            /tmp/sweep-wheel-venv/bin/python -m pip install artifacts/cli-v6/wheel/*.whl
+            /tmp/sweep-wheel-venv/bin/sweep --version
             sweep --help
             sweep status
             sweep models
@@ -54,7 +59,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/metrics/cli_v6_ci_transcript.log docs/metrics/cli_v6_ci_exit_code.txt
-          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record media CLI validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
+          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record clean wheel validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
       - uses: actions/upload-artifact@v4
         with:
           name: sweep-cli-v6-${{ github.sha }}
