@@ -1,4 +1,4 @@
-name: Unified CLI v3
+name: Unified CLI v4
 on:
   push:
     branches: [sweep/device-host-integration-20260908]
@@ -7,7 +7,9 @@ on:
       - pyproject.toml
       - setup.py
       - sweep_neural_mesh/terminal.py
+      - sweep_neural_mesh/workloads.py
       - sweep_neural_mesh/tests/test_cli_v3.py
+      - sweep_neural_mesh/tests/test_workloads.py
   workflow_dispatch:
 permissions:
   contents: write
@@ -25,33 +27,33 @@ jobs:
       - name: Install and exercise CLI
         run: |
           set +e
-          mkdir -p artifacts/cli-v3
+          mkdir -p artifacts/cli-v4
           {
             python -m pip install -e .
-            python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 -v
+            python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 sweep_neural_mesh.tests.test_workloads -v
             sweep --help
             sweep status
             sweep models
             sweep capabilities
             sweep device plan 'open chrome and go to example.com'
             sweep evaluate cognitive-router --metrics docs/metrics/cognitive_router_metrics.json
-          } > artifacts/cli-v3/transcript.log 2>&1
+          } > artifacts/cli-v4/transcript.log 2>&1
           code=$?
-          echo "$code" > artifacts/cli-v3/exit-code.txt
-          cat artifacts/cli-v3/transcript.log
+          echo "$code" > artifacts/cli-v4/exit-code.txt
+          cat artifacts/cli-v4/transcript.log
           exit 0
       - name: Persist diagnostic transcript
         run: |
           mkdir -p docs/metrics
-          cp artifacts/cli-v3/transcript.log docs/metrics/cli_v3_ci_transcript.log
-          cp artifacts/cli-v3/exit-code.txt docs/metrics/cli_v3_ci_exit_code.txt
+          cp artifacts/cli-v4/transcript.log docs/metrics/cli_v4_ci_transcript.log
+          cp artifacts/cli-v4/exit-code.txt docs/metrics/cli_v4_ci_exit_code.txt
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/metrics/cli_v3_ci_transcript.log docs/metrics/cli_v3_ci_exit_code.txt
-          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record unified CLI validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
+          git add docs/metrics/cli_v4_ci_transcript.log docs/metrics/cli_v4_ci_exit_code.txt
+          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record workload CLI validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
       - uses: actions/upload-artifact@v4
         with:
-          name: sweep-cli-v3-${{ github.sha }}
-          path: artifacts/cli-v3/
+          name: sweep-cli-v4-${{ github.sha }}
+          path: artifacts/cli-v4/
       - name: Enforce result
-        run: test "$(cat artifacts/cli-v3/exit-code.txt)" = "0"
+        run: test "$(cat artifacts/cli-v4/exit-code.txt)" = "0"

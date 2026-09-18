@@ -2,7 +2,7 @@
 from __future__ import annotations
 import argparse,json,platform,sys
 from pathlib import Path
-VERSION="sweep-cli/3"
+VERSION="sweep-cli/4"
 DEFAULT_REASONING=Path.home()/".relayhub"/"sweep-reasoning.jsonl"
 DEFAULT_COGNITIVE_ARTIFACT=Path.home()/".relayhub"/"models"/"cognitive-router"
 def emit(value,pretty=True):print(json.dumps(value,indent=2 if pretty else None,default=str,sort_keys=pretty))
@@ -77,6 +77,20 @@ def run_capabilities(args):
  emit(json.loads(path.read_text(encoding="utf-8")));return 0
 def run_doctor(args):
  payload=status_payload();payload["checks"]={"models_present":sum(v["status"]=="available_untested" for v in payload["models"].values()),"models_blocked":sum(v["status"]=="blocked" for v in payload["models"].values()),"models_missing":sum(v["status"]=="missing" for v in payload["models"].values()),"ready_for_unverified_local_generation":any(v["status"]=="available_untested" for v in payload["models"].values())};emit(payload);return 0
+def run_document(args):
+ from sweep_neural_mesh.workloads import document_extract,document_inspect
+ out=document_inspect(args.path) if args.document_command=="inspect" else document_extract(args.path,args.query);emit(out);return 0 if out.get("status") in {"completed","unavailable"} else 2
+def run_data(args):
+ from sweep_neural_mesh.workloads import data_analyze
+ emit(data_analyze(args.path,args.group_by));return 0
+def run_numeric(args):
+ from sweep_neural_mesh.workloads import numeric_describe,numeric_simulate
+ if args.numeric_command=="describe":emit(numeric_describe(args.values))
+ else:emit(numeric_simulate(args.kind,args.steps,args.seed))
+ return 0
+def run_research(args):
+ from sweep_neural_mesh.workloads import research_fetch
+ out=research_fetch(args.url,args.max_chars);emit(out);return 0 if out.get("status")=="completed" else 2
 def add_runtime(p):
  from sweep_neural_mesh.intelligence_agent import DEFAULT_MEMORY,DEFAULT_MODEL
  p.add_argument("--model",type=Path,default=DEFAULT_MODEL);p.add_argument("--memory-file",type=Path,default=DEFAULT_MEMORY);p.add_argument("--user-id",default="terminal");p.add_argument("--workspace-id")
@@ -94,6 +108,10 @@ def parser():
  dev=sub.add_parser("device",help="permission-gated device operations");d=dev.add_subparsers(dest="device_command",required=True);planp=d.add_parser("plan");planp.add_argument("request");planp.set_defaults(func=run_device);runp=d.add_parser("run");runp.set_defaults(func=run_device)
  caps=sub.add_parser("capabilities",help="show verified/candidate/blocked capabilities");caps.set_defaults(func=run_capabilities)
  doctor=sub.add_parser("doctor",help="diagnose local readiness");doctor.set_defaults(func=run_doctor)
+ document=sub.add_parser("document",help="inspect and extract local documents");doc=document.add_subparsers(dest="document_command",required=True);inspect=doc.add_parser("inspect");inspect.add_argument("path");inspect.set_defaults(func=run_document);extract=doc.add_parser("extract");extract.add_argument("path");extract.add_argument("--query");extract.set_defaults(func=run_document)
+ data=sub.add_parser("data",help="analyze local tabular data");data.add_argument("data_command",choices=["analyze"]);data.add_argument("path");data.add_argument("--group-by");data.set_defaults(func=run_data)
+ numeric=sub.add_parser("numeric",help="numeric summaries and simulations");num=numeric.add_subparsers(dest="numeric_command",required=True);describe=num.add_parser("describe");describe.add_argument("values",nargs="+",type=float);describe.set_defaults(func=run_numeric);simulate=num.add_parser("simulate");simulate.add_argument("kind",choices=["random-walk","logistic-growth"]);simulate.add_argument("--steps",type=int,default=100);simulate.add_argument("--seed",type=int,default=0);simulate.set_defaults(func=run_numeric)
+ research=sub.add_parser("research",help="fetch one public URL with safety guards");res=research.add_subparsers(dest="research_command",required=True);fetch=res.add_parser("fetch");fetch.add_argument("url");fetch.add_argument("--max-chars",type=int,default=60000);fetch.set_defaults(func=run_research)
  return p
 def legacy_main(argv):
  p=argparse.ArgumentParser();add_runtime(p);p.add_argument("--neural",action="store_true");p.add_argument("--once");p.add_argument("--remember");p.add_argument("--recall");p.add_argument("--status",action="store_true");a=p.parse_args(argv)
