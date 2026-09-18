@@ -2,7 +2,7 @@
 from __future__ import annotations
 import argparse,json,platform,sys
 from pathlib import Path
-VERSION="sweep-cli/4"
+VERSION="sweep-cli/5"
 DEFAULT_REASONING=Path.home()/".relayhub"/"sweep-reasoning.jsonl"
 DEFAULT_COGNITIVE_ARTIFACT=Path.home()/".relayhub"/"models"/"cognitive-router"
 def emit(value,pretty=True):print(json.dumps(value,indent=2 if pretty else None,default=str,sort_keys=pretty))
@@ -79,10 +79,18 @@ def run_doctor(args):
  payload=status_payload();payload["checks"]={"models_present":sum(v["status"]=="available_untested" for v in payload["models"].values()),"models_blocked":sum(v["status"]=="blocked" for v in payload["models"].values()),"models_missing":sum(v["status"]=="missing" for v in payload["models"].values()),"ready_for_unverified_local_generation":any(v["status"]=="available_untested" for v in payload["models"].values())};emit(payload);return 0
 def run_document(args):
  from sweep_neural_mesh.workloads import document_extract,document_inspect
- out=document_inspect(args.path) if args.document_command=="inspect" else document_extract(args.path,args.query);emit(out);return 0 if out.get("status") in {"completed","unavailable"} else 2
+ from sweep_neural_mesh.workloads_extra import document_compare
+ if args.document_command=="inspect":out=document_inspect(args.path)
+ elif args.document_command=="extract":out=document_extract(args.path,args.query)
+ else:out=document_compare(args.left,args.right)
+ emit(out);return 0 if out.get("status") in {"completed","unavailable"} else 2
 def run_data(args):
  from sweep_neural_mesh.workloads import data_analyze
- emit(data_analyze(args.path,args.group_by));return 0
+ from sweep_neural_mesh.workloads_extra import data_clean,data_forecast
+ if args.data_command=="analyze":out=data_analyze(args.path,args.group_by)
+ elif args.data_command=="clean":out=data_clean(args.path,args.output,args.fill)
+ else:out=data_forecast(args.path,args.column,args.steps)
+ emit(out);return 0
 def run_numeric(args):
  from sweep_neural_mesh.workloads import numeric_describe,numeric_simulate
  if args.numeric_command=="describe":emit(numeric_describe(args.values))
@@ -90,7 +98,13 @@ def run_numeric(args):
  return 0
 def run_research(args):
  from sweep_neural_mesh.workloads import research_fetch
- out=research_fetch(args.url,args.max_chars);emit(out);return 0 if out.get("status")=="completed" else 2
+ from sweep_neural_mesh.workloads_extra import research_compare
+ if args.research_command=="fetch":out=research_fetch(args.url,args.max_chars)
+ else:out=research_compare(args.urls,args.max_chars)
+ emit(out);return 0 if out.get("status") in {"completed","blocked"} else 2
+def run_export(args):
+ from sweep_neural_mesh.workloads_extra import export_json
+ value=json.loads(Path(args.input).read_text(encoding="utf-8"));emit(export_json(value,args.output));return 0
 def add_runtime(p):
  from sweep_neural_mesh.intelligence_agent import DEFAULT_MEMORY,DEFAULT_MODEL
  p.add_argument("--model",type=Path,default=DEFAULT_MODEL);p.add_argument("--memory-file",type=Path,default=DEFAULT_MEMORY);p.add_argument("--user-id",default="terminal");p.add_argument("--workspace-id")
@@ -108,10 +122,11 @@ def parser():
  dev=sub.add_parser("device",help="permission-gated device operations");d=dev.add_subparsers(dest="device_command",required=True);planp=d.add_parser("plan");planp.add_argument("request");planp.set_defaults(func=run_device);runp=d.add_parser("run");runp.set_defaults(func=run_device)
  caps=sub.add_parser("capabilities",help="show verified/candidate/blocked capabilities");caps.set_defaults(func=run_capabilities)
  doctor=sub.add_parser("doctor",help="diagnose local readiness");doctor.set_defaults(func=run_doctor)
- document=sub.add_parser("document",help="inspect and extract local documents");doc=document.add_subparsers(dest="document_command",required=True);inspect=doc.add_parser("inspect");inspect.add_argument("path");inspect.set_defaults(func=run_document);extract=doc.add_parser("extract");extract.add_argument("path");extract.add_argument("--query");extract.set_defaults(func=run_document)
- data=sub.add_parser("data",help="analyze local tabular data");data.add_argument("data_command",choices=["analyze"]);data.add_argument("path");data.add_argument("--group-by");data.set_defaults(func=run_data)
+ document=sub.add_parser("document",help="inspect extract or compare local documents");doc=document.add_subparsers(dest="document_command",required=True);inspect=doc.add_parser("inspect");inspect.add_argument("path");inspect.set_defaults(func=run_document);extract=doc.add_parser("extract");extract.add_argument("path");extract.add_argument("--query");extract.set_defaults(func=run_document);compare=doc.add_parser("compare");compare.add_argument("left");compare.add_argument("right");compare.set_defaults(func=run_document)
+ data=sub.add_parser("data",help="analyze clean or forecast local tabular data");data.add_subparsers(dest="data_command",required=True);analyze=data._subparsers._group_actions[0].add_parser("analyze");analyze.add_argument("path");analyze.add_argument("--group-by");analyze.set_defaults(func=run_data);clean=data._subparsers._group_actions[0].add_parser("clean");clean.add_argument("path");clean.add_argument("--output");clean.add_argument("--fill",choices=["empty","zero","mean"],default="empty");clean.set_defaults(func=run_data);forecast=data._subparsers._group_actions[0].add_parser("forecast");forecast.add_argument("path");forecast.add_argument("column");forecast.add_argument("--steps",type=int,default=5);forecast.set_defaults(func=run_data)
  numeric=sub.add_parser("numeric",help="numeric summaries and simulations");num=numeric.add_subparsers(dest="numeric_command",required=True);describe=num.add_parser("describe");describe.add_argument("values",nargs="+",type=float);describe.set_defaults(func=run_numeric);simulate=num.add_parser("simulate");simulate.add_argument("kind",choices=["random-walk","logistic-growth"]);simulate.add_argument("--steps",type=int,default=100);simulate.add_argument("--seed",type=int,default=0);simulate.set_defaults(func=run_numeric)
- research=sub.add_parser("research",help="fetch one public URL with safety guards");res=research.add_subparsers(dest="research_command",required=True);fetch=res.add_parser("fetch");fetch.add_argument("url");fetch.add_argument("--max-chars",type=int,default=60000);fetch.set_defaults(func=run_research)
+ research=sub.add_parser("research",help="fetch public URLs with safety guards");res=research.add_subparsers(dest="research_command",required=True);fetch=res.add_parser("fetch");fetch.add_argument("url");fetch.add_argument("--max-chars",type=int,default=60000);fetch.set_defaults(func=run_research);compare=res.add_parser("compare");compare.add_argument("urls",nargs="+");compare.add_argument("--max-chars",type=int,default=12000);compare.set_defaults(func=run_research)
+ export=sub.add_parser("export",help="export JSON results");ex=export.add_subparsers(dest="export_command",required=True);j=ex.add_parser("json");j.add_argument("input");j.add_argument("output");j.set_defaults(func=run_export)
  return p
 def legacy_main(argv):
  p=argparse.ArgumentParser();add_runtime(p);p.add_argument("--neural",action="store_true");p.add_argument("--once");p.add_argument("--remember");p.add_argument("--recall");p.add_argument("--status",action="store_true");a=p.parse_args(argv)
