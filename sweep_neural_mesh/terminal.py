@@ -2,7 +2,7 @@
 from __future__ import annotations
 import argparse,json,platform,sys
 from pathlib import Path
-VERSION="sweep-cli/7"
+VERSION="sweep-cli/8"
 DEFAULT_REASONING=Path.home()/".relayhub"/"sweep-reasoning.jsonl"
 DEFAULT_COGNITIVE_ARTIFACT=Path.home()/".relayhub"/"models"/"cognitive-router"
 def emit(value,pretty=True):print(json.dumps(value,indent=2 if pretty else None,default=str,sort_keys=pretty))
@@ -107,6 +107,9 @@ def run_research(args):
 def run_export(args):
  from sweep_neural_mesh.workloads_extra import export_json
  value=json.loads(Path(args.input).read_text(encoding="utf-8"));emit(export_json(value,args.output));return 0
+def run_report(args):
+ from sweep_neural_mesh.report_workloads import report_markdown
+ out=report_markdown(args.input,args.output);emit(out);return 0 if out.get("status")=="completed" else 2
 def run_media(args):
  from sweep_neural_mesh.media_workloads import audio_inspect,audio_transcribe,image_run,video_inspect
  if args.media_command=="image":out=image_run(args.path,args.operation,args.output,{"width":args.width,"height":args.height,"degrees":args.degrees,"kernel":args.kernel,"threshold":args.threshold})
@@ -136,6 +139,7 @@ def parser():
  numeric=sub.add_parser("numeric",help="numeric summaries and simulations");num=numeric.add_subparsers(dest="numeric_command",required=True);describe=num.add_parser("describe");describe.add_argument("values",nargs="+",type=float);describe.set_defaults(func=run_numeric);simulate=num.add_parser("simulate");simulate.add_argument("kind",choices=["random-walk","logistic-growth"]);simulate.add_argument("--steps",type=int,default=100);simulate.add_argument("--seed",type=int,default=0);simulate.set_defaults(func=run_numeric)
  research=sub.add_parser("research",help="fetch public URLs with safety guards");res=research.add_subparsers(dest="research_command",required=True);fetch=res.add_parser("fetch");fetch.add_argument("url");fetch.add_argument("--max-chars",type=int,default=60000);fetch.set_defaults(func=run_research);compare=res.add_parser("compare");compare.add_argument("urls",nargs="+");compare.add_argument("--max-chars",type=int,default=12000);compare.set_defaults(func=run_research)
  export=sub.add_parser("export",help="export JSON results");ex=export.add_subparsers(dest="export_command",required=True);j=ex.add_parser("json");j.add_argument("input");j.add_argument("output");j.set_defaults(func=run_export)
+ report=sub.add_parser("report",help="render persisted JSON as a provenance-preserving Markdown report");rp=report.add_subparsers(dest="report_command",required=True);md=rp.add_parser("markdown");md.add_argument("input");md.add_argument("output");md.set_defaults(func=run_report)
  media=sub.add_parser("media",help="guarded image audio and video workloads");mi=media.add_subparsers(dest="media_command",required=True);image=mi.add_parser("image");image.add_argument("path");image.add_argument("--operation",choices=["describe","resize","grayscale","rotate","blur","threshold","features","faces"],default="describe");image.add_argument("--output");image.add_argument("--width",type=int);image.add_argument("--height",type=int);image.add_argument("--degrees",type=float);image.add_argument("--kernel",type=int);image.add_argument("--threshold",type=int);image.set_defaults(func=run_media);ai=mi.add_parser("audio-inspect");ai.add_argument("path");ai.set_defaults(func=run_media);at=mi.add_parser("audio-transcribe");at.add_argument("path");at.set_defaults(func=run_media);video=mi.add_parser("video");video.add_argument("path");video.set_defaults(func=run_media)
  return p
 def legacy_main(argv):

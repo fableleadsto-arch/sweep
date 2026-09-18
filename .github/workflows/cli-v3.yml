@@ -1,4 +1,4 @@
-name: Unified CLI v7
+name: Unified CLI v8
 on:
   push:
     branches: [sweep/device-host-integration-20260908]
@@ -11,11 +11,13 @@ on:
       - sweep_neural_mesh/workloads_extra.py
       - sweep_neural_mesh/media_workloads.py
       - sweep_neural_mesh/plot_workloads.py
+      - sweep_neural_mesh/report_workloads.py
       - sweep_neural_mesh/tests/test_cli_v3.py
       - sweep_neural_mesh/tests/test_workloads.py
       - sweep_neural_mesh/tests/test_workloads_extra.py
       - sweep_neural_mesh/tests/test_media_workloads.py
       - sweep_neural_mesh/tests/test_plot_workloads.py
+      - sweep_neural_mesh/tests/test_report_workloads.py
   workflow_dispatch:
 permissions:
   contents: write
@@ -33,14 +35,14 @@ jobs:
       - name: Install and exercise CLI
         run: |
           set +e
-          mkdir -p artifacts/cli-v7
+          mkdir -p artifacts/cli-v8
           {
             python -m pip install -e .
-            python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 sweep_neural_mesh.tests.test_workloads sweep_neural_mesh.tests.test_workloads_extra sweep_neural_mesh.tests.test_media_workloads sweep_neural_mesh.tests.test_plot_workloads -v
+            python -m unittest sweep_neural_mesh.tests.test_terminal sweep_neural_mesh.tests.test_cli_v3 sweep_neural_mesh.tests.test_workloads sweep_neural_mesh.tests.test_workloads_extra sweep_neural_mesh.tests.test_media_workloads sweep_neural_mesh.tests.test_plot_workloads sweep_neural_mesh.tests.test_report_workloads -v
             python -m venv /tmp/sweep-wheel-venv
             /tmp/sweep-wheel-venv/bin/python -m pip install --upgrade pip
-            python -m pip wheel . --no-deps -w artifacts/cli-v7/wheel
-            /tmp/sweep-wheel-venv/bin/python -m pip install artifacts/cli-v7/wheel/*.whl
+            python -m pip wheel . --no-deps -w artifacts/cli-v8/wheel
+            /tmp/sweep-wheel-venv/bin/python -m pip install artifacts/cli-v8/wheel/*.whl
             /tmp/sweep-wheel-venv/bin/sweep --version
             sweep --help
             sweep status
@@ -48,23 +50,23 @@ jobs:
             sweep capabilities
             sweep device plan 'open chrome and go to example.com'
             sweep evaluate cognitive-router --metrics docs/metrics/cognitive_router_metrics.json
-          } > artifacts/cli-v7/transcript.log 2>&1
+          } > artifacts/cli-v8/transcript.log 2>&1
           code=$?
-          echo "$code" > artifacts/cli-v7/exit-code.txt
-          cat artifacts/cli-v7/transcript.log
+          echo "$code" > artifacts/cli-v8/exit-code.txt
+          cat artifacts/cli-v8/transcript.log
           exit 0
       - name: Persist diagnostic transcript
         run: |
           mkdir -p docs/metrics
-          cp artifacts/cli-v7/transcript.log docs/metrics/cli_v7_ci_transcript.log
-          cp artifacts/cli-v7/exit-code.txt docs/metrics/cli_v7_ci_exit_code.txt
+          cp artifacts/cli-v8/transcript.log docs/metrics/cli_v8_ci_transcript.log
+          cp artifacts/cli-v8/exit-code.txt docs/metrics/cli_v8_ci_exit_code.txt
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/metrics/cli_v7_ci_transcript.log docs/metrics/cli_v7_ci_exit_code.txt
-          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record chart CLI validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
+          git add docs/metrics/cli_v8_ci_transcript.log docs/metrics/cli_v8_ci_exit_code.txt
+          if ! git diff --cached --quiet; then git commit -m 'docs(ci): record report CLI validation'; git push origin HEAD:sweep/device-host-integration-20260908; fi
       - uses: actions/upload-artifact@v4
         with:
-          name: sweep-cli-v7-${{ github.sha }}
-          path: artifacts/cli-v7/
+          name: sweep-cli-v8-${{ github.sha }}
+          path: artifacts/cli-v8/
       - name: Enforce result
-        run: test "$(cat artifacts/cli-v7/exit-code.txt)" = "0"
+        run: test "$(cat artifacts/cli-v8/exit-code.txt)" = "0"
