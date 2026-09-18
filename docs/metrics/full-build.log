@@ -130,22 +130,22 @@ Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
 Downloading lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (5.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 168.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 113.8 MB/s  0:00:00
 Downloading numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 287.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 268.5 MB/s  0:00:00
 Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 339.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 310.6 MB/s  0:00:00
 Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 287.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 194.8 MB/s  0:00:00
 Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
 Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
 Downloading qdrant_client-1.19.1-py3-none-any.whl (406 kB)
 Downloading portalocker-3.2.0-py3-none-any.whl (22 kB)
 Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 292.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 313.8 MB/s  0:00:00
 Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 162.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 328.9 MB/s  0:00:00
 Downloading trafilatura-1.12.2-py3-none-any.whl (132 kB)
 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
 Downloading uvicorn-0.53.0-py3-none-any.whl (87 kB)
@@ -155,9 +155,9 @@ Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_
 Downloading click-8.5.0-py3-none-any.whl (125 kB)
 Downloading courlan-1.4.0-py3-none-any.whl (34 kB)
 Downloading babel-2.18.0-py3-none-any.whl (10.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 344.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 301.1 MB/s  0:00:00
 Downloading grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 359.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 315.0 MB/s  0:00:00
 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
 Downloading htmldate-1.10.0-py3-none-any.whl (31 kB)
@@ -169,15 +169,15 @@ Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
 Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
 Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
 Downloading justext-3.0.2-py2.py3-none-any.whl (837 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 175.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 171.6 MB/s  0:00:00
 Downloading narwhals-2.26.0-py3-none-any.whl (474 kB)
 Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
 Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 174.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 182.8 MB/s  0:00:00
 Downloading regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (804 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 174.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 179.4 MB/s  0:00:00
 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
 Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
@@ -189,7 +189,7 @@ Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
 Downloading tzdata-2026.4-py2.py3-none-any.whl (347 kB)
 Downloading tzlocal-5.4.4-py3-none-any.whl (18 kB)
 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 318.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 300.6 MB/s  0:00:00
 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
 Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
@@ -201,24 +201,24 @@ Building wheels for collected packages: sweep
   
   × Building editable for sweep (pyproject.toml) did not run successfully.
   │ exit code: 1
-  ╰─> [36 lines of output]
+  ╰─> [47 lines of output]
       running editable_wheel
-      creating /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info
-      writing /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/PKG-INFO
-      writing dependency_links to /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/dependency_links.txt
-      writing entry points to /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/entry_points.txt
-      writing requirements to /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/requires.txt
-      writing top-level names to /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/top_level.txt
-      writing manifest file '/tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/SOURCES.txt'
-      reading manifest file '/tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/SOURCES.txt'
-      writing manifest file '/tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep.egg-info/SOURCES.txt'
-      creating '/tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep-2.0.0.dist-info'
-      creating /tmp/pip-ephem-wheel-cache-7z6wmjam/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp055kyxhc/.tmp-8j5l2ijp/sweep-2.0.0.dist-info/WHEEL
+      creating /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info
+      writing /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/PKG-INFO
+      writing dependency_links to /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/dependency_links.txt
+      writing entry points to /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/entry_points.txt
+      writing requirements to /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/requires.txt
+      writing top-level names to /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/top_level.txt
+      writing manifest file '/tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/SOURCES.txt'
+      reading manifest file '/tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/SOURCES.txt'
+      writing manifest file '/tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep.egg-info/SOURCES.txt'
+      creating '/tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep-2.0.0.dist-info'
+      creating /tmp/pip-ephem-wheel-cache-a6fzlwmd/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmpg5tesuzi/.tmp-_dce5dy3/sweep-2.0.0.dist-info/WHEEL
       running build_py
       running build_ext
       building 'sweep_engine' extension
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/bindings.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/bindings.o -fvisibility=hidden -g0 -std=c++20
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/data_engine.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/data_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/bindings.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/bindings.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/data_engine.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/data_engine.o -fvisibility=hidden -g0 -std=c++20
       cpp/src/data_engine.cpp: In function ‘sweep::DataFrame sweep::df_group_by(const DataFrame&, const std::string&, const std::string&)’:
       cpp/src/data_engine.cpp:191:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
         191 |         if (col_idx >= row.size()) continue; std::string key;
@@ -226,18 +226,29 @@ Building wheels for collected packages: sweep
       cpp/src/data_engine.cpp:191:46: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
         191 |         if (col_idx >= row.size()) continue; std::string key;
             |                                              ^~~
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/html_parser.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/html_parser.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/html_parser.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/html_parser.o -fvisibility=hidden -g0 -std=c++20
       cpp/src/html_parser.cpp:107:20: warning: ‘std::string sweep::get_attr(const std::string&, const std::string&)’ defined but not used [-Wunused-function]
         107 | static std::string get_attr(const std::string& tag, const std::string& attr) {
             |                    ^~~~~~~~
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/ml_engine.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/ml_engine.o -fvisibility=hidden -g0 -std=c++20
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/nlp_engine.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/nlp_engine.o -fvisibility=hidden -g0 -std=c++20
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/regex_engine.cpp -o /tmp/tmpqiyvsaoh.build-temp/cpp/src/regex_engine.o -fvisibility=hidden -g0 -std=c++20
-      cpp/src/regex_engine.cpp: In member function ‘bool sweep::PatternSet::has_injection_signals(const std::string&, std::vector<std::__cxx11::basic_string<char> >&) const’:
-      cpp/src/regex_engine.cpp:110:34: error: ‘const class std::__cxx11::basic_regex<char>’ has no member named ‘pattern’
-        110 |             signals.push_back(re.pattern());
-            |                                  ^~~~~~~
-      error: Command '['g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O3', '-Wall', '-fPIC', '-Icpp/include', '-I/tmp/pip-build-env-an796imc/overlay/lib/python3.12/site-packages/pybind11/include', '-I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12', '-c', 'cpp/src/regex_engine.cpp', '-o', '/tmp/tmpqiyvsaoh.build-temp/cpp/src/regex_engine.o', '-fvisibility=hidden', '-g0', '-std=c++20']' returned non-zero exit status 1.
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/ml_engine.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/ml_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/nlp_engine.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/nlp_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/regex_engine.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/regex_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/search_ranker.cpp -o /tmp/tmptlr3c40e.build-temp/cpp/src/search_ranker.o -fvisibility=hidden -g0 -std=c++20
+      cpp/src/search_ranker.cpp: In function ‘std::vector<sweep::RankedHit> sweep::dedup_hits(const std::vector<RankedHit>&)’:
+      cpp/src/search_ranker.cpp:91:10: error: ‘unordered_set’ is not a member of ‘std’
+         91 |     std::unordered_set<std::string> seen;
+            |          ^~~~~~~~~~~~~
+      cpp/src/search_ranker.cpp:6:1: note: ‘std::unordered_set’ is defined in header ‘<unordered_set>’; did you forget to ‘#include <unordered_set>’?
+          5 | #include <sstream>
+        +++ |+#include <unordered_set>
+          6 |
+      cpp/src/search_ranker.cpp:91:35: error: expected primary-expression before ‘>’ token
+         91 |     std::unordered_set<std::string> seen;
+            |                                   ^
+      cpp/src/search_ranker.cpp:91:37: error: ‘seen’ was not declared in this scope
+         91 |     std::unordered_set<std::string> seen;
+            |                                     ^~~~
+      error: Command '['g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O3', '-Wall', '-fPIC', '-Icpp/include', '-I/tmp/pip-build-env-fbz7kkkh/overlay/lib/python3.12/site-packages/pybind11/include', '-I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12', '-c', 'cpp/src/search_ranker.cpp', '-o', '/tmp/tmptlr3c40e.build-temp/cpp/src/search_ranker.o', '-fvisibility=hidden', '-g0', '-std=c++20']' returned non-zero exit status 1.
       [end of output]
   
   note: This error originates from a subprocess, and is likely not a problem with pip.
