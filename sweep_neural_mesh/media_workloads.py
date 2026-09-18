@@ -6,7 +6,7 @@ from typing import Any
 from .workloads import _file,_sha
 
 def _path(path:str):
- try:return _file(path)
+ try:return _file(path),None
  except ValueError as exc:return None,{"status":"error","path":str(path),"reason":str(exc)}
 def _unavailable(path:Path,reason:str)->dict[str,Any]:return {"status":"unavailable","path":str(path),"sha256":_sha(path),"reason":reason}
 def image_run(path:str,operation:str="describe",output:str|None=None,params:dict[str,Any]|None=None)->dict[str,Any]:
