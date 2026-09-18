@@ -130,22 +130,22 @@ Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
 Downloading lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (5.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 50.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 24.6 MB/s  0:00:00
 Downloading numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 114.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 57.5 MB/s  0:00:00
 Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 166.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 78.6 MB/s  0:00:00
 Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 334.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 92.8 MB/s  0:00:00
 Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
 Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
 Downloading qdrant_client-1.19.1-py3-none-any.whl (406 kB)
 Downloading portalocker-3.2.0-py3-none-any.whl (22 kB)
 Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 168.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 107.6 MB/s  0:00:00
 Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 144.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 126.7 MB/s  0:00:00
 Downloading trafilatura-1.12.2-py3-none-any.whl (132 kB)
 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
 Downloading uvicorn-0.53.0-py3-none-any.whl (87 kB)
@@ -155,9 +155,9 @@ Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_
 Downloading click-8.5.0-py3-none-any.whl (125 kB)
 Downloading courlan-1.4.0-py3-none-any.whl (34 kB)
 Downloading babel-2.18.0-py3-none-any.whl (10.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 158.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 148.2 MB/s  0:00:00
 Downloading grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 173.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 152.5 MB/s  0:00:00
 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
 Downloading htmldate-1.10.0-py3-none-any.whl (31 kB)
@@ -169,15 +169,15 @@ Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
 Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
 Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
 Downloading justext-3.0.2-py2.py3-none-any.whl (837 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 213.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 165.9 MB/s  0:00:00
 Downloading narwhals-2.26.0-py3-none-any.whl (474 kB)
 Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
 Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 215.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 189.7 MB/s  0:00:00
 Downloading regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (804 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 205.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 193.6 MB/s  0:00:00
 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
 Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
@@ -189,7 +189,7 @@ Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
 Downloading tzdata-2026.4-py2.py3-none-any.whl (347 kB)
 Downloading tzlocal-5.4.4-py3-none-any.whl (18 kB)
 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 240.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 154.5 MB/s  0:00:00
 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
 Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
@@ -201,24 +201,24 @@ Building wheels for collected packages: sweep
   
   × Building editable for sweep (pyproject.toml) did not run successfully.
   │ exit code: 1
-  ╰─> [130 lines of output]
+  ╰─> [51 lines of output]
       running editable_wheel
-      creating /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info
-      writing /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/PKG-INFO
-      writing dependency_links to /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/dependency_links.txt
-      writing entry points to /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/entry_points.txt
-      writing requirements to /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/requires.txt
-      writing top-level names to /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/top_level.txt
-      writing manifest file '/tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/SOURCES.txt'
-      reading manifest file '/tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/SOURCES.txt'
-      writing manifest file '/tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep.egg-info/SOURCES.txt'
-      creating '/tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep-2.0.0.dist-info'
-      creating /tmp/pip-ephem-wheel-cache-0i6lb89c/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp8ksqsh_u/.tmp-h7zrv9bz/sweep-2.0.0.dist-info/WHEEL
+      creating /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info
+      writing /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/PKG-INFO
+      writing dependency_links to /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/dependency_links.txt
+      writing entry points to /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/entry_points.txt
+      writing requirements to /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/requires.txt
+      writing top-level names to /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/top_level.txt
+      writing manifest file '/tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/SOURCES.txt'
+      reading manifest file '/tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/SOURCES.txt'
+      writing manifest file '/tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep.egg-info/SOURCES.txt'
+      creating '/tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep-2.0.0.dist-info'
+      creating /tmp/pip-ephem-wheel-cache-z7cmk8xe/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e/tmp5epxst0w/.tmp-3rzd7nyn/sweep-2.0.0.dist-info/WHEEL
       running build_py
       running build_ext
       building 'sweep_engine' extension
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-37iiocxv/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/bindings.cpp -o /tmp/tmp6gl5r34b.build-temp/cpp/src/bindings.o -fvisibility=hidden -g0 -std=c++20
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-37iiocxv/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/data_engine.cpp -o /tmp/tmp6gl5r34b.build-temp/cpp/src/data_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/bindings.cpp -o /tmp/tmp964188c6.build-temp/cpp/src/bindings.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/data_engine.cpp -o /tmp/tmp964188c6.build-temp/cpp/src/data_engine.o -fvisibility=hidden -g0 -std=c++20
       cpp/src/data_engine.cpp: In function ‘sweep::DataFrame sweep::df_group_by(const DataFrame&, const std::string&, const std::string&)’:
       cpp/src/data_engine.cpp:191:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
         191 |         if (col_idx >= row.size()) continue; std::string key;
@@ -226,112 +226,33 @@ Building wheels for collected packages: sweep
       cpp/src/data_engine.cpp:191:46: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
         191 |         if (col_idx >= row.size()) continue; std::string key;
             |                                              ^~~
-      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-37iiocxv/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/html_parser.cpp -o /tmp/tmp6gl5r34b.build-temp/cpp/src/html_parser.o -fvisibility=hidden -g0 -std=c++20
-      cpp/src/html_parser.cpp:183:47: error: stray ‘\’ in program
-        183 |         R"(<meta\s+(?:name|property)="([^"]*)"\s+content="([^"]*)")",
-            |                                               ^
-      cpp/src/html_parser.cpp:200:63: warning: missing terminating " character
-        200 |         static std::regex lang_re(R"(<html[^>]+lang="([^"]*)")", std::regex::icase);
-            |                                                               ^
-      cpp/src/html_parser.cpp:200:63: error: missing terminating " character
-        200 |         static std::regex lang_re(R"(<html[^>]+lang="([^"]*)")", std::regex::icase);
-            |                                                               ^~~~~~~~~~~~~~~~~~~~~~
-      cpp/src/html_parser.cpp:207:80: warning: missing terminating " character
-        207 |     static std::regex canon_re(R"(<link[^>]+rel="canonical"[^>]+href="([^"]*)")", std::regex::icase);
-            |                                                                                ^
-      cpp/src/html_parser.cpp:207:80: error: missing terminating " character
-        207 |     static std::regex canon_re(R"(<link[^>]+rel="canonical"[^>]+href="([^"]*)")", std::regex::icase);
-            |                                                                                ^~~~~~~~~~~~~~~~~~~~~~
-      cpp/src/html_parser.cpp:221:63: error: stray ‘\’ in program
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                               ^
-      cpp/src/html_parser.cpp:221:65: error: stray ‘\’ in program
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                 ^
-      cpp/src/html_parser.cpp:221:76: warning: missing terminating " character
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                            ^
-      cpp/src/html_parser.cpp:221:76: error: missing terminating " character
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                            ^~~~~~~~~~~~~~~~~~~~~~
-      cpp/src/html_parser.cpp: In function ‘std::string sweep::html_to_text(const std::string&)’:
-      cpp/src/html_parser.cpp:86:28: error: ‘trim_copy’ was not declared in this scope
-         86 |     return decode_entities(trim_copy(out));
-            |                            ^~~~~~~~~
-      cpp/src/html_parser.cpp: In function ‘sweep::PageMeta sweep::extract_meta(const std::string&)’:
-      cpp/src/html_parser.cpp:183:47: error: expected ‘)’ before ‘s’
-        183 |         R"(<meta\s+(?:name|property)="([^"]*)"\s+content="([^"]*)")",
-            |                                               ^~
-            |                                               )
-      cpp/src/html_parser.cpp:182:30: note: to match this ‘(’
-        182 |     static std::regex meta_re(
-            |                              ^
-      cpp/src/html_parser.cpp:201:9: error: expected ‘,’ or ‘;’ before ‘if’
-        201 |         if (std::regex_search(html, m, lang_re) && m.size() > 1) {
-            |         ^~
-      cpp/src/html_parser.cpp:208:5: error: expected ‘,’ or ‘;’ before ‘if’
-        208 |     if (std::regex_search(html, m, canon_re) && m.size() > 1) {
-            |     ^~
-      cpp/src/html_parser.cpp: In function ‘std::vector<sweep::Link> sweep::extract_links(const std::string&, const std::string&)’:
-      cpp/src/html_parser.cpp:221:56: error: expected primary-expression before ‘^’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                        ^
-      cpp/src/html_parser.cpp:221:57: error: expected primary-expression before ‘>’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                         ^
-      cpp/src/html_parser.cpp:221:58: error: expected primary-expression before ‘]’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                          ^
-      cpp/src/html_parser.cpp:221:60: error: expected primary-expression before ‘>’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                            ^
-      cpp/src/html_parser.cpp:221:64: error: ‘s’ was not declared in this scope
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                ^
-      cpp/src/html_parser.cpp:221:65: error: expected ‘,’ before ‘S’
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                 ^~
-            |                                                                 ,
-      cpp/src/html_parser.cpp:221:66: error: ‘S’ was not declared in this scope
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                  ^
-      cpp/src/html_parser.cpp: In lambda function:
-      cpp/src/html_parser.cpp:221:68: error: expected ‘{’ before ‘*’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                    ^
-      cpp/src/html_parser.cpp: In function ‘std::vector<sweep::Link> sweep::extract_links(const std::string&, const std::string&)’:
-      cpp/src/html_parser.cpp:221:69: error: expected primary-expression before ‘?’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                     ^
-      cpp/src/html_parser.cpp:221:70: error: expected primary-expression before ‘)’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                      ^
-      cpp/src/html_parser.cpp:221:70: error: expected ‘:’ before ‘)’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                      ^
-            |                                                                      :
-      cpp/src/html_parser.cpp:221:70: error: expected primary-expression before ‘)’ token
-      cpp/src/html_parser.cpp:221:72: error: expected primary-expression before ‘/’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                        ^
-      cpp/src/html_parser.cpp:221:73: error: ‘a’ was not declared in this scope
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                         ^
-      cpp/src/html_parser.cpp:221:75: error: expected primary-expression before ‘)’ token
-        221 |     static std::regex link_re(R"(<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)</a>)", std::regex::icase);
-            |                                                                           ^
-      cpp/src/html_parser.cpp:222:5: error: expected ‘,’ or ‘;’ before ‘std’
-        222 |     std::smatch m;
-            |     ^~~
-      cpp/src/html_parser.cpp:239:47: error: ‘m’ was not declared in this scope; did you mean ‘tm’?
-        239 |     while (std::regex_search(si, html.cend(), m, link_re)) {
-            |                                               ^
-            |                                               tm
-      cpp/src/html_parser.cpp: At global scope:
-      cpp/src/html_parser.cpp:98:20: warning: ‘std::string sweep::get_attr(const std::string&, const std::string&)’ defined but not used [-Wunused-function]
-         98 | static std::string get_attr(const std::string& tag, const std::string& attr) {
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/html_parser.cpp -o /tmp/tmp964188c6.build-temp/cpp/src/html_parser.o -fvisibility=hidden -g0 -std=c++20
+      cpp/src/html_parser.cpp:107:20: warning: ‘std::string sweep::get_attr(const std::string&, const std::string&)’ defined but not used [-Wunused-function]
+        107 | static std::string get_attr(const std::string& tag, const std::string& attr) {
             |                    ^~~~~~~~
-      error: Command '['g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O3', '-Wall', '-fPIC', '-Icpp/include', '-I/tmp/pip-build-env-37iiocxv/overlay/lib/python3.12/site-packages/pybind11/include', '-I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12', '-c', 'cpp/src/html_parser.cpp', '-o', '/tmp/tmp6gl5r34b.build-temp/cpp/src/html_parser.o', '-fvisibility=hidden', '-g0', '-std=c++20']' returned non-zero exit status 1.
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/ml_engine.cpp -o /tmp/tmp964188c6.build-temp/cpp/src/ml_engine.o -fvisibility=hidden -g0 -std=c++20
+      g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -Icpp/include -I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include -I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12 -c cpp/src/nlp_engine.cpp -o /tmp/tmp964188c6.build-temp/cpp/src/nlp_engine.o -fvisibility=hidden -g0 -std=c++20
+      cpp/src/nlp_engine.cpp: In function ‘std::vector<sweep::Entity> sweep::extract_entities(const std::string&)’:
+      cpp/src/nlp_engine.cpp:107:29: error: ‘struct sweep::Entity’ has no member named ‘length’
+        107 |         e.end = e.start + e.length();
+            |                             ^~~~~~
+      cpp/src/nlp_engine.cpp: In function ‘std::vector<sweep::Entity> sweep::extract_emails(const std::string&)’:
+      cpp/src/nlp_engine.cpp:127:29: error: ‘struct sweep::Entity’ has no member named ‘length’
+        127 |         e.end = e.start + e.length();
+            |                             ^~~~~~
+      cpp/src/nlp_engine.cpp: In function ‘std::vector<sweep::Entity> sweep::extract_phones(const std::string&)’:
+      cpp/src/nlp_engine.cpp:152:33: error: ‘struct sweep::Entity’ has no member named ‘length’
+        152 |             e.end = e.start + e.length();
+            |                                 ^~~~~~
+      cpp/src/nlp_engine.cpp: In function ‘std::vector<sweep::Entity> sweep::extract_urls(const std::string&)’:
+      cpp/src/nlp_engine.cpp:172:29: error: ‘struct sweep::Entity’ has no member named ‘length’
+        172 |         e.end = e.start + e.length();
+            |                             ^~~~~~
+      cpp/src/nlp_engine.cpp: In function ‘std::vector<sweep::Entity> sweep::extract_dates(const std::string&)’:
+      cpp/src/nlp_engine.cpp:199:33: error: ‘struct sweep::Entity’ has no member named ‘length’
+        199 |             e.end = e.start + e.length();
+            |                                 ^~~~~~
+      error: Command '['g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O3', '-Wall', '-fPIC', '-Icpp/include', '-I/tmp/pip-build-env-wjnki5af/overlay/lib/python3.12/site-packages/pybind11/include', '-I/opt/hostedtoolcache/Python/3.12.14/x64/include/python3.12', '-c', 'cpp/src/nlp_engine.cpp', '-o', '/tmp/tmp964188c6.build-temp/cpp/src/nlp_engine.o', '-fvisibility=hidden', '-g0', '-std=c++20']' returned non-zero exit status 1.
       [end of output]
   
   note: This error originates from a subprocess, and is likely not a problem with pip.
