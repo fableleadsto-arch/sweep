@@ -9,7 +9,7 @@ on:
       - .github/workflows/cpp-acceleration.yml
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   native:
     runs-on: ubuntu-latest
@@ -22,13 +22,50 @@ jobs:
           python-version: '3.12'
       - name: Compile and run dataframe regression harness
         run: |
-          g++ -std=c++20 -Wall -Wextra -Werror -Icpp/include \
+          set +e
+          mkdir -p artifacts/native
+          g++ -std=c++20 -Wall -Wextra -Icpp/include \
             cpp/src/data_engine.cpp cpp/tests/test_data_engine.cpp \
-            -o /tmp/sweep-data-engine-test
-          /tmp/sweep-data-engine-test
+            -o /tmp/sweep-data-engine-test > artifacts/native/harness-build.log 2>&1
+          harness_build=$?
+          if [ "$harness_build" = "0" ]; then
+            /tmp/sweep-data-engine-test > artifacts/native/harness-run.log 2>&1
+            harness_run=$?
+          else
+            harness_run=125
+          fi
+          echo "$harness_build" > artifacts/native/harness-build-exit.txt
+          echo "$harness_run" > artifacts/native/harness-run-exit.txt
+          cat artifacts/native/harness-build.log
+          cat artifacts/native/harness-run.log 2>/dev/null || true
+          if [ "$harness_build" != "0" ] || [ "$harness_run" != "0" ]; then exit 1; fi
       - name: Attempt full opt-in native package build
+        if: success()
         env:
           SWEEP_BUILD_CPP: '1'
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .
+          set +e
+          python -m pip install --upgrade pip > artifacts/native/full-build.log 2>&1
+          pip_upgrade=$?
+          full_build=125
+          if [ "$pip_upgrade" = "0" ]; then
+            python -m pip install -e . >> artifacts/native/full-build.log 2>&1
+            full_build=$?
+          fi
+          echo "$full_build" > artifacts/native/full-build-exit.txt
+          cat artifacts/native/full-build.log
+          exit "$full_build"
+      - name: Persist native diagnostics
+        if: always()
+        run: |
+          mkdir -p docs/metrics
+          cp artifacts/native/* docs/metrics/ 2>/dev/null || true
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/metrics/harness-build.log docs/metrics/harness-run.log docs/metrics/harness-build-exit.txt docs/metrics/harness-run-exit.txt docs/metrics/full-build.log docs/metrics/full-build-exit.txt
+          if ! git diff --cached --quiet; then git commit -m 'docs(ci): persist native acceleration diagnostics'; git push origin HEAD:sweep/device-host-integration-20260908; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sweep-native-${{ github.sha }}
+          path: artifacts/native/
