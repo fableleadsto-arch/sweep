@@ -1,0 +1,1 @@
+{"baseline_majority_accuracy":0.07692307692307693,"external_data_status":"FEVEROUS reviewed but not imported because data terms/files were not mounted","held_out":{"accuracy":0.9903846153846154,"correct":103,"examples":104},"scope":"intent routing only; not general reasoning accuracy","seed":20260917,"version":"sweep-intelligence-router/1"}

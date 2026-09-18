@@ -1,0 +1,16 @@
+{
+  "source": "https://github.com/clinc/oos-eval/blob/828f8093932c8fe6ca7936c3d2e52903b1c523de/data/data_full.json",
+  "git_blob_sha1": "7a7b26c5f2dfbbf213f3e67d2dd0727e1af545aa",
+  "pinned": true,
+  "counts": {
+    "train": 15000,
+    "val": 3000,
+    "test": 4500,
+    "oos_train": 100,
+    "oos_val": 100,
+    "oos_test": 1000
+  },
+  "license": "CC-BY-3.0",
+  "attribution_required": true,
+  "splits_preserved": true
+}

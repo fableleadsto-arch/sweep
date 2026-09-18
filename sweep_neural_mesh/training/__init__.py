@@ -33,6 +33,7 @@ from sweep_neural_mesh.training.hardware import HardwareDetector, HardwareProfil
 from sweep_neural_mesh.training.failure_analysis import FailureAnalyzer, FailureRecord, FAILURE_CATEGORIES
 from sweep_neural_mesh.training.generalization import GeneralizationTester, GeneralizationTask, GeneralizationResult
 from sweep_neural_mesh.training.dataset_pipeline import DatasetPipeline, DatasetEntry, DatasetStats
+from sweep_neural_mesh.training.dataset_sources import DatasetManifest, ImportReport, OpenSourceDatasetRegistry
 from sweep_neural_mesh.training.safety import SafetyManager, DataLicense, AuditEntry
 
 __all__ = [
@@ -54,5 +55,6 @@ __all__ = [
     "FailureAnalyzer", "FailureRecord", "FAILURE_CATEGORIES",
     "GeneralizationTester", "GeneralizationTask", "GeneralizationResult",
     "DatasetPipeline", "DatasetEntry", "DatasetStats",
+    "DatasetManifest", "ImportReport", "OpenSourceDatasetRegistry",
     "SafetyManager", "DataLicense", "AuditEntry",
 ]

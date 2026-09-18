@@ -1,0 +1,58 @@
+name: CLINC150 pinned training
+on:
+  push:
+    branches: [sweep/device-host-integration-20260908]
+    paths:
+      - .github/workflows/clinc150-pinned-training.yml
+      - sweep_neural_mesh/training/train_clinc150.py
+      - sweep_neural_mesh/training/import_clinc150.py
+      - sweep_neural_mesh/training/external_source_lock.json
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sweep/device-host-integration-20260908
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install bounded training dependencies
+        run: python -m pip install 'scikit-learn>=1.5,<2.0'
+      - name: Download exact pinned CLINC150 source
+        run: |
+          mkdir -p .training-data artifacts/clinc150 normalized/clinc150
+          curl --fail --location --retry 3 --output .training-data/data_full.json \
+            https://raw.githubusercontent.com/clinc/oos-eval/828f8093932c8fe6ca7936c3d2e52903b1c523de/data/data_full.json
+      - name: Verify and normalize immutable upstream splits
+        run: python -m sweep_neural_mesh.training.import_clinc150 --input .training-data/data_full.json --output-dir normalized/clinc150
+      - name: Train and evaluate CPU baseline
+        run: python -m sweep_neural_mesh.training.train_clinc150 --input .training-data/data_full.json --output-dir artifacts/clinc150 | tee artifacts/clinc150/run.log
+      - name: Persist auditable metrics on the branch
+        run: |
+          mkdir -p docs/metrics
+          cp artifacts/clinc150/clinc150_metrics.json docs/metrics/clinc150_metrics.json
+          cp normalized/clinc150/clinc150_import_report.json docs/metrics/clinc150_import_report.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/metrics/clinc150_metrics.json docs/metrics/clinc150_import_report.json
+          if git diff --cached --quiet; then
+            echo 'Metrics unchanged.'
+          else
+            git commit -m 'docs(metrics): record pinned CLINC150 evaluation'
+            git push origin HEAD:sweep/device-host-integration-20260908
+          fi
+      - name: Upload model, metrics, and normalized reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweep-clinc150-${{ github.sha }}
+          path: |
+            artifacts/clinc150/
+            normalized/clinc150/clinc150_import_report.json
+          if-no-files-found: error
+          retention-days: 30

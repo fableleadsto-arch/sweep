@@ -1,0 +1,113 @@
+{
+  "version": "sweep-cognitive-router/1",
+  "seed": 20260917,
+  "purpose": "routing only; not proof of reasoning quality",
+  "files": {
+    "train": {
+      "sha256": "8c9d017d7723234ee7651fcd1dec27574c8f4399b61813fb01a65a22ca846af8",
+      "rows": 368
+    },
+    "val": {
+      "sha256": "8276f0ed82bcb78ae2e0cf92c66886a3cb9ae35dc8fc8625b25f87501a32efed",
+      "rows": 39
+    },
+    "test": {
+      "sha256": "fad407f6491bcf6b3b72209db03597923a5c1205c1dd61e384ca1f9b162d7c12",
+      "rows": 63
+    }
+  },
+  "contamination": {
+    "train_validation": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 4
+    },
+    "train_test": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 7
+    },
+    "validation_test": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 1
+    }
+  },
+  "heads": {
+    "domain": {
+      "validation": {
+        "examples": 39,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "accuracy_95pct_bootstrap_ci": [
+          1.0,
+          1.0
+        ],
+        "labels": [
+          "contradiction",
+          "entity",
+          "evidence",
+          "intent",
+          "logic"
+        ]
+      },
+      "test": {
+        "examples": 63,
+        "accuracy": 0.9365079365079365,
+        "macro_f1": 0.8469400774663933,
+        "accuracy_95pct_bootstrap_ci": [
+          0.873015873015873,
+          0.9841269841269841
+        ],
+        "labels": [
+          "contradiction",
+          "entity",
+          "evidence",
+          "intent",
+          "logic",
+          "source_independence",
+          "temporal"
+        ]
+      }
+    },
+    "task": {
+      "validation": {
+        "examples": 39,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "accuracy_95pct_bootstrap_ci": [
+          1.0,
+          1.0
+        ],
+        "labels": [
+          "classify_evidence",
+          "classify_intent",
+          "detect_contradiction",
+          "extract_entities",
+          "logical_reasoning"
+        ]
+      },
+      "test": {
+        "examples": 63,
+        "accuracy": 0.9365079365079365,
+        "macro_f1": 0.8469400774663933,
+        "accuracy_95pct_bootstrap_ci": [
+          0.873015873015873,
+          0.9841269841269841
+        ],
+        "labels": [
+          "analyze_independence",
+          "classify_evidence",
+          "classify_intent",
+          "detect_contradiction",
+          "extract_entities",
+          "logical_reasoning",
+          "temporal_reasoning"
+        ]
+      }
+    }
+  },
+  "training_seconds": 0.331010028000037,
+  "environment": {
+    "python": "3.12.14 (main, Aug 13 2026, 02:47:42) [GCC 13.3.0]",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "scikit_learn": "1.9.1"
+  }
+}

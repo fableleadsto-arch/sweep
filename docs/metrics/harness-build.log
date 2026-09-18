@@ -1,0 +1,7 @@
+cpp/src/data_engine.cpp: In function ‘sweep::DataFrame sweep::df_group_by(const DataFrame&, const std::string&, const std::string&)’:
+cpp/src/data_engine.cpp:191:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  191 |         if (col_idx >= row.size()) continue; std::string key;
+      |         ^~
+cpp/src/data_engine.cpp:191:46: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  191 |         if (col_idx >= row.size()) continue; std::string key;
+      |                                              ^~~

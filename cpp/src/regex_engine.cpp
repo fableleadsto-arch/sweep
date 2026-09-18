@@ -16,7 +16,6 @@ PatternSet::PatternSet()
         "enable javascript and cookies to continue"
     }
 {
-    // Injection patterns
     injection_res_.emplace_back(R"(ignore\s+(all\s+)?previous\s+instructions)", std::regex::icase);
     injection_res_.emplace_back(R"(disregard\s+(all\s+)?prior)", std::regex::icase);
     injection_res_.emplace_back(R"(you\s+are\s+now\s+(a|an|the))", std::regex::icase);
@@ -29,101 +28,58 @@ PatternSet::PatternSet()
 }
 
 std::vector<std::string> PatternSet::find_emails(const std::string& text) const {
-    std::vector<std::string> results;
-    std::smatch m;
-    auto si = text.cbegin();
+    std::vector<std::string> results; std::smatch m; auto si = text.cbegin();
     while (std::regex_search(si, text.cend(), m, email_re_)) {
-        std::string email = m[0].str();
-        std::transform(email.begin(), email.end(), email.begin(), ::tolower);
-        // Filter out image extensions
-        if (email.find(".png") == std::string::npos &&
-            email.find(".jpg") == std::string::npos &&
-            email.find(".jpeg") == std::string::npos &&
-            email.find(".gif") == std::string::npos &&
-            email.find(".webp") == std::string::npos) {
-            results.push_back(email);
-        }
-        si = m.suffix().first;
-        if (results.size() >= 20) break;
+        std::string email = m[0].str(); std::transform(email.begin(), email.end(), email.begin(), ::tolower);
+        if (email.find(".png") == std::string::npos && email.find(".jpg") == std::string::npos && email.find(".jpeg") == std::string::npos && email.find(".gif") == std::string::npos && email.find(".webp") == std::string::npos) results.push_back(email);
+        si = m.suffix().first; if (results.size() >= 20) break;
     }
     return results;
 }
 
 std::vector<std::string> PatternSet::find_phones(const std::string& text) const {
-    std::vector<std::string> results;
-    std::smatch m;
-    auto si = text.cbegin();
+    std::vector<std::string> results; std::smatch m; auto si = text.cbegin();
     while (std::regex_search(si, text.cend(), m, phone_re_)) {
-        std::string phone = m[0].str();
-        // Remove spaces/dashes/parens for validation
-        std::string digits;
-        for (char c : phone) {
-            if (std::isdigit(static_cast<unsigned char>(c)) || c == '+') {
-                digits += c;
-            }
-        }
-        // Valid phone: 8-18 digits (including optional +)
-        if (digits.length() >= 8 && digits.length() <= 18) {
-            results.push_back(phone);
-        }
-        si = m.suffix().first;
-        if (results.size() >= 10) break;
+        const std::string phone = m[0].str(); std::string digits;
+        for (char c : phone) if (std::isdigit(static_cast<unsigned char>(c)) || c == '+') digits += c;
+        if (digits.length() >= 8 && digits.length() <= 18) results.push_back(phone);
+        si = m.suffix().first; if (results.size() >= 10) break;
     }
     return results;
 }
 
 std::vector<std::string> PatternSet::find_urls(const std::string& text) const {
-    std::vector<std::string> results;
-    std::smatch m;
-    auto si = text.cbegin();
-    while (std::regex_search(si, text.cend(), m, url_re_)) {
-        results.push_back(m[0].str());
-        si = m.suffix().first;
-        if (results.size() >= 50) break;
-    }
+    std::vector<std::string> results; std::smatch m; auto si = text.cbegin();
+    while (std::regex_search(si, text.cend(), m, url_re_)) { results.push_back(m[0].str()); si = m.suffix().first; if (results.size() >= 50) break; }
     return results;
 }
 
 std::vector<std::string> PatternSet::find_social_urls(const std::string& text) const {
-    std::vector<std::string> results;
-    std::smatch m;
-    auto si = text.cbegin();
+    std::vector<std::string> results; std::smatch m; auto si = text.cbegin();
     while (std::regex_search(si, text.cend(), m, social_re_)) {
         std::string url = m[0].str();
-        // Remove trailing punctuation
-        while (!url.empty() && (url.back() == ')' || url.back() == '"' || url.back() == '\'')) {
-            url.pop_back();
-        }
-        results.push_back(url);
-        si = m.suffix().first;
-        if (results.size() >= 20) break;
+        while (!url.empty() && (url.back() == ')' || url.back() == '"' || url.back() == '\'')) url.pop_back();
+        results.push_back(url); si = m.suffix().first; if (results.size() >= 20) break;
     }
     return results;
 }
 
 bool PatternSet::has_injection_signals(const std::string& text, std::vector<std::string>& signals) const {
     signals.clear();
-    // Only check first 5000 chars
-    std::string sample = text.substr(0, std::min(text.size(), (size_t)5000));
+    const std::string sample = text.substr(0, std::min(text.size(), static_cast<size_t>(5000)));
     for (const auto& re : injection_res_) {
-        if (std::regex_search(sample, re)) {
-            signals.push_back(re.pattern());
-        }
+        std::smatch match;
+        if (std::regex_search(sample, match, re) && match.size() > 0) signals.push_back(match[0].str());
     }
     return !signals.empty();
 }
 
 bool PatternSet::looks_blocked(int status, const std::string& text) const {
     if (status == 403 || status == 429 || status == 503) return true;
-
-    std::string head = text.substr(0, std::min(text.size(), (size_t)4000));
+    std::string head = text.substr(0, std::min(text.size(), static_cast<size_t>(4000)));
     std::transform(head.begin(), head.end(), head.begin(), ::tolower);
-
     if (head.length() < 200) return false;
-
-    for (const auto& marker : captcha_markers_) {
-        if (head.find(marker) != std::string::npos) return true;
-    }
+    for (const auto& marker : captcha_markers_) if (head.find(marker) != std::string::npos) return true;
     return false;
 }
 

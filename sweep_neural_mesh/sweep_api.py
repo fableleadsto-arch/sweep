@@ -48,19 +48,26 @@ class SweepAPI:
         self._initialized = False
 
     def _ensure_init(self):
-        if not self._initialized:
-            try:
-                import sys
-                from pathlib import Path
-                _dir = str(Path(__file__).parent)
-                if _dir not in sys.path:
-                    sys.path.insert(0, _dir)
+        if self._initialized:
+            return
+        try:
+            # Package import first; preserve explicit script-mode compatibility.
+            if __package__:
+                from .cortex_integration import get_pipeline
+            else:
                 from cortex_integration import get_pipeline
-                self._pipeline = get_pipeline()
-                self._pipeline.initialize()
-                self._initialized = True
-            except Exception as e:
-                logger.error(f"Failed to initialize: {e}")
+            pipeline = get_pipeline()
+            if pipeline.initialize() is not True:
+                self._pipeline = None
+                self._initialized = False
+                logger.error("Pipeline initialization returned failure")
+                return
+            self._pipeline = pipeline
+            self._initialized = True
+        except Exception as exc:
+            self._pipeline = None
+            self._initialized = False
+            logger.error("Pipeline initialization failed (%s)", type(exc).__name__)
 
     def query(
         self,

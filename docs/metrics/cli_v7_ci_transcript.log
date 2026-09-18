@@ -1,0 +1,798 @@
+Obtaining file:///home/runner/work/sweep/sweep
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Collecting fastapi<1.0,>=0.115 (from sweep==2.0.0)
+  Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+Collecting uvicorn<1.0,>=0.29 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading uvicorn-0.53.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting pydantic<3.0,>=2.8 (from sweep==2.0.0)
+  Downloading pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+Collecting pydantic-settings<3.0,>=2.4 (from sweep==2.0.0)
+  Downloading pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+Collecting httpx<1.0,>=0.27 (from sweep==2.0.0)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting beautifulsoup4<5.0,>=4.12 (from sweep==2.0.0)
+  Downloading beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting trafilatura<2.0,>=1.12 (from sweep==2.0.0)
+  Downloading trafilatura-1.12.2-py3-none-any.whl.metadata (14 kB)
+Collecting lxml<6.0,>=5.0 (from sweep==2.0.0)
+  Downloading lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+Collecting numpy<3.0,>=1.26 (from sweep==2.0.0)
+  Using cached numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting pandas<3.0,>=2.2 (from sweep==2.0.0)
+  Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
+Collecting scipy<2.0,>=1.13 (from sweep==2.0.0)
+  Using cached scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting scikit-learn<2.0,>=1.5 (from sweep==2.0.0)
+  Using cached scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.3 kB)
+Collecting python-dotenv<2.0,>=1.0 (from sweep==2.0.0)
+  Downloading python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+Collecting qdrant-client<2.0,>=1.9 (from sweep==2.0.0)
+  Downloading qdrant_client-1.19.1-py3-none-any.whl.metadata (11 kB)
+Collecting soupsieve>=1.6.1 (from beautifulsoup4<5.0,>=4.12->sweep==2.0.0)
+  Downloading soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
+Collecting typing-extensions>=4.0.0 (from beautifulsoup4<5.0,>=4.12->sweep==2.0.0)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting starlette>=0.46.0 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting anyio (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting certifi (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0,>=0.27->sweep==2.0.0)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting python-dateutil>=2.8.2 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pytz>=2020.1 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Downloading pytz-2026.3.post1-py2.py3-none-any.whl.metadata (22 kB)
+Collecting tzdata>=2022.7 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Downloading tzdata-2026.4-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting annotated-types>=0.6.0 (from pydantic<3.0,>=2.8->sweep==2.0.0)
+  Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.5 (from pydantic<3.0,>=2.8->sweep==2.0.0)
+  Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting grpcio>=1.41.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+Collecting portalocker<4.0,>=2.7.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading portalocker-3.2.0-py3-none-any.whl.metadata (8.7 kB)
+Collecting protobuf>=3.20.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+Collecting urllib3<3,>=1.26.14 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting joblib>=1.4.0 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting narwhals>=2.0.1 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached narwhals-2.26.0-py3-none-any.whl.metadata (15 kB)
+Collecting threadpoolctl>=3.5.0 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting courlan>=1.2.0 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading courlan-1.4.0-py3-none-any.whl.metadata (18 kB)
+Collecting htmldate>=1.8.1 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading htmldate-1.10.0-py3-none-any.whl.metadata (9.8 kB)
+Collecting justext>=3.0.1 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading justext-3.0.2-py2.py3-none-any.whl.metadata (7.3 kB)
+Collecting charset-normalizer>=3.2.0 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+Collecting click>=7.0 (from uvicorn<1.0,>=0.29->uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting httptools>=0.8.0 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting uvloop>=0.15.1 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
+Collecting watchfiles>=0.20 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Collecting websockets>=13.0 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Collecting babel>=2.16.0 (from courlan>=1.2.0->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading babel-2.18.0-py3-none-any.whl.metadata (2.2 kB)
+Collecting tld>=0.13 (from courlan>=1.2.0->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading tld-0.13.2-py2.py3-none-any.whl.metadata (11 kB)
+Collecting dateparser>=1.1.2 (from htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading dateparser-1.4.3-py3-none-any.whl.metadata (25 kB)
+Collecting regex>=2024.9.11 (from dateparser>=1.1.2->htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting tzlocal>=0.2 (from dateparser>=1.1.2->htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading tzlocal-5.4.4-py3-none-any.whl.metadata (7.7 kB)
+Collecting h2<5,>=3 (from httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading h2-4.4.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.2 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Downloading hpack-4.2.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting cloudpickle>=3.0 (from joblib>=1.4.0->scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting lxml_html_clean (from lxml[html_clean]>=4.4.2->justext>=3.0.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading lxml_html_clean-0.4.5-py3-none-any.whl.metadata (2.4 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas<3.0,>=2.2->sweep==2.0.0)
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+INFO: pip is looking at multiple versions of lxml-html-clean to determine which version is compatible with other requirements. This could take a while.
+Collecting lxml_html_clean (from lxml[html_clean]>=4.4.2->justext>=3.0.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Downloading lxml_html_clean-0.4.4-py3-none-any.whl.metadata (2.4 kB)
+Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (5.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 104.4 MB/s  0:00:00
+Using cached numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 134.2 MB/s  0:00:00
+Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
+Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 128.7 MB/s  0:00:00
+Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+Downloading qdrant_client-1.19.1-py3-none-any.whl (406 kB)
+Downloading portalocker-3.2.0-py3-none-any.whl (22 kB)
+Using cached scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
+Using cached scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+Downloading trafilatura-1.12.2-py3-none-any.whl (132 kB)
+Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+Downloading uvicorn-0.53.0-py3-none-any.whl (87 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (248 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading courlan-1.4.0-py3-none-any.whl (34 kB)
+Downloading babel-2.18.0-py3-none-any.whl (10.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 150.2 MB/s  0:00:00
+Downloading grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 111.7 MB/s  0:00:00
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading htmldate-1.10.0-py3-none-any.whl (31 kB)
+Downloading dateparser-1.4.3-py3-none-any.whl (322 kB)
+Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
+Downloading h2-4.4.1-py3-none-any.whl (62 kB)
+Downloading hpack-4.2.0-py3-none-any.whl (34 kB)
+Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Using cached joblib-1.6.0-py3-none-any.whl (306 kB)
+Using cached cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading justext-3.0.2-py2.py3-none-any.whl (837 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 837.9/837.9 kB 93.8 MB/s  0:00:00
+Using cached narwhals-2.26.0-py3-none-any.whl (474 kB)
+Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 90.9 MB/s  0:00:00
+Downloading regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (804 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 804.6/804.6 kB 40.0 MB/s  0:00:00
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
+Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Using cached threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Downloading tld-0.13.2-py2.py3-none-any.whl (296 kB)
+Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading tzdata-2026.4-py2.py3-none-any.whl (347 kB)
+Downloading tzlocal-5.4.4-py3-none-any.whl (18 kB)
+Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 152.5 MB/s  0:00:00
+Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
+Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+Downloading lxml_html_clean-0.4.4-py3-none-any.whl (14 kB)
+Building wheels for collected packages: sweep
+  Building editable for sweep (pyproject.toml): started
+  Building editable for sweep (pyproject.toml): finished with status 'done'
+  Created wheel for sweep: filename=sweep-2.0.0-0.editable-py3-none-any.whl size=6453 sha256=ea3594924bc483452c938808ef8a76b286e49b9f6a2ff664b3823db815ae21fb
+  Stored in directory: /tmp/pip-ephem-wheel-cache-fh6qovml/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e
+Successfully built sweep
+Installing collected packages: pytz, websockets, uvloop, urllib3, tzlocal, tzdata, typing-extensions, tld, threadpoolctl, soupsieve, six, regex, pyyaml, python-dotenv, protobuf, portalocker, numpy, narwhals, lxml, idna, hyperframe, httptools, hpack, h11, cloudpickle, click, charset-normalizer, certifi, babel, annotated-types, annotated-doc, uvicorn, typing-inspection, scipy, python-dateutil, pydantic-core, lxml_html_clean, joblib, httpcore, h2, grpcio, courlan, beautifulsoup4, anyio, watchfiles, starlette, scikit-learn, pydantic, pandas, httpx, dateparser, pydantic-settings, justext, htmldate, fastapi, trafilatura, qdrant-client, sweep
+
+Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 babel-2.18.0 beautifulsoup4-4.15.0 certifi-2026.7.22 charset-normalizer-3.5.1 click-8.5.0 cloudpickle-3.1.2 courlan-1.4.0 dateparser-1.4.3 fastapi-0.141.1 grpcio-1.84.0 h11-0.16.0 h2-4.4.1 hpack-4.2.0 htmldate-1.10.0 httpcore-1.0.9 httptools-0.8.0 httpx-0.28.1 hyperframe-6.1.0 idna-3.20 joblib-1.6.0 justext-3.0.2 lxml-5.4.0 lxml_html_clean-0.4.4 narwhals-2.26.0 numpy-2.5.3 pandas-2.3.3 portalocker-3.2.0 protobuf-7.36.2 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-settings-2.15.0 python-dateutil-2.9.0.post0 python-dotenv-1.2.3 pytz-2026.3.post1 pyyaml-6.0.3 qdrant-client-1.19.1 regex-2026.9.10 scikit-learn-1.9.1 scipy-1.18.1 six-1.17.0 soupsieve-2.9.2 starlette-1.6.0 sweep-2.0.0 threadpoolctl-3.7.0 tld-0.13.2 trafilatura-1.12.2 typing-extensions-4.16.0 typing-inspection-0.4.4 tzdata-2026.4 tzlocal-5.4.4 urllib3-2.8.0 uvicorn-0.53.0 uvloop-0.22.1 watchfiles-1.2.0 websockets-17.1
+test_device_is_plan_only (sweep_neural_mesh.tests.test_terminal.TerminalTests.test_device_is_plan_only) ... ok
+test_neural_delegation (sweep_neural_mesh.tests.test_terminal.TerminalTests.test_neural_delegation) ... ok
+test_device_execution_bypass_is_blocked (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_device_execution_bypass_is_blocked) ... ok
+test_document_data_numeric_commands (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_document_data_numeric_commands) ... ok
+test_evaluate_missing_is_explicit (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_evaluate_missing_is_explicit) ... ok
+test_explain_missing_is_explicit (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_explain_missing_is_explicit) ... ok
+test_legacy_execute_neural_delegation (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_legacy_execute_neural_delegation) ... ok
+test_models_command_probes_without_loading_weights (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_models_command_probes_without_loading_weights) ... ok
+test_research_is_explicitly_untrusted (sweep_neural_mesh.tests.test_cli_v3.CliV3Tests.test_research_is_explicitly_untrusted) ... ok
+test_csv_analysis (sweep_neural_mesh.tests.test_workloads.WorkloadTests.test_csv_analysis) ... ok
+test_document_hash_and_query (sweep_neural_mesh.tests.test_workloads.WorkloadTests.test_document_hash_and_query) ... ok
+test_numeric_and_bounded_simulation (sweep_neural_mesh.tests.test_workloads.WorkloadTests.test_numeric_and_bounded_simulation) ... ok
+test_research_redirect_is_not_followed (sweep_neural_mesh.tests.test_workloads.WorkloadTests.test_research_redirect_is_not_followed) ... ok
+test_clean_and_forecast (sweep_neural_mesh.tests.test_workloads_extra.ExtraWorkloadTests.test_clean_and_forecast) ... ok
+test_document_compare_and_export (sweep_neural_mesh.tests.test_workloads_extra.ExtraWorkloadTests.test_document_compare_and_export) ... ok
+test_image_missing_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_image_missing_is_explicit) ... ok
+test_missing_whisper_is_explicit (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_missing_whisper_is_explicit) ... ok
+test_wav_metadata_is_real (sweep_neural_mesh.tests.test_media_workloads.MediaWorkloadTests.test_wav_metadata_is_real) ... ok
+test_output_is_required (sweep_neural_mesh.tests.test_plot_workloads.PlotWorkloadTests.test_output_is_required) ... ok
+test_plot_is_real_or_explicitly_unavailable (sweep_neural_mesh.tests.test_plot_workloads.PlotWorkloadTests.test_plot_is_real_or_explicitly_unavailable) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 1.670s
+
+OK
+Requirement already satisfied: pip in /tmp/sweep-wheel-venv/lib/python3.12/site-packages (25.0.1)
+Collecting pip
+  Downloading pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+Downloading pip-26.2.1-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 37.6 MB/s eta 0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed pip-26.2.1
+Processing ./.
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: sweep
+  Building wheel for sweep (pyproject.toml): started
+  Building wheel for sweep (pyproject.toml): finished with status 'done'
+  Created wheel for sweep: filename=sweep-2.0.0-py3-none-any.whl size=5059197 sha256=499a208c1685b6382080ad546017bd23ed794fb6b67e155ea9f68aa81fcc37c3
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ciawy0tp/wheels/16/c4/72/5c877bc96dcf8a815efa227a44734e2b454ecfcdedf6d5a00e
+Successfully built sweep
+Processing ./artifacts/cli-v7/wheel/sweep-2.0.0-py3-none-any.whl
+Collecting fastapi<1.0,>=0.115 (from sweep==2.0.0)
+  Using cached fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+Collecting uvicorn<1.0,>=0.29 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached uvicorn-0.53.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting pydantic<3.0,>=2.8 (from sweep==2.0.0)
+  Using cached pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+Collecting pydantic-settings<3.0,>=2.4 (from sweep==2.0.0)
+  Using cached pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+Collecting httpx<1.0,>=0.27 (from sweep==2.0.0)
+  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting beautifulsoup4<5.0,>=4.12 (from sweep==2.0.0)
+  Using cached beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting trafilatura<2.0,>=1.12 (from sweep==2.0.0)
+  Using cached trafilatura-1.12.2-py3-none-any.whl.metadata (14 kB)
+Collecting lxml<6.0,>=5.0 (from sweep==2.0.0)
+  Using cached lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+Collecting numpy<3.0,>=1.26 (from sweep==2.0.0)
+  Using cached numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting pandas<3.0,>=2.2 (from sweep==2.0.0)
+  Using cached pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
+Collecting scipy<2.0,>=1.13 (from sweep==2.0.0)
+  Using cached scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting scikit-learn<2.0,>=1.5 (from sweep==2.0.0)
+  Using cached scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.3 kB)
+Collecting python-dotenv<2.0,>=1.0 (from sweep==2.0.0)
+  Using cached python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+Collecting qdrant-client<2.0,>=1.9 (from sweep==2.0.0)
+  Using cached qdrant_client-1.19.1-py3-none-any.whl.metadata (11 kB)
+Collecting soupsieve>=1.6.1 (from beautifulsoup4<5.0,>=4.12->sweep==2.0.0)
+  Using cached soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
+Collecting typing-extensions>=4.0.0 (from beautifulsoup4<5.0,>=4.12->sweep==2.0.0)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting starlette>=0.46.0 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Using cached starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Using cached typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi<1.0,>=0.115->sweep==2.0.0)
+  Using cached annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting anyio (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Using cached anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting certifi (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Using cached certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx<1.0,>=0.27->sweep==2.0.0)
+  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0,>=0.27->sweep==2.0.0)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting python-dateutil>=2.8.2 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pytz>=2020.1 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Using cached pytz-2026.3.post1-py2.py3-none-any.whl.metadata (22 kB)
+Collecting tzdata>=2022.7 (from pandas<3.0,>=2.2->sweep==2.0.0)
+  Using cached tzdata-2026.4-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting annotated-types>=0.6.0 (from pydantic<3.0,>=2.8->sweep==2.0.0)
+  Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.5 (from pydantic<3.0,>=2.8->sweep==2.0.0)
+  Using cached pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting grpcio>=1.41.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+Collecting portalocker<4.0,>=2.7.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached portalocker-3.2.0-py3-none-any.whl.metadata (8.7 kB)
+Collecting protobuf>=3.20.0 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+Collecting urllib3<3,>=1.26.14 (from qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting joblib>=1.4.0 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting narwhals>=2.0.1 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached narwhals-2.26.0-py3-none-any.whl.metadata (15 kB)
+Collecting threadpoolctl>=3.5.0 (from scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting courlan>=1.2.0 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached courlan-1.4.0-py3-none-any.whl.metadata (18 kB)
+Collecting htmldate>=1.8.1 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached htmldate-1.10.0-py3-none-any.whl.metadata (9.8 kB)
+Collecting justext>=3.0.1 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached justext-3.0.2-py2.py3-none-any.whl.metadata (7.3 kB)
+Collecting charset-normalizer>=3.2.0 (from trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+Collecting click>=7.0 (from uvicorn<1.0,>=0.29->uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting httptools>=0.8.0 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting uvloop>=0.15.1 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
+Collecting watchfiles>=0.20 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Collecting websockets>=13.0 (from uvicorn[standard]<1.0,>=0.29->sweep==2.0.0)
+  Using cached websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Collecting babel>=2.16.0 (from courlan>=1.2.0->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached babel-2.18.0-py3-none-any.whl.metadata (2.2 kB)
+Collecting tld>=0.13 (from courlan>=1.2.0->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached tld-0.13.2-py2.py3-none-any.whl.metadata (11 kB)
+Collecting dateparser>=1.1.2 (from htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached dateparser-1.4.3-py3-none-any.whl.metadata (25 kB)
+Collecting regex>=2024.9.11 (from dateparser>=1.1.2->htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting tzlocal>=0.2 (from dateparser>=1.1.2->htmldate>=1.8.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached tzlocal-5.4.4-py3-none-any.whl.metadata (7.7 kB)
+Collecting h2<5,>=3 (from httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached h2-4.4.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.2 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client<2.0,>=1.9->sweep==2.0.0)
+  Using cached hpack-4.2.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting cloudpickle>=3.0 (from joblib>=1.4.0->scikit-learn<2.0,>=1.5->sweep==2.0.0)
+  Using cached cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting lxml_html_clean (from lxml[html_clean]>=4.4.2->justext>=3.0.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached lxml_html_clean-0.4.5-py3-none-any.whl.metadata (2.4 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas<3.0,>=2.2->sweep==2.0.0)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+INFO: pip is looking at multiple versions of lxml-html-clean to determine which version is compatible with other requirements. This could take a while.
+Collecting lxml_html_clean (from lxml[html_clean]>=4.4.2->justext>=3.0.1->trafilatura<2.0,>=1.12->sweep==2.0.0)
+  Using cached lxml_html_clean-0.4.4-py3-none-any.whl.metadata (2.4 kB)
+Using cached beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+Using cached fastapi-0.141.1-py3-none-any.whl (131 kB)
+Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached lxml-5.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (5.0 MB)
+Using cached numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+Using cached pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
+Using cached pydantic-2.13.5-py3-none-any.whl (472 kB)
+Using cached pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Using cached pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+Using cached python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+Using cached qdrant_client-1.19.1-py3-none-any.whl (406 kB)
+Using cached portalocker-3.2.0-py3-none-any.whl (22 kB)
+Using cached scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
+Using cached scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+Using cached trafilatura-1.12.2-py3-none-any.whl (132 kB)
+Using cached urllib3-2.8.0-py3-none-any.whl (135 kB)
+Using cached uvicorn-0.53.0-py3-none-any.whl (87 kB)
+Using cached annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Using cached annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Using cached charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (248 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Using cached courlan-1.4.0-py3-none-any.whl (34 kB)
+Using cached babel-2.18.0-py3-none-any.whl (10.2 MB)
+Using cached grpcio-1.84.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.2 MB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached htmldate-1.10.0-py3-none-any.whl (31 kB)
+Using cached dateparser-1.4.3-py3-none-any.whl (322 kB)
+Using cached httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
+Using cached h2-4.4.1-py3-none-any.whl (62 kB)
+Using cached hpack-4.2.0-py3-none-any.whl (34 kB)
+Using cached hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Using cached joblib-1.6.0-py3-none-any.whl (306 kB)
+Using cached cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Using cached justext-3.0.2-py2.py3-none-any.whl (837 kB)
+Using cached narwhals-2.26.0-py3-none-any.whl (474 kB)
+Using cached protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+Using cached regex-2026.9.10-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (804 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached soupsieve-2.9.2-py3-none-any.whl (37 kB)
+Using cached starlette-1.6.0-py3-none-any.whl (75 kB)
+Using cached anyio-4.15.1-py3-none-any.whl (132 kB)
+Using cached idna-3.20-py3-none-any.whl (69 kB)
+Using cached threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Using cached tld-0.13.2-py2.py3-none-any.whl (296 kB)
+Using cached typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Using cached tzdata-2026.4-py2.py3-none-any.whl (347 kB)
+Using cached tzlocal-5.4.4-py3-none-any.whl (18 kB)
+Using cached uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+Using cached watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+Using cached websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
+Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
+Using cached lxml_html_clean-0.4.4-py3-none-any.whl (14 kB)
+Installing collected packages: pytz, websockets, uvloop, urllib3, tzlocal, tzdata, typing-extensions, tld, threadpoolctl, soupsieve, six, regex, pyyaml, python-dotenv, protobuf, portalocker, numpy, narwhals, lxml, idna, hyperframe, httptools, hpack, h11, cloudpickle, click, charset-normalizer, certifi, babel, annotated-types, annotated-doc, uvicorn, typing-inspection, scipy, python-dateutil, pydantic-core, lxml_html_clean, joblib, httpcore, h2, grpcio, courlan, beautifulsoup4, anyio, watchfiles, starlette, scikit-learn, pydantic, pandas, httpx, dateparser, pydantic-settings, justext, htmldate, fastapi, trafilatura, qdrant-client, sweep
+
+Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 babel-2.18.0 beautifulsoup4-4.15.0 certifi-2026.7.22 charset-normalizer-3.5.1 click-8.5.0 cloudpickle-3.1.2 courlan-1.4.0 dateparser-1.4.3 fastapi-0.141.1 grpcio-1.84.0 h11-0.16.0 h2-4.4.1 hpack-4.2.0 htmldate-1.10.0 httpcore-1.0.9 httptools-0.8.0 httpx-0.28.1 hyperframe-6.1.0 idna-3.20 joblib-1.6.0 justext-3.0.2 lxml-5.4.0 lxml_html_clean-0.4.4 narwhals-2.26.0 numpy-2.5.3 pandas-2.3.3 portalocker-3.2.0 protobuf-7.36.2 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-settings-2.15.0 python-dateutil-2.9.0.post0 python-dotenv-1.2.3 pytz-2026.3.post1 pyyaml-6.0.3 qdrant-client-1.19.1 regex-2026.9.10 scikit-learn-1.9.1 scipy-1.18.1 six-1.17.0 soupsieve-2.9.2 starlette-1.6.0 sweep-2.0.0 threadpoolctl-3.7.0 tld-0.13.2 trafilatura-1.12.2 typing-extensions-4.16.0 typing-inspection-0.4.4 tzdata-2026.4 tzlocal-5.4.4 urllib3-2.8.0 uvicorn-0.53.0 uvloop-0.22.1 watchfiles-1.2.0 websockets-17.1
+sweep-cli/7
+usage: sweep [-h] [--version]
+             {ask,chat,status,models,memory,reason,explain,train,evaluate,device,capabilities,doctor,document,data,numeric,research,export,media}
+             ...
+
+SWEEP multipurpose neural-mesh CLI
+
+positional arguments:
+  {ask,chat,status,models,memory,reason,explain,train,evaluate,device,capabilities,doctor,document,data,numeric,research,export,media}
+    ask                 route and answer a request
+    chat                interactive terminal assistant
+    status              show runtime status
+    models              probe governed local specialists
+    memory              persistent memory
+    reason              run bounded cognitive loop
+    explain             load a persisted conclusion audit
+    train               run bounded training
+    evaluate            display persisted held-out metrics
+    device              permission-gated device operations
+    capabilities        show verified/candidate/blocked capabilities
+    doctor              diagnose local readiness
+    document            inspect extract or compare local documents
+    data                analyze clean forecast or plot local tabular data
+    numeric             numeric summaries and simulations
+    research            fetch public URLs with safety guards
+    export              export JSON results
+    media               guarded image audio and video workloads
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+{
+  "arbitrary_shell": false,
+  "cognitive_router": {
+    "artifact": "/home/runner/.relayhub/models/cognitive-router/cognitive_router.pkl",
+    "artifact_available": false,
+    "metrics": "docs/metrics/cognitive_router_metrics.json",
+    "metrics_available": true
+  },
+  "device_host": "permission_gated",
+  "models": {
+    "coding": {
+      "has_config": false,
+      "has_weights": false,
+      "name": "qwen2.5-coder-1.5b-instruct",
+      "path": "models/generative/qwen2.5-coder-1.5b-instruct",
+      "reason": "local model directory not found",
+      "status": "missing"
+    },
+    "general": {
+      "has_config": false,
+      "has_weights": false,
+      "name": "qwen2.5-0.5b-instruct",
+      "path": "models/generative/qwen2.5-0.5b-instruct",
+      "reason": "local model directory not found",
+      "status": "missing"
+    },
+    "math": {
+      "has_config": false,
+      "has_weights": false,
+      "name": "qwen2.5-math-1.5b-instruct",
+      "path": "models/generative/qwen2.5-math-1.5b-instruct",
+      "reason": "local model directory not found",
+      "status": "missing"
+    },
+    "multimodal": {
+      "has_config": false,
+      "has_weights": false,
+      "name": "qwen2.5-vl-3b-instruct",
+      "path": "models/multimodal/qwen2.5-vl-3b-instruct",
+      "reason": "Requires a dedicated vision adapter, installed weights, adequate hardware, and held-out multimodal evaluation.",
+      "status": "blocked"
+    }
+  },
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "reasoning_store": "/home/runner/.relayhub/sweep-reasoning.jsonl",
+  "terminal_router": {
+    "artifact": "/home/runner/work/sweep/sweep/sweep_neural_mesh/training/artifacts/intelligence_router.json",
+    "available": false
+  },
+  "version": "sweep-cli/7"
+}
+{
+  "coding": {
+    "has_config": false,
+    "has_weights": false,
+    "name": "qwen2.5-coder-1.5b-instruct",
+    "path": "models/generative/qwen2.5-coder-1.5b-instruct",
+    "reason": "local model directory not found",
+    "status": "missing"
+  },
+  "general": {
+    "has_config": false,
+    "has_weights": false,
+    "name": "qwen2.5-0.5b-instruct",
+    "path": "models/generative/qwen2.5-0.5b-instruct",
+    "reason": "local model directory not found",
+    "status": "missing"
+  },
+  "math": {
+    "has_config": false,
+    "has_weights": false,
+    "name": "qwen2.5-math-1.5b-instruct",
+    "path": "models/generative/qwen2.5-math-1.5b-instruct",
+    "reason": "local model directory not found",
+    "status": "missing"
+  },
+  "multimodal": {
+    "has_config": false,
+    "has_weights": false,
+    "name": "qwen2.5-vl-3b-instruct",
+    "path": "models/multimodal/qwen2.5-vl-3b-instruct",
+    "reason": "Requires a dedicated vision adapter, installed weights, adequate hardware, and held-out multimodal evaluation.",
+    "status": "blocked"
+  }
+}
+{
+  "domains": {
+    "agentic": {
+      "components": [
+        "orchestrator",
+        "tool registry",
+        "terminal",
+        "Device Host"
+      ],
+      "restriction": "all side effects require tool policy and permission",
+      "status": "partial"
+    },
+    "computer_coding": {
+      "components": [
+        "qwen_coder_profile",
+        "sandboxed_compute",
+        "Device Host plan/approval boundary"
+      ],
+      "restriction": "reverse engineering and cybersecurity only for authorized systems",
+      "status": "candidate"
+    },
+    "creative": {
+      "components": [
+        "Qwen general profile"
+      ],
+      "missing": [
+        "quality and safety evaluation"
+      ],
+      "status": "candidate"
+    },
+    "data": {
+      "components": [
+        "pandas",
+        "scikit-learn",
+        "FAISS",
+        "visualization backends"
+      ],
+      "status": "partial"
+    },
+    "document": {
+      "blocked": [
+        "OCR until Tesseract runtime is verified"
+      ],
+      "components": [
+        "LayoutLM",
+        "PDF/document tooling"
+      ],
+      "status": "partial"
+    },
+    "language": {
+      "components": [
+        "BERT",
+        "DeBERTa",
+        "RoBERTa",
+        "XLM-R",
+        "GLiNER",
+        "Qwen general candidate"
+      ],
+      "status": "partial"
+    },
+    "learning_knowledge": {
+      "components": [
+        "general_knowledge",
+        "RAG",
+        "production_memory",
+        "qwen_general_candidate"
+      ],
+      "status": "partial"
+    },
+    "reasoning_intelligence": {
+      "components": [
+        "logic_data",
+        "contradiction_detector",
+        "evidence_classifier",
+        "qwen_math_candidate"
+      ],
+      "missing": [
+        "representative multi-domain held-out evaluation",
+        "persistent structured cognitive loop"
+      ],
+      "status": "partial"
+    },
+    "robotics_physical": {
+      "reason": "no verified sensor/actuator transport, safety controller, hardware-in-loop tests, or authorized robot host",
+      "status": "blocked"
+    },
+    "scientific_technical": {
+      "components": [
+        "numpy",
+        "pandas",
+        "scipy",
+        "sympy",
+        "compute scheduler",
+        "qwen_math_candidate"
+      ],
+      "status": "partial"
+    },
+    "vision_image": {
+      "components": [
+        "CLIP B32",
+        "YOLOv8n",
+        "OpenCV",
+        "InsightFace"
+      ],
+      "status": "partial",
+      "unverified": [
+        "Qwen-VL",
+        "image generation",
+        "map interpretation"
+      ]
+    }
+  },
+  "status_definitions": {
+    "blocked": "required hardware, permission, adapter, or evaluation is absent",
+    "candidate": "model profile exists but local weights/evaluation are missing",
+    "executable_untested": "adapter and assets exist; representative evaluation missing",
+    "partial": "some listed tasks have executable implementations",
+    "verified": "executed and evaluated"
+  },
+  "version": "sweep-capability-ledger/1"
+}
+{
+  "actions": [
+    {
+      "action": "open_application",
+      "parameters": {},
+      "target": "chrome"
+    },
+    {
+      "action": "open_url",
+      "parameters": {},
+      "target": "https://example.com"
+    }
+  ],
+  "clarification": "",
+  "confidence": 0.92,
+  "execution": "not_performed; submit through approval-backed Device Host",
+  "recognized": true,
+  "status": "planned"
+}
+{
+  "contamination": {
+    "train_test": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 7
+    },
+    "train_validation": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 4
+    },
+    "validation_test": {
+      "exact": 0,
+      "near_jaccard_0_9_pairs": 1
+    }
+  },
+  "environment": {
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "python": "3.12.14 (main, Aug 13 2026, 02:47:42) [GCC 13.3.0]",
+    "scikit_learn": "1.9.1"
+  },
+  "files": {
+    "test": {
+      "rows": 63,
+      "sha256": "fad407f6491bcf6b3b72209db03597923a5c1205c1dd61e384ca1f9b162d7c12"
+    },
+    "train": {
+      "rows": 368,
+      "sha256": "8c9d017d7723234ee7651fcd1dec27574c8f4399b61813fb01a65a22ca846af8"
+    },
+    "val": {
+      "rows": 39,
+      "sha256": "8276f0ed82bcb78ae2e0cf92c66886a3cb9ae35dc8fc8625b25f87501a32efed"
+    }
+  },
+  "heads": {
+    "domain": {
+      "test": {
+        "accuracy": 0.9365079365079365,
+        "accuracy_95pct_bootstrap_ci": [
+          0.873015873015873,
+          0.9841269841269841
+        ],
+        "examples": 63,
+        "labels": [
+          "contradiction",
+          "entity",
+          "evidence",
+          "intent",
+          "logic",
+          "source_independence",
+          "temporal"
+        ],
+        "macro_f1": 0.8469400774663933
+      },
+      "validation": {
+        "accuracy": 1.0,
+        "accuracy_95pct_bootstrap_ci": [
+          1.0,
+          1.0
+        ],
+        "examples": 39,
+        "labels": [
+          "contradiction",
+          "entity",
+          "evidence",
+          "intent",
+          "logic"
+        ],
+        "macro_f1": 1.0
+      }
+    },
+    "task": {
+      "test": {
+        "accuracy": 0.9365079365079365,
+        "accuracy_95pct_bootstrap_ci": [
+          0.873015873015873,
+          0.9841269841269841
+        ],
+        "examples": 63,
+        "labels": [
+          "analyze_independence",
+          "classify_evidence",
+          "classify_intent",
+          "detect_contradiction",
+          "extract_entities",
+          "logical_reasoning",
+          "temporal_reasoning"
+        ],
+        "macro_f1": 0.8469400774663933
+      },
+      "validation": {
+        "accuracy": 1.0,
+        "accuracy_95pct_bootstrap_ci": [
+          1.0,
+          1.0
+        ],
+        "examples": 39,
+        "labels": [
+          "classify_evidence",
+          "classify_intent",
+          "detect_contradiction",
+          "extract_entities",
+          "logical_reasoning"
+        ],
+        "macro_f1": 1.0
+      }
+    }
+  },
+  "purpose": "routing only; not proof of reasoning quality",
+  "seed": 20260917,
+  "training_seconds": 0.331010028000037,
+  "version": "sweep-cognitive-router/1"
+}

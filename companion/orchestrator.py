@@ -132,7 +132,7 @@ class ToolRegistry:
     async def execute(
         self,
         name: str,
-        input: dict[str, Any],
+        input: Any,
         ctx: ToolContext,
         task_id: str = "",
     ) -> ToolExecutionResponse:
@@ -141,6 +141,23 @@ class ToolRegistry:
         if tool is None:
             return ToolExecutionResponse(
                 task_id=task_id, tool=name, ok=False, error=f"unknown tool: {name}"
+            )
+        if not isinstance(input, dict):
+            return ToolExecutionResponse(
+                task_id=task_id,
+                tool=name,
+                ok=False,
+                error="invalid tool input: expected object",
+                latency_ms=int((time.monotonic() - started) * 1000),
+            )
+        schema_error = _validate_against_schema(tool.input_schema, input)
+        if schema_error:
+            return ToolExecutionResponse(
+                task_id=task_id,
+                tool=name,
+                ok=False,
+                error=f"invalid tool input: {schema_error}",
+                latency_ms=int((time.monotonic() - started) * 1000),
             )
         try:
             out = await tool.run(input, ctx)
@@ -422,6 +439,7 @@ class Orchestrator:
         turn_id = f"turn_{uuid.uuid4().hex[:12]}"
         ctx = ToolContext(user_id=request.user_id, workspace_id=request.workspace_id or "")
         tools = self.registry.specs(request.tools or None)
+        allowed_tools = set(request.tools or []) if request.tools else None
 
         messages: list[dict[str, Any]] = [
             *[dict(h) for h in request.history],
@@ -442,7 +460,7 @@ class Orchestrator:
                 final = str(respond)
                 break
 
-            steps = plan.get("steps") or []
+            steps = (plan.get("steps") or [])[: min(request.max_steps, MAX_STEPS)]
             if not steps:
                 final = str(plan.get("summary") or "Done.")
                 break
@@ -453,12 +471,15 @@ class Orchestrator:
                     final = str(raw.get("text") or raw.get("description") or "Done.")
                     break
                 tool = str(raw.get("tool") or "")
+                raw_input = raw.get("input", {})
+                if raw_input is None:
+                    raw_input = {}
                 step = PlanStep(
                     step_id=f"step_{iteration}_{uuid.uuid4().hex[:8]}",
                     kind="tool",
                     tool=tool,
                     description=str(raw.get("description") or raw.get("tool") or ""),
-                    input=raw.get("input") or {},
+                    input=raw_input,
                     status="running",
                 )
                 if not tool:
@@ -466,6 +487,12 @@ class Orchestrator:
                     step.error = "no tool name in plan"
                     trace.append(step)
                     continue
+                if allowed_tools is not None and tool not in allowed_tools:
+                    step.status = "failed"
+                    step.error = "tool not allowed by request whitelist"
+                    trace.append(step)
+                    final = f"Tool '{tool}' failed: {step.error}"
+                    break
                 result = await self.registry.execute(tool, step.input, ctx, task_id=turn_id)
                 step.status = "ok" if result.ok else "failed"
                 step.output = result.output
@@ -541,6 +568,35 @@ def _coerce_step(raw: dict[str, Any], index: int) -> PlanStep:
         description=str(raw.get("description") or raw.get("tool") or ""),
         input=raw.get("input") or {},
     )
+
+
+def _validate_against_schema(schema: dict[str, Any], value: Any, path: str = "input") -> str | None:
+    expected = schema.get("type")
+    if expected == "object":
+        if not isinstance(value, dict):
+            return f"{path} must be an object"
+        required = schema.get("required") or []
+        for key in required:
+            if key not in value:
+                return f"missing required field '{key}'"
+        properties = schema.get("properties") or {}
+        for key, prop_schema in properties.items():
+            if key in value:
+                nested = _validate_against_schema(prop_schema, value[key], f"{path}.{key}")
+                if nested:
+                    return nested
+        return None
+    if expected == "string":
+        return None if isinstance(value, str) else f"{path} must be a string"
+    if expected == "integer":
+        return None if isinstance(value, int) and not isinstance(value, bool) else f"{path} must be an integer"
+    if expected == "number":
+        return None if isinstance(value, (int, float)) and not isinstance(value, bool) else f"{path} must be a number"
+    if expected == "boolean":
+        return None if isinstance(value, bool) else f"{path} must be a boolean"
+    if expected == "array":
+        return None if isinstance(value, list) else f"{path} must be an array"
+    return None
 
 
 def _compact(value: Any) -> str:

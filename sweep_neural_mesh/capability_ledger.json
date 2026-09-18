@@ -1,0 +1,17 @@
+{
+  "version":"sweep-capability-ledger/1",
+  "status_definitions":{"verified":"executed and evaluated","executable_untested":"adapter and assets exist; representative evaluation missing","partial":"some listed tasks have executable implementations","candidate":"model profile exists but local weights/evaluation are missing","blocked":"required hardware, permission, adapter, or evaluation is absent"},
+  "domains":{
+    "reasoning_intelligence":{"status":"partial","components":["logic_data","contradiction_detector","evidence_classifier","qwen_math_candidate"],"missing":["representative multi-domain held-out evaluation","persistent structured cognitive loop"]},
+    "learning_knowledge":{"status":"partial","components":["general_knowledge","RAG","production_memory","qwen_general_candidate"]},
+    "computer_coding":{"status":"candidate","components":["qwen_coder_profile","sandboxed_compute","Device Host plan/approval boundary"],"restriction":"reverse engineering and cybersecurity only for authorized systems"},
+    "scientific_technical":{"status":"partial","components":["numpy","pandas","scipy","sympy","compute scheduler","qwen_math_candidate"]},
+    "vision_image":{"status":"partial","components":["CLIP B32","YOLOv8n","OpenCV","InsightFace"],"unverified":["Qwen-VL","image generation","map interpretation"]},
+    "document":{"status":"partial","components":["LayoutLM","PDF/document tooling"],"blocked":["OCR until Tesseract runtime is verified"]},
+    "data":{"status":"partial","components":["pandas","scikit-learn","FAISS","visualization backends"]},
+    "language":{"status":"partial","components":["BERT","DeBERTa","RoBERTa","XLM-R","GLiNER","Qwen general candidate"]},
+    "creative":{"status":"candidate","components":["Qwen general profile"],"missing":["quality and safety evaluation"]},
+    "agentic":{"status":"partial","components":["orchestrator","tool registry","terminal","Device Host"],"restriction":"all side effects require tool policy and permission"},
+    "robotics_physical":{"status":"blocked","reason":"no verified sensor/actuator transport, safety controller, hardware-in-loop tests, or authorized robot host"}
+  }
+}

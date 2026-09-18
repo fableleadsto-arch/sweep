@@ -1,49 +1,48 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "pybind11>=2.12,<3.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "sweep"
 version = "2.0.0"
-description = "Sweep — Python-first web intelligence / OSINT research platform."
+description = "Sweep — multipurpose neural-mesh intelligence and authorized action platform."
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115,<1.0",
-    "uvicorn[standard]>=0.29,<1.0",
-    "pydantic>=2.8,<3.0",
-    "pydantic-settings>=2.4,<3.0",
-    "httpx>=0.27,<1.0",
-    "beautifulsoup4>=4.12,<5.0",
-    "trafilatura>=1.12,<2.0",
-    "lxml>=5.0,<6.0",
-    "numpy>=1.26,<3.0",
-    "pandas>=2.2,<3.0",
-    "scipy>=1.13,<2.0",
-    "scikit-learn>=1.5,<2.0",
-    "python-dotenv>=1.0,<2.0",
+    "fastapi>=0.115,<1.0", "uvicorn[standard]>=0.29,<1.0",
+    "pydantic>=2.8,<3.0", "pydantic-settings>=2.4,<3.0",
+    "httpx>=0.27,<1.0", "beautifulsoup4>=4.12,<5.0",
+    "trafilatura>=1.12,<2.0", "lxml>=5.0,<6.0",
+    "numpy>=1.26,<3.0", "pandas>=2.2,<3.0", "scipy>=1.13,<2.0",
+    "scikit-learn>=1.5,<2.0", "python-dotenv>=1.0,<2.0",
+    "qdrant-client>=1.9,<2.0",
 ]
+
+[project.scripts]
+sweep = "sweep_neural_mesh.terminal:main"
 
 [project.optional-dependencies]
 browser = ["playwright>=1.40,<2.0"]
 ai = ["torch>=2.0", "transformers>=4.0", "sentence-transformers>=3.0", "open-clip-torch>=3.0"]
 vision = ["open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16"]
 audio = ["openai-whisper", "pyannote.audio>=3.0", "torchaudio>=2.0"]
-documents = ["layoutlm", "PyMuPDF>=1.23"]
+documents = ["PyMuPDF>=1.23"]
 intelligence = ["torch>=2.0", "transformers>=4.40", "sentence-transformers>=3.0", "open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16", "openai-whisper", "gliner>=0.2", "faiss-cpu>=1.7", "pyannote.audio>=3.0"]
 dev = ["pytest>=8.0,<10.0", "ruff>=0.1"]
 
 [tool.setuptools.packages.find]
-include = ["app*"]
+include = ["app*", "companion*", "sweep_neural_mesh*"]
+
+[tool.setuptools.package-data]
+sweep_neural_mesh = ["capability_ledger.json", "training/datasets/*.jsonl", "training/datasets/*.json"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "companion/tests", "sweep_neural_mesh/tests"]
 addopts = "-q"
 pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "ASYNC"]
 ignore = ["E501"]

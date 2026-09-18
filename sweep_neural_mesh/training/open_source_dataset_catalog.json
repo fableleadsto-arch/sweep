@@ -1,0 +1,37 @@
+{
+  "generated_from": "OpenSourceDatasetRegistry defaults",
+  "datasets": [
+    {
+      "name": "anli",
+      "platform": "huggingface",
+      "reference_url": "https://huggingface.co/datasets/facebook/anli",
+      "license_name": "facebook-anli",
+      "task_types": ["contradiction", "inference", "reasoning"],
+      "modalities": ["text"]
+    },
+    {
+      "name": "fever",
+      "platform": "huggingface",
+      "reference_url": "https://huggingface.co/datasets/fever/fever",
+      "license_name": "fever-cc-by-sa-3.0",
+      "task_types": ["evidence", "verification", "reasoning"],
+      "modalities": ["text"]
+    },
+    {
+      "name": "logicnli",
+      "platform": "huggingface",
+      "reference_url": "https://huggingface.co/datasets/tasksource/LogicNLI",
+      "license_name": "logicnli-open",
+      "task_types": ["logic", "reasoning", "first_order_logic"],
+      "modalities": ["text"]
+    },
+    {
+      "name": "temporal_reasoning_dataset",
+      "platform": "github",
+      "reference_url": "https://github.com/amazon-science/temporal-reasoning-dataset",
+      "license_name": "temporal-reasoning-open",
+      "task_types": ["temporal", "reasoning"],
+      "modalities": ["text"]
+    }
+  ]
+}
