@@ -1,54 +1,41 @@
 """
-Learning Infrastructure — Phases 14-17.
+Learning Infrastructure — Phases 14–18 + 19.
 
 Phase 14 (spec section 22): every completed task should produce a
 record — task representation, actions, observations, outcome, errors,
 success factors, resource cost, time, confidence, verification result.
-This module implements those records with PERSISTENT storage (JSONL,
-append-only) so real outcome data accumulates across runs. Persistent
-outcome data is what upgrades scaffolding into learned models.
+Persistent JSONL append-only store so real outcome data accumulates.
 
 Phase 15 (spec sections 19/22): a LEARNED complexity estimator —
 logistic regression over behavioral features (no dependencies, no
-GPU) — trained on accumulated experience records. Replaces the lexical
-scaffolding in prediction/routing when data supports it, with an
-explicit fallback otherwise.
+GPU) — trained on accumulated experience records, with holdout
+generalization + Brier calibration vs the lexical baseline.
 
 Phase 16 (spec section 23): a skill registry whose acquisition gate
-requires transfer evidence, not a single success (spec 22: "Require
-evidence that a strategy transfers").
+requires transfer evidence across distinct contexts, not a single
+success.
 
 Phase 17 (spec section 24): self-improvement loop — candidate vs
 baseline on the same evaluation set; keep only if better; record a
 regression test either way.
 
-Phase 18 (representation upgrade): a TEXT estimator over hashed n-gram
-features. HONEST SCOPE: the feature *hashing* is deterministic
-scaffolding (fixed dim, no learned embedding); what is LEARNED is the
-weighting of textual content — which fragments predict success/failure
-comes from accumulated outcome data, not from hand-enumerated marker
-lists. Trained dense embeddings remain future work; this is the first
-rung above hand-crafted features and is gated against ALL of: the
-behavioral-feature estimator, the lexical baseline, and the
-majority-class floor, on the same holdout. Text is promoted only when
-it strictly beats every one of them.
+Phase 18 (representation upgrade): a TEXT estimator over hashed
+n-gram features whose WEIGHTS are learned from outcome data (not
+from hand-enumerated marker lists), promoted only when it beats ALL
+of: behavioral estimator on the same split, lexical baseline, and
+majority-class floor on the same holdout.
 
-IMPLEMENTATION STATUS (honest):
-- REAL: experience records, persistent JSONL store, logistic
-  regression trainer with holdout generalization + Brier calibration
-  measurement, skill registry with statistical acquisition gates,
-  improvement loop with baseline comparison and rollback, text
-  (hashed n-gram) estimator with multi-baseline promotion gate.
-- TEMPORARY SCAFFOLDING: behavioral features are still hand-built
-  counts/ratios; text features are deterministic hashed n-grams (the
-  WEIGHTS are learned, the projection is not). A trained embedding
-  model replaces `text_features_from_query` when data volume justifies
-  it — behind the same contracts and gates.
+Phase 19 (controlled retraining cadence): a RetrainScheduler that
+trains fresh candidates on demand, detects drift vs the currently-
+promoted model, and returns honest recommendations. The scheduler
+never silently promotes — promotion happens only through the existing
+gates, and only when callers choose to apply the recommendation.
 """
 
 from __future__ import annotations
 
 import hashlib
+from enum import Enum
 import itertools
 import json
 import math
@@ -57,7 +44,6 @@ import random
 import re
 import time
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import Any, Callable, Optional
 
 _uid_counter = itertools.count(1)
@@ -71,21 +57,20 @@ def _uid(prefix: str) -> str:
 # PHASE 14 — EXPERIENCE RECORDS + PERSISTENT STORE
 # ======================================================================
 
+
 @dataclass
 class ExperienceRecord:
-    """One completed (or failed) task, as the full outcome record the
-    spec section 22 requires."""
     task_id: str
     goal: str
-    query_features: dict[str, float]          # behavioral feature vector
-    actions: list[dict[str, Any]]             # action_type, attempts, durations
-    outcome: str                              # completed / failed / needs_user
+    query_features: dict[str, float]
+    actions: list[dict[str, Any]]
+    outcome: str
     success: bool
     verification_passed: bool
-    errors: list[dict[str, Any]]              # error_class, detail
+    errors: list[dict[str, Any]]
     replans: int
     duration_ms: float
-    confidence: float                         # self-assessed at completion
+    confidence: float
     routing_mode: str = ""
     created_at: float = field(default_factory=time.time)
 
@@ -112,16 +97,6 @@ class ExperienceRecord:
 
 
 class ExperienceStore:
-    """
-    Persistent, append-only JSONL store of experience records.
-
-    Design choices (spec section 22: "Do not blindly perform online
-    weight updates after every task. Use controlled learning pipelines."):
-    - append-only: history is immutable; training snapshots are explicit
-    - load_all(): full replay for offline training
-    - corruption-safe: a bad line is skipped and counted, never fatal
-    """
-
     def __init__(self, path: Optional[str] = None):
         self.path = path
         self._skipped_lines = 0
@@ -165,12 +140,9 @@ class ExperienceStore:
 
 
 # ======================================================================
-# PHASE 15 — LEARNED ESTIMATOR
+# PHASE 15 — LEARNED ESTIMATOR (BEHAVIORAL FEATURES)
 # ======================================================================
 
-# Behavioral feature extraction. SCAFFOLDING at the *feature* level:
-# counts and ratios, not learned embeddings. The trainer/updater below
-# is real; features upgrade independently of it.
 COMPLEXITY_MARKERS = (
     "investigate", "analyze", "compare", "why", "how", "explain",
     "research", "verify", "prove", "design",
@@ -186,8 +158,6 @@ CONSEQUENCE_MARKERS = (
 
 
 def features_from_query(query: str) -> dict[str, float]:
-    """Feature vector for a query. Deterministic. Same features must be
-    used at training and inference time."""
     lower = query.lower()
     words = query.split()
     n = max(1, len(words))
@@ -212,15 +182,13 @@ FEATURE_ORDER = [
 
 @dataclass
 class TrainingReport:
-    """Outcome of a controlled training run. Spec 22: controlled
-    pipeline, measured — not a silent online update."""
     n_records: int
     n_train: int
     n_test: int
     train_accuracy: Optional[float] = None
     test_accuracy: Optional[float] = None
     test_brier: Optional[float] = None
-    baseline_accuracy: Optional[float] = None     # lexical heuristic on same split
+    baseline_accuracy: Optional[float] = None
     beats_baseline: Optional[bool] = None
     weights: dict[str, float] = field(default_factory=dict)
     bias: float = 0.0
@@ -254,9 +222,6 @@ def _logistic(z: float) -> float:
 
 
 class LogisticEstimator:
-    """Minimal L2-regularized logistic regression. Pure Python — runs
-    anywhere SWEEP runs (spec: no GPU required, degrade gracefully)."""
-
     def __init__(self, weights: Optional[dict[str, float]] = None,
                  bias: float = 0.0):
         self.weights = dict(weights or {})
@@ -277,15 +242,13 @@ class LogisticEstimator:
 
 
 def lexical_baseline(query: str) -> float:
-    """The pre-existing heuristic, as an explicit baseline to beat."""
     f = features_from_query(query)
-    return min(1.0, 0.25 + 0.4 * f["marker_density"] + 0.2 * f["marker_count"]
+    return min(1.0, 0.25 + 0.4 * f["marker_density"]
+               + 0.2 * f["marker_count"]
                + 0.3 * f["consequence_markers"])
 
 
 class LearningPipeline:
-    """Controlled training + evaluation + gated promotion (spec 22/24)."""
-
     MIN_RECORDS = 30
     MIN_TEST = 8
     TEST_FRACTION = 0.3
@@ -294,19 +257,9 @@ class LearningPipeline:
         self.store = store
         self.seed = seed
 
-    # ------------------------------------------------------------------
-    # Training
-    # ------------------------------------------------------------------
-
     def train(self, epochs: int = 300, lr: float = 0.5, l2: float = 0.01,
               record_progress: Optional[Callable[[str, float], None]] = None,
               ) -> TrainingReport:
-        """
-        Train on accumulated experience: target = task success. Holdout
-        evaluation + baseline comparison. NEVER auto-promotes — callers
-        use `promote()` after seeing the report (spec 24: keep only if
-        better, compare against baseline).
-        """
         records = [r for r in self.store.load_all()
                    if r.outcome in ("completed", "failed", "needs_user")]
         n = len(records)
@@ -318,8 +271,6 @@ class LearningPipeline:
                 ),
             )
 
-        # Stratified-ish split: shuffle deterministically, keep both
-        # classes present in test when possible.
         rng = random.Random(self.seed)
         shuffled = list(records)
         rng.shuffle(shuffled)
@@ -333,7 +284,6 @@ class LearningPipeline:
                 rejected_reason="no training records after split",
             )
 
-        # Class balance guard: a degenerate all-one-class set has no signal
         train_labels = {r.success for r in train}
         if len(train_labels) < 2:
             return TrainingReport(
@@ -341,7 +291,6 @@ class LearningPipeline:
                 rejected_reason="training set has a single class; no signal",
             )
 
-        # Gradient descent on L2-regularized logistic loss
         weights = {name: 0.0 for name in FEATURE_ORDER}
         bias = 0.0
         m = len(train)
@@ -350,7 +299,8 @@ class LearningPipeline:
             grad_b = 0.0
             for rec in train:
                 feats = rec.query_features
-                z = bias + sum(weights.get(k, 0.0) * feats.get(k, 0.0) for k in FEATURE_ORDER)
+                z = bias + sum(weights.get(k, 0.0) * feats.get(k, 0.0)
+                               for k in FEATURE_ORDER)
                 p = _logistic(z)
                 err = p - (1.0 if rec.success else 0.0)
                 for k in FEATURE_ORDER:
@@ -363,8 +313,6 @@ class LearningPipeline:
                 record_progress(f"epoch {epoch}", _loss(train, weights, bias, l2))
 
         model = LogisticEstimator(weights=weights, bias=bias)
-
-        # Evaluate on holdout
         test_correct = 0
         brier = 0.0
         for rec in test:
@@ -375,19 +323,15 @@ class LearningPipeline:
             brier += (p - target) ** 2
         test_accuracy = test_correct / len(test)
         test_brier = brier / len(test)
-
-        # Baseline on the same holdout
         base_correct = sum(
             (lexical_baseline(r.goal) >= 0.5) == r.success for r in test
         )
         baseline_accuracy = base_correct / len(test)
-
         train_correct = sum(
             (model.predict_proba(r.query_features) >= 0.5) == r.success
             for r in train
         )
         train_accuracy = train_correct / len(train)
-
         beats = test_accuracy > baseline_accuracy
         return TrainingReport(
             n_records=n, n_train=len(train), n_test=len(test),
@@ -403,13 +347,8 @@ class LearningPipeline:
             ),
         )
 
-    # ------------------------------------------------------------------
-    # Gated promotion
-    # ------------------------------------------------------------------
-
-    def promote(self, report: TrainingReport, path: str) -> bool:
-        """Persist a model ONLY if the report was accepted (beat the
-        baseline on holdout). Spec 24: keep only if better."""
+    @staticmethod
+    def promote(report: TrainingReport, path: str) -> bool:
         if not report.accepted:
             return False
         os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
@@ -450,22 +389,21 @@ def _loss(train: list, weights: dict[str, float], bias: float, l2: float) -> flo
 # ======================================================================
 
 class SkillStatus(str, Enum):
-    CANDIDATE = "candidate"        # observed once, not yet a skill
-    PROVISIONAL = "provisional"    # some evidence, below acquisition bar
-    ACQUIRED = "acquired"          # transfer evidence met
-    RETIRED = "retired"            # success rate decayed below floor
+    CANDIDATE = "candidate"
+    PROVISIONAL = "provisional"
+    ACQUIRED = "acquired"
+    RETIRED = "retired"
 
 
 @dataclass
 class Skill:
     name: str
     description: str = ""
-    procedure: list[dict[str, Any]] = field(default_factory=list)  # steps
+    procedure: list[dict[str, Any]] = field(default_factory=list)
     preconditions: dict[str, Any] = field(default_factory=dict)
     status: SkillStatus = SkillStatus.CANDIDATE
     usage_count: int = 0
     success_count: int = 0
-    # Transfer evidence: distinct task contexts where the strategy worked
     distinct_contexts_succeeded: set[str] = field(default_factory=set)
     created_at: float = field(default_factory=time.time)
     last_used: Optional[float] = None
@@ -492,15 +430,6 @@ class Skill:
 
 
 class SkillRegistry:
-    """
-    Skill acquisition requires TRANSFER EVIDENCE (spec 22): a strategy
-    becomes a skill only after succeeding in MIN_DISTINCT_CONTEXTS
-    distinct task contexts with a success rate at or above
-    ACQUIRE_RATE. A single success makes a candidate, never a skill.
-    Retired when the success rate decays below RETIRE_RATE after
-    enough uses.
-    """
-
     MIN_DISTINCT_CONTEXTS = 3
     ACQUIRE_RATE = 0.7
     RETIRE_RATE = 0.4
@@ -514,7 +443,6 @@ class SkillRegistry:
         description: str = "", procedure: Optional[list[dict[str, Any]]] = None,
         preconditions: Optional[dict[str, Any]] = None,
     ) -> Skill:
-        """Record one execution of a strategy in a task context."""
         skill = self._skills.get(name)
         if skill is None:
             skill = Skill(
@@ -533,7 +461,6 @@ class SkillRegistry:
 
     def _update_status(self, skill: Skill) -> None:
         if skill.status == SkillStatus.ACQUIRED:
-            # Decay check
             if (skill.usage_count >= self.RETIRE_MIN_USES
                     and skill.success_rate is not None
                     and skill.success_rate < self.RETIRE_RATE):
@@ -555,7 +482,6 @@ class SkillRegistry:
         return [s for s in self._skills.values() if s.status == SkillStatus.ACQUIRED]
 
     def applicable(self, context: dict[str, Any]) -> list[Skill]:
-        """Acquired skills whose preconditions hold in this context."""
         out = []
         for skill in self.acquired():
             ok = all(
@@ -577,10 +503,10 @@ class SkillRegistry:
 # PHASE 17 — SELF-IMPROVEMENT LOOP
 # ======================================================================
 
+
 @dataclass
 class ImprovementCandidate:
     name: str
-    # evaluation function: returns (score, details); higher is better
     evaluate: Callable[[], tuple[float, dict[str, Any]]]
     notes: str = ""
 
@@ -611,17 +537,6 @@ class ImprovementOutcome:
 
 
 class SelfImprovementLoop:
-    """
-    Spec section 24: PERFORM → MEASURE → ANALYZE → GENERATE
-    IMPROVEMENT → TEST → COMPARE BASELINE → KEEP ONLY IF BETTER →
-    RECORD REGRESSION TEST.
-
-    The loop never mutates production behavior directly. Candidates
-    are callables evaluated against the baseline on the same set;
-    keeping a candidate means swapping it into `apply` and recording
-    the outcome as a regression checkpoint.
-    """
-
     def __init__(self, min_improvement: float = 0.02):
         self.min_improvement = min_improvement
         self.history: list[ImprovementOutcome] = []
@@ -632,12 +547,8 @@ class SelfImprovementLoop:
         baseline: Callable[[], tuple[float, dict[str, Any]]],
         apply: Optional[Callable[[bool], None]] = None,
     ) -> ImprovementOutcome:
-        """Evaluate candidate vs baseline on the same evaluation set.
-        If `apply` is given it is called with the keep decision (True
-        only when strictly better by min_improvement)."""
         base_score, base_details = baseline()
         cand_score, cand_details = candidate.evaluate()
-
         improved = cand_score > base_score + self.min_improvement
         outcome = ImprovementOutcome(
             candidate=candidate.name,
@@ -658,9 +569,6 @@ class SelfImprovementLoop:
         return outcome
 
     def regression_summary(self) -> list[dict[str, Any]]:
-        """The recorded outcomes ARE the regression tests: any future
-        candidate must beat the current kept state, and a kept change
-        that later regresses shows here as a low candidate score."""
         return [o.to_dict() for o in self.history]
 
 
@@ -680,16 +588,11 @@ def _tokenize(text: str) -> list[str]:
 
 
 def _hash_index(token: str) -> int:
-    """Stable across processes (unlike Python's salted hash())."""
     digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
     return int.from_bytes(digest, "big") % TEXT_DIM
 
 
 def text_features_from_query(query: str) -> dict[str, float]:
-    """Hashed word unigrams+bigrams, L2-normalized. Deterministic and
-    process-stable. HONEST SCOPE: the projection is scaffolding; the
-    WEIGHTS trained on top are what is learned (which textual content
-    predicts success comes from outcome data, not marker lists)."""
     tokens = _tokenize(query)
     if not tokens:
         return {}
@@ -744,9 +647,6 @@ class TextTrainingReport:
 
 
 class TextEstimator:
-    """Logistic model over hashed text features. Same estimator math as
-    LogisticEstimator, different feature space."""
-
     def __init__(self, weights: Optional[dict[str, float]] = None,
                  bias: float = 0.0):
         self.weights = dict(weights or {})
@@ -770,19 +670,6 @@ class TextEstimator:
 
 
 class TextLearningPipeline:
-    """Text-space pipeline. Promotion requires beating ALL of: the
-    behavioral-feature estimator (trained on the same split), the
-    lexical heuristic, and the majority-class floor — on the same
-    holdout (spec 24: keep only if better; spec 65: no hidden shortcuts).
-
-    Overfitting control: minimum document frequency (MIN_DF). Grams
-    seen in fewer than MIN_DF *training* records are dropped from the
-    vocabulary. The vocabulary is built from the train split ONLY —
-    the holdout never influences it (no leakage). This is standard
-    text-ML practice and it matters: without it, sparse record-specific
-    bigrams memorize the training set (verified experimentally: test
-    accuracy collapsed from ~0.92 to ~0.53 without min-df at n=50)."""
-
     MIN_RECORDS = 40
     MIN_TEST = 10
     TEST_FRACTION = 0.3
@@ -829,8 +716,6 @@ class TextLearningPipeline:
                 rejected_reason="training set has a single class; no signal",
             )
 
-        # Vocabulary from TRAIN split only (holdout never consulted).
-        # Grams rarer than min_df are dropped: they cannot generalize.
         doc_freq: dict[str, int] = {}
         for rec in train:
             for gram in text_features_from_query(rec.goal):
@@ -841,7 +726,6 @@ class TextLearningPipeline:
             return {k: v for k, v in text_features_from_query(goal).items()
                     if k in vocab}
 
-        # --- Text model ---
         text_weights: dict[str, float] = {}
         bias = 0.0
         m = len(train)
@@ -859,14 +743,12 @@ class TextLearningPipeline:
             for k, g in grad.items():
                 w = text_weights.get(k, 0.0)
                 text_weights[k] = w - lr * (g / m + l2 * w)
-            # L2 toward zero for unseen weights is implicit (they stay 0)
             bias -= lr * grad_b / m
             if record_progress and epoch % 100 == 0:
                 record_progress(f"epoch {epoch}", 0.0)
 
         model = TextEstimator(weights=text_weights, bias=bias)
 
-        # --- Behavioral model on the SAME split (spec 65: same conditions) ---
         behav_weights = {name: 0.0 for name in FEATURE_ORDER}
         behav_bias = 0.0
         for epoch in range(epochs):
@@ -887,7 +769,6 @@ class TextLearningPipeline:
 
         behav_model = LogisticEstimator(weights=behav_weights, bias=behav_bias)
 
-        # --- Holdout evaluation: all four contenders, same data ---
         def _score(predict):
             correct = 0
             brier = 0.0
@@ -899,13 +780,18 @@ class TextLearningPipeline:
             return correct / len(test), brier / len(test)
 
         text_acc, text_brier = _score(
-            lambda r: model.predict_proba(_feats(r.goal)))
+            lambda r: model.predict_proba(_feats(r.goal))
+        )
         behav_acc, _ = _score(
-            lambda r: behav_model.predict_proba(r.query_features))
+            lambda r: behav_model.predict_proba(r.query_features)
+        )
         lex_acc, _ = _score(
-            lambda r: lexical_baseline(r.goal))
-        majority = max(sum(1 for r in test if r.success),
-                       sum(1 for r in test if not r.success)) / len(test)
+            lambda r: lexical_baseline(r.goal)
+        )
+        majority = max(
+            sum(1 for r in test if r.success),
+            sum(1 for r in test if not r.success)
+        ) / len(test)
 
         beats_behavioral = text_acc > behav_acc
         beats_lexical = text_acc > lex_acc
@@ -937,7 +823,8 @@ class TextLearningPipeline:
             rejected_reason=rejected,
         )
 
-    def promote(self, report: TextTrainingReport, path: str) -> bool:
+    @staticmethod
+    def promote(report: TextTrainingReport, path: str) -> bool:
         if not report.accepted:
             return False
         os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
@@ -962,12 +849,6 @@ class TextLearningPipeline:
 
 
 class BlendedEstimator:
-    """Combines behavioral + text estimators when BOTH have been
-    promoted through their gates. Honest fallback contract: when a
-    component is missing or errors, the other stands alone; when both
-    are missing, callers fall back to lexical signals (router/prediction
-    already implement this)."""
-
     def __init__(self, behavioral: Optional[LogisticEstimator] = None,
                  text: Optional[TextEstimator] = None,
                  text_weight: float = 0.5):
@@ -978,15 +859,14 @@ class BlendedEstimator:
         self.text_weight = text_weight
 
     def predict_proba(self, features: dict[str, float]) -> float:
-        """Behavioral-space entry point (router contract). Uses text
-        component only if the caller supplies text features via
-        predict_proba_blended."""
         return self._blend(
-            behavioral=lambda: self.behavioral.predict_proba(features),
+            behavioral=lambda: self.behavioral.predict_proba(features)
+            if self.behavioral else None,
             text=None,
         )
 
-    def predict_proba_blended(self, features: dict[str, float], query: str) -> float:
+    def predict_proba_blended(self, features: dict[str, float],
+                              query: str) -> float:
         return self._blend(
             behavioral=(lambda: self.behavioral.predict_proba(features)
                         if self.behavioral else None),
@@ -1003,7 +883,7 @@ class BlendedEstimator:
                 if p is not None:
                     parts.append(p)
                     wts.append(1.0 - self.text_weight)
-            except Exception:  # noqa: BLE001 — one component failing must not kill the blend
+            except Exception:
                 pass
         if self.text is not None and text is not None:
             try:
@@ -1011,7 +891,7 @@ class BlendedEstimator:
                 if p is not None:
                     parts.append(p)
                     wts.append(self.text_weight)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass
         if not parts:
             raise RuntimeError("no estimator component produced a prediction")
@@ -1019,13 +899,353 @@ class BlendedEstimator:
         return sum(p * w for p, w in zip(parts, wts)) / total
 
 
-def majority_baseline(records: list["ExperienceRecord"]) -> float:
-    """Majority-class accuracy over a record list. Exposed for tests and
-    callers that want the floor explicitly."""
+def majority_baseline(records: list[ExperienceRecord]) -> float:
     if not records:
         return 0.0
     pos = sum(1 for r in records if r.success)
     return max(pos, len(records) - pos) / len(records)
+
+
+# ======================================================================
+# PHASE 19 — SCHEDULED RETRAINING + DRIFT DETECTION
+# ======================================================================
+
+TIMESTAMP_FORMAT = "%.0f"
+
+
+class DriftReport:
+    """Outcome of comparing a fresh model's holdout report against the
+    currently-promoted model's embedded report. Honest: if no model is
+    promoted, drift is unmeasured (None)."""
+
+    def __init__(
+        self,
+        promoted_at: Optional[float] = None,
+        promoted_report: Optional[Any] = None,
+        fresh_vs_promoted_test_accuracy_delta: Optional[float] = None,
+        severity: str = "unknown",
+        note: str = "",
+        fresh_report: Any = None,
+    ):
+        self.promoted_at = promoted_at
+        self.promoted_report = promoted_report
+        self.fresh_vs_promoted_test_accuracy_delta = fresh_vs_promoted_test_accuracy_delta
+        self.severity = severity
+        self.note = note
+        self.fresh_report = fresh_report
+
+    @property
+    def has_drift(self) -> bool:
+        return self.severity in ("degraded", "degraded_closely")
+
+    @property
+    def degraded_amount(self) -> Optional[float]:
+        return self.fresh_vs_promoted_test_accuracy_delta
+
+    def to_dict(self) -> dict:
+        return {
+            "promoted_at": self.promoted_at,
+            "promoted_test_accuracy": (
+                getattr(self.promoted_report, "test_accuracy", None)
+                if self.promoted_report is not None else None
+            ),
+            "fresh_test_accuracy": (
+                getattr(self.fresh_report, "test_accuracy", None)
+                if self.fresh_report is not None else None
+            ),
+            "delta_vs_promoted": self.fresh_vs_promoted_test_accuracy_delta,
+            "severity": self.severity,
+            "note": self.note,
+            "drift_note": self.note,
+        }
+
+
+class DriftDetector:
+    def __init__(self, min_improve: float = 0.02):
+        self.min_improve = min_improve
+
+    def detect(
+        self,
+        fresh_report: Any,
+        current_promoted_report: Optional[Any] = None,
+    ) -> DriftReport:
+        if current_promoted_report is None:
+            return DriftReport(
+                fresh_report=fresh_report,
+                severity="ok",
+                note="no promoted model to compare against",
+            )
+        if isinstance(current_promoted_report, DriftReport):
+            current_promoted_report = current_promoted_report.promoted_report
+        current_acc = getattr(current_promoted_report, "test_accuracy", None)
+        fresh_acc = getattr(fresh_report, "test_accuracy", None)
+        if current_acc is None or fresh_acc is None:
+            return DriftReport(
+                fresh_report=fresh_report,
+                promoted_report=current_promoted_report,
+                severity="unknown",
+                note="could not compare: one of the reports had no test_accuracy",
+            )
+
+        delta = fresh_acc - current_acc
+        if delta >= self.min_improve:
+            severity = "recovered"
+            note = (
+                f"fresh beats promoted by {delta:.4f} >= {self.min_improve} "
+                f"(fresh={fresh_acc:.4f}, promoted={current_acc:.4f})"
+            )
+        elif delta > -self.min_improve:
+            severity = "ok"
+            note = (
+                f"fresh within {abs(delta):.4f} of promoted "
+                f"(fresh={fresh_acc:.4f}, promoted={current_acc:.4f}); "
+                "not a meaningful degradation"
+            )
+        elif delta >= -0.05:
+            severity = "degraded"
+            note = (
+                f"fresh degraded vs promoted by {abs(delta):.4f} "
+                f"(fresh={fresh_acc:.4f}, promoted={current_acc:.4f})"
+            )
+        else:
+            severity = "degraded"
+            note = (
+                f"fresh severely degraded vs promoted by {abs(delta):.4f} "
+                f"(fresh={fresh_acc:.4f}, promoted={current_acc:.4f})"
+            )
+
+        return DriftReport(
+            fresh_report=fresh_report,
+            promoted_report=current_promoted_report,
+            fresh_vs_promoted_test_accuracy_delta=delta,
+            severity=severity,
+            note=note,
+        )
+
+
+class CadencePolicy:
+    def __init__(
+        self,
+        min_interval_seconds: int = 3600,
+        min_new_records: int = 50,
+        min_improvement: float = 0.02,
+    ):
+        self.min_interval_seconds = min_interval_seconds
+        self.min_new_records = min_new_records
+        self.min_improvement = min_improvement
+
+    def is_allowed(
+        self,
+        store: "ExperienceStore",
+        last_promoted_at: Optional[float],
+        last_training_at: Optional[float],
+    ) -> tuple[bool, str]:
+        if last_training_at is not None and (
+            _records_since(last_training_at, store) < self.min_new_records
+        ):
+            return False, (
+                f"not enough new records since last training: "
+                f"need {self.min_new_records}"
+            )
+        if last_promoted_at is not None and (
+            time.time() - last_promoted_at < self.min_interval_seconds
+        ):
+            return False, (
+                f"cadence interval not elapsed since last promotion "
+                f"({self.min_interval_seconds}s)"
+            )
+        return True, ""
+
+    def improvement_threshold(self) -> float:
+        return self.min_improvement
+
+
+def _records_since(at: float, store: "ExperienceStore") -> int:
+    """Records whose created_at is strictly after at."""
+    n = 0
+    for r in store.load_all():
+        if getattr(r, "created_at", 0.0) > at:
+            n += 1
+    return n
+
+
+class RetrainScheduler:
+    def __init__(
+        self,
+        store: ExperienceStore,
+        cadence: Optional[CadencePolicy] = None,
+        behavioral_promoted_path: Optional[str] = None,
+        text_promoted_path: Optional[str] = None,
+        seed: int = 7,
+    ):
+        self.store = store
+        self.cadence = cadence or CadencePolicy()
+        self.behavioral_promoted_path = behavioral_promoted_path
+        self.text_promoted_path = text_promoted_path
+        self.seed = seed
+        self._last_behav_training_at: Optional[float] = None
+        self._last_text_training_at: Optional[float] = None
+        self._last_behav_promoted_at: Optional[float] = None
+        self._last_text_promoted_at: Optional[float] = None
+
+    def current_promoted(self, space: str) -> Any:
+        path = (
+            self.behavioral_promoted_path if space == "behavioral"
+            else self.text_promoted_path
+        )
+        if path is None or not os.path.exists(path):
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                payload = json.load(fh)
+            from types import SimpleNamespace
+            report = payload.get("report")
+            return SimpleNamespace(**report) if isinstance(report, dict) else None
+        except (json.JSONDecodeError, KeyError, TypeError, OSError):
+            return None
+
+    def schedule_behavioral(self) -> dict:
+        allowed, why = self.cadence.is_allowed(
+            self.store,
+            self._last_behav_promoted_at,
+            self._last_behav_training_at,
+        )
+        if not allowed:
+            return {
+                "space": "behavioral",
+                "status": "cadence_blocked",
+                "reason": why,
+                "report": None,
+                "drift": None,
+                "recommendation": "skip",
+                "path": self.behavioral_promoted_path,
+            }
+
+        report = LearningPipeline(self.store, seed=self.seed).train()
+        current = self.current_promoted("behavioral")
+        drift = DriftDetector(min_improve=self.cadence.min_improvement).detect(
+            report, current
+        )
+        recommendation = _recommend_behavioral(report, drift, current)
+
+        if recommendation == "promote" and self.behavioral_promoted_path:
+            if LearningPipeline.promote(report, self.behavioral_promoted_path):
+                self._last_behav_promoted_at = time.time()
+
+        if report.n_records > 0:
+            self._last_behav_training_at = time.time()
+
+        return {
+            "space": "behavioral",
+            "status": "trained",
+            "report": report,
+            "drift": drift,
+            "recommendation": recommendation,
+            "path": self.behavioral_promoted_path,
+            "should_update_promoted_at": recommendation == "promote",
+        }
+
+    def schedule_text(self) -> dict:
+        allowed, why = self.cadence.is_allowed(
+            self.store,
+            self._last_text_promoted_at,
+            self._last_text_training_at,
+        )
+        if not allowed:
+            return {
+                "space": "text",
+                "status": "cadence_blocked",
+                "reason": why,
+                "report": None,
+                "drift": None,
+                "recommendation": "skip",
+                "path": self.text_promoted_path,
+            }
+
+        report = TextLearningPipeline(self.store, seed=self.seed).train()
+        current = self.current_promoted("text")
+        drift = DriftDetector(min_improve=self.cadence.min_improvement).detect(
+            report, current
+        )
+        recommendation = _recommend_text(
+            report, drift, current,
+            min_improve=self.cadence.min_improvement,
+        )
+
+        if recommendation == "promote" and self.text_promoted_path:
+            if TextLearningPipeline.promote(report, self.text_promoted_path):
+                self._last_text_promoted_at = time.time()
+
+        if report.n_records > 0:
+            self._last_text_training_at = time.time()
+
+        return {
+            "space": "text",
+            "status": "trained",
+            "report": report,
+            "drift": drift,
+            "recommendation": recommendation,
+            "path": self.text_promoted_path,
+            "should_update_promoted_at": recommendation == "promote",
+        }
+
+    def schedule_both(self) -> dict:
+        text_result = self.schedule_text()
+        behav_result = self.schedule_behavioral()
+        return {
+            "spaces": {"text": text_result, "behavioral": behav_result},
+            "summary": _summary(text_result, behav_result),
+        }
+
+
+def _recommend_behavioral(
+    report: TrainingReport,
+    drift: DriftReport,
+    current_promoted_report: Optional[Any],
+) -> str:
+    if not report.accepted:
+        return "refuse"
+    if not report.beats_baseline:
+        return "refuse"
+    if current_promoted_report is not None and (
+        drift.degraded_amount is None or drift.degraded_amount < 0.02
+    ):
+        return "hold"
+    return "promote"
+
+
+def _recommend_text(
+    report: TextTrainingReport,
+    drift: DriftReport,
+    current_promoted_report: Optional[Any],
+    min_improve: Optional[float] = None,
+) -> str:
+    if not report.accepted:
+        return "refuse"
+    if current_promoted_report is not None and (
+        drift.degraded_amount is None or drift.degraded_amount < (min_improve or 0.0)
+    ):
+        return "hold"
+    return "promote"
+
+
+def _summary(text_result: dict, behav_result: dict) -> dict:
+    def one(r):
+        if r["status"] == "cadence_blocked":
+            return {"space": r["space"], "action": "skip", "reason": r["reason"]}
+        rec = r["recommendation"]
+        drift = r["drift"]
+        return {
+            "space": r["space"],
+            "action": rec,
+            "test_accuracy": (
+                getattr(r["report"], "test_accuracy", None)
+                if r["report"] else None
+            ),
+            "drift": drift.severity if drift else "unmeasured",
+            "drift_note": drift.note if drift else None,
+        }
+    return {"text": one(text_result), "behavioral": one(behav_result)}
 
 
 __all__ = [
@@ -1050,4 +1270,8 @@ __all__ = [
     "TextLearningPipeline",
     "BlendedEstimator",
     "majority_baseline",
+    "DriftReport",
+    "DriftDetector",
+    "CadencePolicy",
+    "RetrainScheduler",
 ]

@@ -20,6 +20,8 @@ Usage::
 """
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import logging
 import os
 import re
@@ -90,6 +92,7 @@ class _ModelLoader:
         t = threading.Thread(target=self._load_all, daemon=True)
         t.start()
 
+    @serialized_model_load
     def _load_all(self) -> None:
         """Load all models. Runs in background thread."""
         try:

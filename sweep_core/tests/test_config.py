@@ -1,4 +1,4 @@
-from sweep.config import Settings
+from sweep_core.config import Settings
 
 
 class TestSettings:

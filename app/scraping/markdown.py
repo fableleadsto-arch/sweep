@@ -206,6 +206,7 @@ def html_to_markdown(
     meta = _extract_meta(BeautifulSoup(html, "html.parser"))
     links = _extract_links(BeautifulSoup(html, "html.parser"), url)
 
+    markdown = text = ""
     if HAS_TRAFILATURA:
         # Use trafilatura for robust extraction
         markdown = trafilatura.extract(
@@ -225,9 +226,9 @@ def html_to_markdown(
         ) or ""
 
         text = html_to_text(html_out) if html_out else markdown
-    else:
+    if not markdown.strip() or not text.strip():
         # Fallback: BeautifulSoup-based extraction
-        region = _main_region(html)
+        region = _main_region(_strip_noise(html))
         soup = BeautifulSoup(region, "html.parser")
 
         # Convert to rough markdown
@@ -250,7 +251,7 @@ def html_to_markdown(
             else:
                 parts.append(content)
 
-        markdown = "\n\n".join(parts)
+        markdown = "\n\n".join(parts) or html_to_text(region)
         text = html_to_text(markdown)
 
     # Truncate if needed
@@ -260,7 +261,7 @@ def html_to_markdown(
         cut = markdown.rfind(".", 0, max_chars)
         if cut < max_chars // 2:
             cut = max_chars
-        markdown = markdown[:cut + 1]
+        markdown = markdown[:min(cut + 1, max_chars)]
         truncated = True
     if len(text) > max_chars:
         text = text[:max_chars]

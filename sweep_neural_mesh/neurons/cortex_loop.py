@@ -89,13 +89,21 @@ def short_circuit(
     """Handle hindbrain rejection or reflexive shortcuts."""
     import time as _time
     from .trace import ReasoningResult
+    from .thought_chain import build_fast_path_chain
 
     lat = (_time.perf_counter() - t0) * 1000
+    chain = build_fast_path_chain(
+        query, "insufficient", 0.0, "hindbrain_gate",
+        route_note=("hindbrain stopped the pass before full processing"),
+        ruled_out=[reason],
+        latency_ms=lat,
+    )
     trace = ReasoningTrace(
         query=query, input_evidence_count=len(evidence),
         center_outputs={}, integration_confidence=0.0,
         decision="insufficient", decision_confidence=0.0,
         reasoning=f"hindbrain rejection: {reason}", total_latency_ms=lat,
+        thought_chain=chain,
     )
     traces.append(trace)
     return ReasoningResult(

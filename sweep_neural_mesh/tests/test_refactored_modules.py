@@ -251,13 +251,21 @@ def test_web_scraper_duckduckgo():
     print("  PASS: DuckDuckGo search")
 
 
-def test_web_scraper_cache():
-    from neurons.web_scraper.scraper import WebScraper
+def test_web_scraper_cache(monkeypatch):
+    from neurons.web_scraper.scraper import WebScraper, ScrapedPage
     s = WebScraper(cache_size=100)
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return ScrapedPage(url=url, title="Mars", text="Mars is a planet.")
+
+    monkeypatch.setattr(s, "_fetch_wikipedia", fetch)
     p1 = s.fetch("https://en.wikipedia.org/wiki/Mars")
     p2 = s.fetch("https://en.wikipedia.org/wiki/Mars")
     stats = s.get_stats()
     assert stats["cache_hits"] >= 1
+    assert len(calls) == 1 and p1.text == p2.text
     s.close()
     print("  PASS: Cache hit")
 

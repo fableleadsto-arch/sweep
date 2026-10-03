@@ -26,6 +26,7 @@ from .tools import (
     ai,
     data,
     diffusion,
+    face_search,
     graph,
     inference,
     ml,
@@ -225,6 +226,32 @@ CAPABILITIES: list[Capability] = [
         ),
         tool=vision.run_vision,
         examples=("describe this image", "detect edges in this photo", "resize the image"),
+    ),
+    Capability(
+        id="face-search",
+        label="Face / reverse-image search",
+        description=(
+            "Upload a photo of a person (or any image) and search the public "
+            "internet for matching pages: social profiles across LinkedIn, "
+            "Instagram, Facebook, X, TikTok and more, plus news, blogs and "
+            "company pages. Providers: SerpAPI engines (Google Lens, Yandex, "
+            "Bing, Google Images), TinEye, and keyless name-based search. "
+            "Face verification of candidate thumbnails runs locally when the "
+            "vision stack is present."
+        ),
+        libraries=["httpx"],  # network runtime required; face models remain optional
+        keywords=(
+            "face search", "face recognition search", "reverse image search",
+            "find this person", "find profiles", "identify person", "who is this person",
+            "social profiles from photo", "search by photo", "image search",
+            "person search", "find social media", "osint face",
+        ),
+        tool=face_search.run_face_search,
+        examples=(
+            "find this person's social profiles from a photo",
+            "reverse image search this picture",
+            "where does this photo appear online",
+        ),
     ),
     Capability(
         id="nlp",

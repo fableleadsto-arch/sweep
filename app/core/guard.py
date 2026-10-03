@@ -9,6 +9,8 @@ Treats every webpage as untrusted input:
 from __future__ import annotations
 
 import re
+import ipaddress
+import socket
 from urllib.parse import urlparse
 
 from .types import InjectionAssessment
@@ -20,7 +22,17 @@ BLOCKED_SCHEMES = frozenset({"file:", "ftp:", "gopher:", "data:", "javascript:",
 
 def is_private_host(hostname: str) -> bool:
     """Check if a hostname is private/internal and should never be fetched."""
-    h = hostname.lower()
+    h = hostname.lower().rstrip(".")
+    if h == "localhost" or h.endswith((".localhost", ".internal", ".local", ".localdomain")):
+        return True
+    try:
+        address = ipaddress.ip_address(h)
+    except ValueError:
+        # Reject legacy decimal/octal/hex IPv4 spellings accepted by OS resolvers.
+        if re.fullmatch(r"[0-9.]+", h) or re.match(r"^0x[0-9a-f.]+$", h):
+            return True
+    else:
+        return not address.is_global or address.is_multicast
     if h in ("localhost", "127.0.0.1", "0.0.0.0", "::1"):
         return True
     if h.startswith("192.168."):
@@ -45,6 +57,10 @@ def validate_safe_url(raw: str) -> tuple[bool, str, str]:
     """Validate a URL for fetching. Returns (ok, url, reason)."""
     try:
         parsed = urlparse(raw)
+        if any(ord(c) < 33 for c in raw) or "\\" in raw or "%" in (parsed.hostname or ""):
+            return False, "", "Invalid characters in URL"
+        if parsed.port is not None and not 1 <= parsed.port <= 65535:
+            return False, "", "Invalid port"
     except Exception:
         return False, "", "Not a valid URL"
 
@@ -64,6 +80,22 @@ def validate_safe_url(raw: str) -> tuple[bool, str, str]:
         return False, "", "URLs with embedded credentials are not allowed"
 
     return True, raw, ""
+
+
+def resolve_public_addresses(raw: str) -> list[str]:
+    """Resolve once; callers connect to a returned IP to prevent DNS rebinding."""
+    parsed = urlparse(assert_safe_url(raw))
+    try:
+        records = socket.getaddrinfo(
+            parsed.hostname, parsed.port or (443 if parsed.scheme == "https" else 80),
+            type=socket.SOCK_STREAM,
+        )
+    except OSError as exc:
+        raise ValueError("Could not resolve public host") from exc
+    addresses = list(dict.fromkeys(record[4][0] for record in records))
+    if not addresses or any(is_private_host(address) for address in addresses):
+        raise ValueError("Host resolves to a non-public address")
+    return addresses
 
 
 def assert_safe_url(raw: str, fallback_label: str = "url") -> str:

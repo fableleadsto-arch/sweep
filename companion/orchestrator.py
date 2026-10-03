@@ -197,30 +197,52 @@ _CONSTANTS = {"pi": math.pi, "e": math.e}
 def safe_math_eval(expression: str) -> float | int:
     """Evaluate a numeric expression with a strict whitelist (no eval)."""
 
+    def checked(value):
+        if type(value) not in (int, float):
+            raise ValueError("Only real numbers are supported")
+        if isinstance(value, int) and value.bit_length() > 4096:
+            raise ValueError("Integer result is too large")
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("Non-finite results are not supported")
+        return value
+
     def _eval(node: ast.AST) -> Any:
         if isinstance(node, ast.Expression):
             return _eval(node.body)
-        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
-            return node.value
+        if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+            return checked(node.value)
         if isinstance(node, ast.Name):
             if node.id in _CONSTANTS:
                 return _CONSTANTS[node.id]
             raise ValueError(f"unknown name: {node.id}")
         if isinstance(node, ast.BinOp) and type(node.op) in _ALLOWED_BIN:
-            return _ALLOWED_BIN[type(node.op)](_eval(node.left), _eval(node.right))
+            left, right = _eval(node.left), _eval(node.right)
+            if isinstance(node.op, ast.Pow) and abs(right) > 4096:
+                raise ValueError("Exponent is too large")
+            if isinstance(node.op, ast.Pow) and isinstance(left, int) and right > 0:
+                if left.bit_length() * right > 4096:
+                    raise ValueError("Power result is too large")
+            return checked(_ALLOWED_BIN[type(node.op)](left, right))
         if isinstance(node, ast.UnaryOp) and type(node.op) in _ALLOWED_UNARY:
             return _ALLOWED_UNARY[type(node.op)](_eval(node.operand))
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.keywords:
+                raise ValueError("Keyword arguments are not supported")
             fn = _ALLOWED_FUNCS.get(node.func.id)
             if fn is None:
                 raise ValueError(f"unknown function: {node.func.id}")
             args = [_eval(a) for a in node.args]
-            return fn(*args)
+            return checked(fn(*args))
         raise ValueError(f"unsupported expression node: {type(node).__name__}")
 
     try:
-        return _eval(ast.parse(expression, mode="eval"))
-    except (SyntaxError, ValueError, ZeroDivisionError, OverflowError) as exc:
+        if len(expression) > 2000:
+            raise ValueError("Expression is too long")
+        tree = ast.parse(expression, mode="eval")
+        if sum(1 for _ in ast.walk(tree)) > 256:
+            raise ValueError("Expression is too complex")
+        return _eval(tree)
+    except (SyntaxError, ValueError, ZeroDivisionError, OverflowError, TypeError, RecursionError) as exc:
         raise ToolError(f"invalid expression: {exc}") from exc
 
 

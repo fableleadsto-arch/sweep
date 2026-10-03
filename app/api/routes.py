@@ -18,7 +18,7 @@ from __future__ import annotations
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ..core.types import (
     NavigationCommand, SearchOptions, SurfSession,
@@ -39,8 +39,8 @@ router = APIRouter(prefix="/api")
 # ── Request/Response Models ───────────────────────────────────────────
 
 class SearchRequest(BaseModel):
-    query: str
-    limit: int = 10
+    query: str = Field(min_length=1, max_length=4000)
+    limit: int = Field(default=10, ge=1, le=50)
     site: Optional[str] = None
     time_range: Optional[str] = None
     intent: str = "general"
@@ -49,13 +49,13 @@ class SearchRequest(BaseModel):
 
 
 class ResearchRequest(BaseModel):
-    objective: str
+    objective: str = Field(min_length=1, max_length=4000)
     depth: str = "standard"
     user_id: str = "anonymous"
     workspace_id: Optional[str] = None
-    max_searches: Optional[int] = None
-    max_pages: Optional[int] = None
-    max_runtime_ms: Optional[int] = None
+    max_searches: Optional[int] = Field(default=None, ge=1, le=30)
+    max_pages: Optional[int] = Field(default=None, ge=1, le=100)
+    max_runtime_ms: Optional[int] = Field(default=None, ge=1000, le=300000)
 
 
 class NavigateRequest(BaseModel):
@@ -67,8 +67,8 @@ class NavigateRequest(BaseModel):
 
 
 class ExtractRequest(BaseModel):
-    url: str
-    max_chars: int = 12_000
+    url: str = Field(min_length=1, max_length=8192)
+    max_chars: int = Field(default=12_000, ge=500, le=60000)
 
 
 # ── Search ────────────────────────────────────────────────────────────

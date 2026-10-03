@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
-from sweep import __version__
-from sweep.api import create_app
-from sweep.config import Settings
+from sweep_core import __version__
+from sweep_core.api import create_app
+from sweep_core.config import Settings
 
 
 def _client(settings: Settings | None = None) -> TestClient:

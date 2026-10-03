@@ -15,5 +15,5 @@ or the convenience entrypoint:
 
 __version__ = "1.0.0"
 
-from . import brain_agent  # noqa: F401 - mounts the upgraded /api/brain/agent/* routes
-from .ingest import routes as ingest_routes  # noqa: F401 - mounts /api/brain/ingest/* routes
+# Importing utility modules must not boot the HTTP service. Routes are mounted
+# explicitly in companion.main.

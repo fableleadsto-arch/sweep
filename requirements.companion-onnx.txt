@@ -1,0 +1,2 @@
+# Portable CPU ONNX runtime. Install a GPU runtime separately if required.
+onnxruntime>=1.16,<2

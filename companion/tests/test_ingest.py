@@ -91,7 +91,7 @@ def _settings(tmp_path, **overrides) -> BrainSettings:
         gemini_api_key="",
         openai_api_key="",
         anthropic_api_key="",
-        brain_service_token="",
+        brain_service_token="test-only",
         enable_knowledge_ingestion=True,
         ingest_store="local",
         ingest_data_dir=str(tmp_path / "ingest"),
@@ -792,7 +792,7 @@ class TestIngestRoutes:
     def _client(self, tmp_path) -> TestClient:
         settings = _settings(tmp_path)
         app.dependency_overrides[get_settings] = lambda: settings
-        return TestClient(app)
+        return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
     def test_sources_crud_and_stats(self, tmp_path) -> None:
         client = self._client(tmp_path)

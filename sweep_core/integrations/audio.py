@@ -7,7 +7,7 @@ import wave
 from pathlib import Path
 from typing import Any
 
-from sweep.integrations import _module_available
+from sweep_core.integrations import _module_available
 
 DEFAULT_MODEL_DIR = Path("models/vosk")
 

@@ -29,7 +29,6 @@ if str(REPO_ROOT) not in sys.path:
 
 from . import env as envmod
 from . import datasets as ds
-from . import runner as runmod
 
 RAW = "benchmark/results/raw"
 DATASET_PATH = "benchmark/datasets/suite_v1.json"
@@ -141,6 +140,8 @@ def cmd_run(args) -> int:
 
 
 def run_cpu(args) -> int:
+    from . import runner as runmod
+
     print("=" * 64)
     print("  SWEEP BENCHMARK — profile: cpu (full suite, offline)")
     print("=" * 64)
@@ -265,6 +266,7 @@ def run_hidden(args) -> int:
     printed, because statistical freshness degrades with each look.
     """
     from . import hidden as hid
+    from . import runner as runmod
     print("=" * 64)
     print("  SWEEP BENCHMARK — HIDDEN evaluation set (protocol-frozen)")
     print("=" * 64)
@@ -346,6 +348,8 @@ def run_ablation(args) -> int:
 # analyze
 # ──────────────────────────────────────────────────────────────────────
 def cmd_analyze(args) -> int:
+    from . import runner as runmod
+
     print("=" * 64)
     print("  SWEEP BENCHMARK — analyze")
     print("=" * 64)
@@ -564,7 +568,15 @@ def main(argv=None) -> int:
     if not getattr(args, "command", None):
         p.print_help()
         return 1
-    return args.func(args)
+    try:
+        return args.func(args)
+    except ModuleNotFoundError as exc:
+        print(
+            f"Missing benchmark dependency: {exc.name}. "
+            "Install the optional stack with: python -m pip install -e '.[science,ai]'",
+            file=sys.stderr,
+        )
+        return 1
 
 
 if __name__ == "__main__":

@@ -25,6 +25,13 @@ env/
 
 # Testing
 .pytest_cache/
+.pytest-tmp/
+.sweep-runtime/
+.build-tools/
+dist/
+*.log
+pytest*.out
+devnull
 .coverage
 htmlcov/
 
@@ -34,6 +41,7 @@ Thumbs.db
 
 # Project
 node_modules/
+companion/vendor/archives/*.whl
 static/favicon.ico
 
 # Data

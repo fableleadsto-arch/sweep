@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from sweep.config import Settings
+from sweep_core.config import Settings
 
 
 def setup_logging(settings: Settings) -> logging.Logger:

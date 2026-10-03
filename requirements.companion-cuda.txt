@@ -1,0 +1,2 @@
+# Framework profile only: this does not install GPU drivers or guarantee CUDA.
+-r requirements.companion-pytorch.txt

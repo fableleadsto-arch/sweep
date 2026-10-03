@@ -1,0 +1,2 @@
+# Base companion API and numerical/data tools. Run from the repository root.
+.

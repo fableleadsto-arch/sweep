@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from sweep.fastpath import (
+from sweep_core.fastpath import (
     NATIVE_AVAILABLE,
     cosine_similarity,
     dot_product,

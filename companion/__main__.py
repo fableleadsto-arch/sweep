@@ -14,7 +14,7 @@ from .config import get_settings
 
 def main() -> None:
     settings = get_settings()
-    host = os.environ.get("COMPANION_HOST", "0.0.0.0")
+    host = os.environ.get("COMPANION_HOST", "127.0.0.1")
     port = int(os.environ.get("COMPANION_PORT", str(settings.companion_port)))
     uvicorn.run("companion.main:app", host=host, port=port, reload=False, log_level="info")
 

@@ -2,10 +2,10 @@ from importlib import metadata
 
 from fastapi import FastAPI
 
-from sweep import __version__
-from sweep.config import Settings, get_settings
-from sweep.fastpath import NATIVE_AVAILABLE
-from sweep.logging_setup import setup_logging
+from sweep_core import __version__
+from sweep_core.config import Settings, get_settings
+from sweep_core.fastpath import NATIVE_AVAILABLE
+from sweep_core.logging_setup import setup_logging
 
 
 def _version() -> str:
@@ -39,7 +39,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/capabilities")
     def caps() -> dict:
-        from sweep.integrations import capabilities
+        from sweep_core.integrations import capabilities
 
         return capabilities()
 
@@ -54,7 +54,7 @@ def main() -> None:
 
     settings = get_settings()
     uvicorn.run(
-        "sweep.api:app",
+        "sweep_core.api:app",
         host=settings.host,
         port=settings.port,
         log_level=settings.log_level.lower(),

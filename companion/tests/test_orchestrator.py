@@ -188,7 +188,7 @@ def test_run_turn_tool_whitelist_hides_tools() -> None:
 def _client(settings: BrainSettings, model: Any) -> TestClient:
     app.dependency_overrides[get_settings] = lambda: settings
     app.dependency_overrides[get_orchestrator_model] = lambda: model
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
 
 def test_agent_turn_endpoint_with_fake_model(settings: BrainSettings) -> None:

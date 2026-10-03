@@ -1,0 +1,4 @@
+.[ai,science]
+accelerate>=0.30,<2
+peft>=0.12,<1
+safetensors>=0.4,<1

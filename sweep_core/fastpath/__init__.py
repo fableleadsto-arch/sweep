@@ -7,7 +7,7 @@ fallbacks below run and every call stays correct — only slower.
 
 from typing import Callable
 
-from sweep.fastpath import fallback as _fallback
+from sweep_core.fastpath import fallback as _fallback
 
 try:
     import sweep_native

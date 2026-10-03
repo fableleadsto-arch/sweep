@@ -13,7 +13,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from sweep.integrations import _module_available
+from sweep_core.integrations import _module_available
 
 MEILI_BINARY = Path(os.environ.get("SWEEP_MEILI_BIN", "bin/meilisearch.exe"))
 MEILI_URL = os.environ.get("SWEEP_MEILI_URL", "http://127.0.0.1:7700")

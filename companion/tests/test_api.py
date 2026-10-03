@@ -8,7 +8,7 @@ from companion.main import app
 
 def _client(settings: BrainSettings) -> TestClient:
     app.dependency_overrides[get_settings] = lambda: settings
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
 
 def test_health_endpoint(settings: BrainSettings) -> None:
@@ -97,6 +97,7 @@ def test_context_bundle_without_supabase(settings: BrainSettings) -> None:
 
 
 def test_execute_runs_sandboxed_script(settings: BrainSettings) -> None:
+    settings.allow_code_execution = True
     client = _client(settings)
     resp = client.post(
         "/api/brain/execute",
@@ -114,6 +115,7 @@ def test_execute_runs_sandboxed_script(settings: BrainSettings) -> None:
 
 
 def test_execute_refuses_system_import(settings: BrainSettings) -> None:
+    settings.allow_code_execution = True
     client = _client(settings)
     resp = client.post(
         "/api/brain/execute",

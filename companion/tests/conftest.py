@@ -14,11 +14,26 @@ from companion.config import BrainSettings  # noqa: E402
 from companion.memory import FileMemoryStore, MemoryService  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def isolate_api_configuration(monkeypatch):
+    from companion.config import get_settings
+    from companion.main import app
+
+    monkeypatch.setenv("BRAIN_SERVICE_TOKEN", "test-only")
+    monkeypatch.setenv("INGEST_SCHEDULER_ENABLED", "false")
+    get_settings.cache_clear()
+    app.dependency_overrides.clear()
+    yield
+    app.dependency_overrides.clear()
+    get_settings.cache_clear()
+
+
 @pytest.fixture()
 def settings(tmp_path: Path) -> BrainSettings:
     """Minimal settings — no API keys, isolated memory file, no `.env`."""
     return BrainSettings(
         _env_file=None,
+        brain_service_token="test-only",
         supabase_url="",
         supabase_service_key="",
         gemini_api_key="",

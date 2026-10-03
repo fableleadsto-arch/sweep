@@ -35,8 +35,8 @@ def device():
 
 
 @pytest.fixture(scope="module")
-def registry():
-    r = ModelRegistry()
+def registry(tmp_path_factory):
+    r = ModelRegistry(models_root=str(tmp_path_factory.mktemp("model-status")))
     # Force status to downloaded for all models that have weights on disk
     r.sync_from_disk()
     return r
@@ -48,8 +48,11 @@ def loader(registry, device):
 
 
 @pytest.fixture(scope="module")
-def intent_core(device):
-    return IntentCore(device)
+def intent_core(device, registry):
+    core = IntentCore(device)
+    core.registry = registry
+    core.loader = ModelLoader(registry, device)
+    return core
 
 
 def _skip_if_unavailable(name, registry):

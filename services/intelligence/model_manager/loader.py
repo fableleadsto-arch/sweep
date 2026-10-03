@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import logging
 import time
 from pathlib import Path
@@ -49,6 +51,7 @@ class ModelLoader:
             "layoutlmv3-base": self._load_layoutlmv3,
         }
 
+    @serialized_model_load
     def load(self, name: str) -> Any:
         """Load a model by name. Returns cached if already loaded."""
         # Check cache first

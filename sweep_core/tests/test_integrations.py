@@ -1,7 +1,7 @@
 import pytest
 
-from sweep.integrations import capabilities, resources
-from sweep.integrations.scraping import ENGINES, availability as scraping_availability
+from sweep_core.integrations import capabilities, resources
+from sweep_core.integrations.scraping import ENGINES, availability as scraping_availability
 
 
 class TestRegistry:
@@ -32,7 +32,7 @@ class TestRegistry:
 
 class TestGracefulDegradation:
     def test_handles_raise_cleanly_when_missing(self):
-        from sweep.integrations import scraping
+        from sweep_core.integrations import scraping
 
         pytest.importorskip("playwright", reason="only meaningful when installed")
         assert hasattr(scraping.browser_automation_handle(), "__name__")

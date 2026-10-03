@@ -1,0 +1,2 @@
+# Optional TensorFlow backend; platform/Python wheel availability varies.
+tensorflow>=2.15

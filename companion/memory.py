@@ -20,10 +20,10 @@ import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
-from qdrant_client import QdrantClient as QdrantHttp
-from qdrant_client.models import Distance, PointStruct, VectorParams
+if TYPE_CHECKING:
+    from qdrant_client import QdrantClient as QdrantHttp
 
 from .config import BrainSettings
 from .embeddings import embed_batch
@@ -320,6 +320,8 @@ class QdrantMemoryStore:
         if not self.settings.qdrant_configured:
             return None
         try:
+            from qdrant_client import QdrantClient as QdrantHttp
+
             self._client = QdrantHttp(
                 url=self.settings.qdrant_api_url,
                 api_key=self.settings.qdrant_api_key or None,
@@ -330,6 +332,8 @@ class QdrantMemoryStore:
 
     def _ensure_collection(self, client: QdrantHttp) -> None:
         try:
+            from qdrant_client.models import Distance, VectorParams
+
             existing = client.collection_exists(self._collection)
             if not existing:
                 client.create_collection(
@@ -356,6 +360,8 @@ class QdrantMemoryStore:
             return self.file_store.remember(user_id, content, **kw), False
 
         try:
+            from qdrant_client.models import PointStruct
+
             client.upsert(
                 collection_name=self._collection,
                 points=[

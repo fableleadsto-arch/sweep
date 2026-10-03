@@ -448,7 +448,7 @@ from typing import Any
 
 logger = logging.getLogger("sweep.cortex_integration")
 
-_SWEEP_DIR = Path(__file__).parent
+SWEEP_DIR = Path(__file__).parent
 
 
 @dataclass
@@ -489,7 +489,7 @@ class SweepInferencePipeline:
         
         try:
             import torch
-            _parent = str(_SWEEP_DIR)
+            _parent = str(SWEEP_DIR)
             if _parent not in sys.path:
                 sys.path.insert(0, _parent)
             
@@ -633,7 +633,7 @@ def get_pipeline() -> SweepInferencePipeline:
     return _pipeline
 '''
     
-    with open(str(_SWEEP_DIR / "cortex_integration.py"), "w", encoding="utf-8") as f:
+    with open(str(SWEEP_DIR / "cortex_integration.py"), "w", encoding="utf-8") as f:
         f.write(cortex_code)
     
     logger.info("Cortex integration module written")
@@ -797,7 +797,7 @@ def ask(question: str, evidence: list[str] | None = None) -> QueryResult:
     return _api.query(question, evidence=evidence)
 '''
     
-    api_path = str(_SWEEP_DIR / "sweep_api.py")
+    api_path = str(SWEEP_DIR / "sweep_api.py")
     with open(api_path, "w", encoding="utf-8") as f:
         f.write(api_code)
     

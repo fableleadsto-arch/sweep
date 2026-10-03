@@ -33,10 +33,12 @@ Endpoints (OpenAPI docs at `/docs`):
 from __future__ import annotations
 
 import logging
-import secrets
 import sys
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .neural.registry import ModelRegistry
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,6 +82,8 @@ from .compute.backend_manager import BackendManager
 from .config import BrainSettings, get_settings
 from .embeddings import embed_batch
 from .execution import execute_python
+from .providers import ProviderChain
+from app.core.auth import authorize
 from .orchestrator import (
     AgentTurnRequest,
     AgentTurnResponse,
@@ -160,7 +164,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[s.strip() for s in get_settings().cors_origins.split(",") if s.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -170,18 +174,14 @@ def require_token(
     authorization: str | None = Header(default=None),
     settings: BrainSettings = Depends(get_settings),
 ) -> None:
-    """Optional bearer-token gate for /api/* routes.
+    """Required bearer-token gate for /api/* routes.
 
-    When BRAIN_SERVICE_TOKEN is set, every API call must present
-    `Authorization: Bearer <token>`; otherwise it is rejected with 401.
+    Every API call must present `Authorization: Bearer <token>`.
+    Missing configuration fails closed with 503; bad credentials return 401.
     Health, `/docs` and `/` stay open so uptime probes and the OpenAPI UI
     work without a token.
     """
-    token = settings.brain_service_token
-    if token:
-        expected = f"Bearer {token}"
-        if not authorization or not secrets.compare_digest(authorization, expected):
-            raise HTTPException(status_code=401, detail="Unauthorized")
+    authorize(authorization, settings.brain_service_token)
 
 
 @app.exception_handler(Exception)
@@ -192,7 +192,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
     the failure. The traceback is still logged server-side for debugging.
     """
     logger.exception("Unhandled error on %s %s", request.method, request.url.path)
-    return JSONResponse(status_code=500, content={"error": str(exc)})
+    return JSONResponse(status_code=500, content={"error": "Internal server error"})
 
 
 def brain(settings: BrainSettings) -> CompanionBrain:
@@ -464,18 +464,15 @@ async def brain_execute(
     request: ExecuteRequest,
     settings: BrainSettings = Depends(get_settings),
 ) -> ExecuteResult:
-    """Run a generated Python script in the disposable sandbox.
+    """Run trusted Python in a filtered child process when explicitly enabled.
 
-    Refuses system/framework imports and object-graph escape patterns, caps
-    CPU/RAM/output, and runs the script in an empty temp dir with a scrubbed
-    environment. The script can define a module-level ``result`` which is
-    JSON-serialized back. This is how the agent gets real NumPy/SymPy/Pandas
-    computation without ever running generated code inside this process.
+    AST checks are defense in depth, not an operating-system security boundary.
+    Resource limits vary by platform; arbitrary untrusted code needs a VM/container.
     """
-    if not settings.enable_compute:
+    if not settings.enable_compute or not settings.allow_code_execution:
         return ExecuteResult(
             ok=False,
-            error="Compute is disabled (ENABLE_COMPUTE=false).",
+            error="Generated-code execution is disabled. Set ALLOW_CODE_EXECUTION=true only for trusted scripts.",
         )
     outcome = await execute_python(request.code, request.env, request.timeout_ms)
     return ExecuteResult(**outcome)
@@ -853,3 +850,8 @@ async def root() -> dict[str, str]:
         "docs": "/docs",
         "health": "/health",
     }
+
+
+# Mount extensions only after the application and dependencies are defined.
+from . import brain_agent  # noqa: E402,F401
+from .ingest import routes as ingest_routes  # noqa: E402,F401

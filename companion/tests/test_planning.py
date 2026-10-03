@@ -156,7 +156,7 @@ def test_plan_rationale_is_human_readable() -> None:
 
 def _client(settings: BrainSettings) -> TestClient:
     app.dependency_overrides[get_settings] = lambda: settings
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
 
 def test_plan_chat_endpoint(settings: BrainSettings) -> None:

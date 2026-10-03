@@ -15,6 +15,8 @@ Usage:
 """
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import re
 import threading
 import time
@@ -843,6 +845,7 @@ class GeneralKnowledge:
             self._llm_loading = True
         threading.Thread(target=self._load_llm_worker, daemon=True).start()
 
+    @serialized_model_load
     def _load_llm_worker(self) -> None:
         try:
             import torch

@@ -42,7 +42,7 @@ def _client(settings, model, responder=None) -> TestClient:
         app.dependency_overrides[get_agent_responder] = lambda: responder
     else:
         app.dependency_overrides.pop(get_agent_responder, None)
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
 
 def _events(resp) -> list[dict[str, Any]]:

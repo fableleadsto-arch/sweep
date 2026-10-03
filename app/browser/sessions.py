@@ -42,7 +42,7 @@ def playwright_configured() -> bool:
     """Check if a Playwright WebSocket endpoint is configured."""
     from ..config import get_settings
     settings = get_settings()
-    return bool(settings.playwright_ws_endpoint or settings.browser_ws_endpoint)
+    return settings.allow_remote_browser and bool(settings.playwright_ws_endpoint or settings.browser_ws_endpoint)
 
 
 async def execute_browser_action(action: dict) -> dict:
@@ -51,6 +51,8 @@ async def execute_browser_action(action: dict) -> dict:
     settings = get_settings()
 
     endpoint = settings.playwright_ws_endpoint or settings.browser_ws_endpoint
+    if not settings.allow_remote_browser:
+        return {"ok": False, "data": {}, "error": "Remote browser is disabled; use HTTP fetching"}
     if not endpoint:
         return {"ok": False, "data": {}, "error": "No browser endpoint configured"}
 
@@ -62,12 +64,17 @@ async def execute_browser_action(action: dict) -> dict:
 
 async def _navigate_via_browser(endpoint: str, url: str) -> dict:
     """Navigate via browserless.io / Playwright Server HTTP API."""
+    import json
+    from ..core.guard import assert_safe_url, resolve_public_addresses
+
+    url = assert_safe_url(url)
+    await asyncio.to_thread(resolve_public_addresses, url)
     try:
         http_url = endpoint.replace("wss://", "https://").replace("ws://", "http://").rstrip("/")
         code = f"""
         const page = await browser.newPage();
         await page.setViewportSize({{ width: 1280, height: 800 }});
-        await page.goto('{url}', {{ waitUntil: 'networkidle', timeout: 30000 }});
+        await page.goto({json.dumps(url)}, {{ waitUntil: 'networkidle', timeout: 30000 }});
         const title = await page.title();
         const content = await page.evaluate(() => document.body.innerText);
         const links = await page.evaluate(() =>

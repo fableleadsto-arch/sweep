@@ -1,0 +1,2 @@
+# Optional PyTorch backend. GPU availability also depends on drivers/build.
+torch>=2.0

@@ -88,6 +88,9 @@ class BrainSettings(BaseSettings):
     # toolbox (NumPy/Pandas/SymPy/OpenCV/sklearn/...) and the result is fed
     # into the LLM turn. Never loads a heavy framework for unrelated turns.
     enable_compute: bool = True
+    # Static filtering is not an OS sandbox. Enable only for trusted scripts.
+    allow_code_execution: bool = False
+    cors_origins: str = ""
 
     # Backend enable/disable state for the compute layer (companion/compute/).
     # Persisted as JSON; defaults to enabling every backend and gating on the
@@ -114,7 +117,7 @@ class BrainSettings(BaseSettings):
     enable_knowledge_ingestion: bool = True
     ingest_store: str = "auto"
     ingest_data_dir: str = ".relayhub/ingest"
-    ingest_scheduler_enabled: bool = True
+    ingest_scheduler_enabled: bool = False
     ingest_scheduler_tick_seconds: int = 60
     ingest_max_documents_per_source: int = 20
     # Relevance below this is rejected before any embedding/extraction work.
@@ -128,7 +131,7 @@ class BrainSettings(BaseSettings):
     openalex_api_key: str = ""
 
     # ── Auth ─────────────────────────────────────────────────────────
-    # Optional bearer token. When set, every /api/* request must send
+    # Required bearer token. Every /api/* request must send
     # `Authorization: Bearer <token>` or it is rejected with 401. Health and
     # the OpenAPI docs stay open so uptime probes work.
     brain_service_token: str = ""

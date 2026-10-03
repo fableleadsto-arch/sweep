@@ -17,7 +17,10 @@ import json
 import re
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import PerceptionResult
 
 from ..representation import (
     Representation,
@@ -439,6 +442,8 @@ class StructuredDataPerceptionProcessor:
         """
         t0 = time.perf_counter()
         
+        Modality, PerceptionConfidence, PerceptionResult = _get_perception_classes()
+
         # Normalize to text representation
         text, data_type = self._normalize(input_data)
         

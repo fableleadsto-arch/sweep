@@ -74,7 +74,7 @@ def extract_page_data(
     """Convert raw content (HTML or JSON) into PageData."""
     max_chars = min(max(max_chars, 500), 60_000)
 
-    is_json = bool(json_str) or (html and re.match(r"^\s*[[{]", html[:200]))
+    is_json = bool(json_str) or (html and re.match(r"^\s*(?:\[|\{)", html[:200]))
 
     if json_str or is_json:
         doc = json_to_markdown(json_str or html or "", url, max_chars)

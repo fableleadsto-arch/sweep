@@ -23,6 +23,8 @@ can use them interchangeably.
 """
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import re
 import time
 from dataclasses import dataclass, field
@@ -61,6 +63,7 @@ class _NeuralModels:
         self.knowledge_metadata: list[dict[str, str]] = []
         self._load_attempted = False
 
+    @serialized_model_load
     def try_load(self, timeout_seconds: float = 5.0) -> bool:
         """Attempt to load neural models. Returns True if successful."""
         if self._loaded or self._failed or self._load_attempted:

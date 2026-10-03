@@ -24,6 +24,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+desktop = ["PySide6-Essentials>=6.8,<7"]
+build = ["pyinstaller>=6.11,<7"]
+memory = ["qdrant-client>=1.9,<2"]
+native = ["pybind11>=2.12,<3.0"]
+datasets = ["datasets>=2.18,<5", "biotite>=1,<2"]
+science = ["sympy>=1.13,<2", "networkx>=3.3,<4", "pillow>=10.4,<13", "psutil>=5.9,<8", "pyyaml>=6,<7"]
 browser = ["playwright>=1.40,<2.0"]
 ai = ["torch>=2.0", "transformers>=4.0", "sentence-transformers>=3.0", "open-clip-torch>=3.0"]
 vision = ["open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16"]
@@ -32,12 +38,25 @@ documents = ["layoutlm", "PyMuPDF>=1.23"]
 intelligence = ["torch>=2.0", "transformers>=4.40", "sentence-transformers>=3.0", "open-clip-torch>=3.0", "ultralytics>=8.0", "opencv-python>=4.8", "insightface>=0.7", "onnxruntime>=1.16", "openai-whisper", "gliner>=0.2", "faiss-cpu>=1.7", "pyannote.audio>=3.0"]
 dev = ["pytest>=8.0,<10.0", "ruff>=0.1"]
 
+[project.scripts]
+sweep = "sweep.__main__:main"
+sweep-launcher = "sweep.launcher:main"
+sweep-benchmark = "sweep_benchmark.cli:main"
+
+[project.gui-scripts]
+sweep-desktop = "sweep.desktop.__main__:main"
+
 [tool.setuptools.packages.find]
-include = ["app*"]
+include = ["app*", "sweep*", "companion*", "cognition*", "services*"]
+exclude = ["companion.vendor*", "*.tests*", "*.experiments*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"services.intelligence.models" = ["*.yaml"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-q"
+testpaths = ["tests", "sweep/tests", "sweep_core/tests", "companion/tests", "cognition/tests", "sweep_cognitive/tests", "sweep_neural_mesh/tests", "services/intelligence/tests"]
+addopts = "-q --import-mode=importlib"
 pythonpath = ["."]
 
 [tool.ruff]

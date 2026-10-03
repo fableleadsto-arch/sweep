@@ -296,7 +296,7 @@ class ReasoningCore:
                     core_id=self._id,
                     answer=answer,
                     confidence=confidence,
-                    reasoning=f"Common sense: {pattern}",
+                    reasoning=f"Common sense: {compiled.pattern}",
                     latency_ms=(time.perf_counter() - t0) * 1000,
                 )
         
@@ -466,7 +466,7 @@ class TemporalCore:
                         core_id=self._id,
                         answer=answer,
                         confidence=confidence,
-                        reasoning=f"Temporal fact: {pattern}",
+                        reasoning=f"Temporal fact: {compiled.pattern}",
                         latency_ms=(time.perf_counter() - t0) * 1000,
                     )
             
@@ -552,7 +552,7 @@ class CausalCore:
                         core_id=self._id,
                         answer=answer,
                         confidence=confidence,
-                        reasoning=f"Causal chain: {pattern}",
+                        reasoning=f"Causal chain: {compiled.pattern}",
                         latency_ms=(time.perf_counter() - t0) * 1000,
                     )
         

@@ -60,6 +60,7 @@ from .web_scraper import WebScraper, WebResearcher
 
 # ── Extracted modules (reduced from original cortex.py) ────────
 from .trace import ReasoningTrace, ReasoningResult
+from .thought_chain import build_fast_path_chain, build_full_chain
 from .fast_path import try_fast_path
 from .evidence_pipeline import cross_reference_evidence, apply_xref_adjustments
 from .task_handlers import TaskRouter, TaskClassification
@@ -288,8 +289,17 @@ class ReasoningCortex:
         # ── Consensus + Proof Mesh + Bayesian ────────────────
         consensus = self._consensus_engine.decide(integrated, all_signals)
         cd = consensus.data if isinstance(consensus.data, dict) else {}
+        consensus_snapshot = dict(cd)
+        pre_override_decision = cd.get("decision", "unknown")
+        pre_override_conf = cd.get("confidence", 0.0)
         cd = self._apply_proof_mesh(query, filtered_evidence, cd)
+        proof_mesh_applied = (
+            cd.get("decision") != pre_override_decision
+            or cd.get("confidence") != pre_override_conf
+        )
+        pre_bayes_conf = cd.get("confidence", 0.0)
         cd = self._apply_bayesian(center_outputs.get("evidence_gatherer", []), cd)
+        bayesian_applied = cd.get("confidence") != pre_bayes_conf
 
         # ── Metacognition + memory recording ─────────────────
         explanation_signals = self._centers["explanation_builder"].process(all_signals)
@@ -348,6 +358,65 @@ class ReasoningCortex:
                      if explanation_signals and isinstance(explanation_signals[0].data, dict)
                      else {})
 
+        # ── Detailed thought chain (structured thought process) ──
+        hr_used = {
+            "analogical": hr.analogical_mappings > 0,
+            "causal": hr.causal_nodes > 0,
+            "counterfactual": hr.counterfactual_scenarios > 0,
+            "abductive": hr.abductive_hypotheses > 0,
+            "theory_of_mind": abs(hr.theory_of_mind_trust - 0.5) > 0.05,
+            "narrative": hr.narrative_coherence > 0.0,
+            "common_sense": abs(hr.common_sense_plausibility - 0.5) > 0.05,
+        }
+        thought_chain = build_full_chain(
+            query, cd.get("decision", "unknown"), final_conf,
+            evidence_count=len(evidence),
+            filtered_count=len(filtered_evidence),
+            salience=salience,
+            energy_state=hb.energy_state,
+            sanity_passed=hb.sanity_passed,
+            prediction_confidence=hb_pred_acc,
+            reflexive=False,
+            hindbrain_ms=hindbrain_ms,
+            midbrain={"avg_value_prediction": avg_val,
+                      "avg_salience_modulation": avg_sal,
+                      "avg_inhibition": avg_inh},
+            forebrain_ms=forebrain_ms,
+            center_outputs=center_counts,
+            xref_boosted=len(boosted) if boosted else 0,
+            xref_suppressed=len(suppressed) if suppressed else 0,
+            integration_confidence=integrated.confidence,
+            bg_proposals=len(proposals),
+            bg_decisions=len(bg_decisions),
+            consensus=consensus_snapshot,
+            proof_mesh_applied=proof_mesh_applied,
+            bayesian_applied=bayesian_applied,
+            metacognition={
+                "awareness": meta.awareness_score,
+                "uncertainty_signals": len(meta.uncertainty_signals),
+                "escalation_recommended": meta.escalation_recommended,
+                "confidence_adjusted": meta.should_adjust_confidence,
+            },
+            human_reasoning=hr_used,
+            complexity=complexity,
+            active_modules=active_modules,
+            entropy_bits=ev_entropy,
+            memory_recalls=len(memory_recalls),
+            semantic_knowledge=len(semantic_knowledge),
+            total_latency_ms=total_latency,
+        )
+        thought_chain.add(
+            "ml",
+            f"sentiment={query_sent.label.value} ({query_sent.valence:+.2f}); "
+            f"{len(all_entities)} entity/entities; embeddings={query_emb.backend}",
+            {
+                "query_sentiment": query_sent.label.value,
+                "evidence_sentiments": evidence_sents,
+                "entity_count": len(all_entities),
+                "embedding_backend": query_emb.backend,
+            },
+        )
+
         trace = ReasoningTrace(
             query=query, input_evidence_count=len(evidence),
             center_outputs=center_counts,
@@ -391,6 +460,7 @@ class ReasoningCortex:
             extracted_entities=[{"text": e.text, "label": e.label}
                                 for e in all_entities[:10]],
             query_embedding_backend=query_emb.backend,
+            thought_chain=thought_chain,
         )
         self._traces.append(trace)
 
@@ -576,6 +646,14 @@ class ReasoningCortex:
                 total_latency_ms=lat,
                 factors=[{"name": "general_intelligence", "score": gi.confidence,
                           "detail": gi.reasoning}],
+                thought_chain=build_fast_path_chain(
+                    query, decision, gi.confidence, "general_intelligence",
+                    route_note=("no evidence supplied and canned knowledge "
+                                f"confident (>=0.85, method={gi.method})"),
+                    ruled_out=("supplied evidence present -> canned knowledge "
+                               "deferred to full pipeline",) if evidence else (),
+                    latency_ms=lat,
+                )
             )
             self._traces.append(trace)
             return ReasoningResult(
@@ -625,6 +703,10 @@ class ReasoningCortex:
             decision = decision_map[verdict.decision]
             reasoning = (f"Claim evidence analyzer ({verdict.decision}, "
                          f"conf={verdict.confidence:.2f}):\n{verdict.reasoning}")
+            per_ev = [
+                {"index": i, "verdict": p.verdict, "detail": p.detail}
+                for i, p in enumerate(verdict.pieces)
+            ]
             trace = ReasoningTrace(
                 query=query, input_evidence_count=len(ev_texts),
                 center_outputs={"claim_evidence_analyzer": 1},
@@ -635,6 +717,19 @@ class ReasoningCortex:
                 factors=[{"name": "claim_evidence_analyzer",
                           "score": verdict.confidence,
                           "detail": verdict.reasoning}],
+                thought_chain=build_fast_path_chain(
+                    query, decision, verdict.confidence,
+                    "claim_evidence_analyzer",
+                    route_note=("query is a verifiable declarative claim; "
+                                "deterministic per-piece verification engaged"),
+                    evidence_texts=ev_texts,
+                    per_evidence=per_ev,
+                    ruled_out=[
+                        "neural evidence classifier skipped — deterministic "
+                        "analyzer handles hedged/negated/irrelevant evidence",
+                    ],
+                    latency_ms=lat,
+                )
             )
             self._traces.append(trace)
             return ReasoningResult(
@@ -728,6 +823,22 @@ class ReasoningCortex:
                         reasoning=f"Neural contradiction detector ({contra_result.label}, conf={contra_result.confidence:.2f})",
                         total_latency_ms=lat,
                         factors=[{"name": "neural_contradiction", "score": contra_result.confidence}],
+                        thought_chain=build_fast_path_chain(
+                            query, decision, contra_result.confidence,
+                            "neural_contradiction",
+                            route_note=("query is an evidence-assessment and two "
+                                        "sources were compared pairwise with the "
+                                        "pretrained cross-encoder"),
+                            evidence_texts=ev_texts[:2],
+                            candidates={f"label={contra_result.label}":
+                                        contra_result.confidence},
+                            ruled_out=(
+                                ["source disagreement on a bare claim maps to "
+                                 "mixed, not a verdict on the claim"]
+                                if decision == "mixed" and query_is_claim else []
+                            ),
+                            latency_ms=lat,
+                        )
                     )
                     self._traces.append(trace)
                     return ReasoningResult(
@@ -784,6 +895,25 @@ class ReasoningCortex:
                         ),
                         total_latency_ms=lat,
                         factors=[{"name": "neural_evidence", "score": mean_conf}],
+                        thought_chain=build_fast_path_chain(
+                            query, decision, mean_conf, "neural_evidence",
+                            route_note=("pair-trained MNLI classifier voted on "
+                                        "each (evidence, claim) pair"),
+                            evidence_texts=ev_texts,
+                            per_evidence=[
+                                {"index": i, "verdict": lbl, "detail": f"conf={c:.2f}"}
+                                for i, (lbl, c) in enumerate(votes)
+                            ],
+                            candidates={"supports": n_supports, "refutes": n_refutes,
+                                        "neutral": n_neutral},
+                            ruled_out=(
+                                ["evidence disagrees — claim left undetermined (mixed)"]
+                                if decision == "mixed" else
+                                (["no directional evidence — honest abstain"]
+                                 if decision == "insufficient" else [])
+                            ),
+                            latency_ms=lat,
+                        )
                     )
                     self._traces.append(trace)
                     return ReasoningResult(
@@ -868,6 +998,8 @@ class ReasoningCortex:
         # between evidence statements
         contradictions_found = 0
         consistency_found = 0
+        contradicting_pairs: list[tuple[int, int]] = []
+        skipped_pairs = 0
         
         for i in range(len(ev_texts)):
             for j in range(i + 1, len(ev_texts)):
@@ -880,6 +1012,7 @@ class ReasoningCortex:
                 overlap = len(words_i & words_j) / max(len(words_i | words_j), 1)
                 
                 if overlap < 0.3:
+                    skipped_pairs += 1
                     continue
                 
                 # Check for negation differences
@@ -906,8 +1039,10 @@ class ReasoningCortex:
                 
                 if has_opposite:
                     contradictions_found += 1
+                    contradicting_pairs.append((i, j))
                 elif has_neg_i != has_neg_j and overlap > 0.5:
                     contradictions_found += 1
+                    contradicting_pairs.append((i, j))
                 else:
                     # Check for same structure, different specific values
                     # (e.g., "at 3 PM" vs "at 4 PM", "in Delhi" vs "in London")
@@ -920,6 +1055,7 @@ class ReasoningCortex:
                     # If same words but different numbers → contradiction
                     if overlap > 0.6 and nums_i and nums_j and nums_i != nums_j:
                         contradictions_found += 1
+                        contradicting_pairs.append((i, j))
                     # If same structure but different locations/entities in similar positions → contradiction
                     # Only check for location-like contradictions ("in X" vs "in Y", "at X" vs "at Y")
                     loc_pattern = r'\b(?:in|at|from|to)\s+(\w+)\b'
@@ -927,6 +1063,7 @@ class ReasoningCortex:
                     locs_j = set(_re.findall(loc_pattern, ev_j))
                     if overlap > 0.6 and locs_i and locs_j and locs_i != locs_j:
                         contradictions_found += 1
+                        contradicting_pairs.append((i, j))
                     elif overlap > 0.6 and not has_neg_i and not has_neg_j:
                         consistency_found += 1
         
@@ -953,6 +1090,24 @@ class ReasoningCortex:
             total_latency_ms=lat,
             factors=[{"name": "contradiction_detection", "score": conf,
                       "detail": reasoning}],
+            thought_chain=build_fast_path_chain(
+                query, decision, conf, "contradiction_fast_path",
+                route_note=("query asks about consistency/contradiction; "
+                            "pairwise overlap + negation scan engaged"),
+                evidence_texts=ev_texts,
+                per_evidence=[
+                    {"index": k, "verdict": "contradicts",
+                     "detail": f"contradiction signal between "
+                               f"evidence[{a}] and evidence[{b}]"}
+                    for k, (a, b) in enumerate(contradicting_pairs[:6])
+                ] if contradicting_pairs else [],
+                candidates={"contradictions": contradictions_found,
+                            "consistent_pairs": consistency_found},
+                ruled_out=[
+                    f"{skipped_pairs} pair(s) skipped — lexical overlap < 0.3",
+                ] if skipped_pairs else [],
+                latency_ms=lat,
+            )
         )
         self._traces.append(trace)
         
@@ -1025,6 +1180,15 @@ class ReasoningCortex:
             total_latency_ms=lat,
             factors=[{"name": "uncertainty_detection", "score": uncertainty,
                       "detail": reasoning}],
+            thought_chain=build_fast_path_chain(
+                query, "insufficient", uncertainty, "uncertainty_fast_path",
+                route_note=f"inherently {level} query; {reasoning}; abstention policy",
+                ruled_out=[
+                    "no evidence supplied, so no verification possible",
+                    "hallucinated certainty avoided — confidence capped low",
+                ],
+                latency_ms=lat,
+            )
         )
         self._traces.append(trace)
         
@@ -1063,6 +1227,18 @@ class ReasoningCortex:
                     factors=[{"name": f"task_{classification.category}",
                               "score": classification.confidence,
                               "detail": classification.answer[:200]}],
+                    thought_chain=build_fast_path_chain(
+                        query, decision, classification.confidence,
+                        f"task_router:{classification.category}",
+                        route_note=(f"classified as {classification.category}/"
+                                    f"{classification.subcategory} with enough "
+                                    "confidence for a structured solve"),
+                        evidence_texts=([e if isinstance(e, str) else e.get("text", "")
+                                         for e in evidence][:8] if evidence else []),
+                        candidates={f"method={classification.method}":
+                                    classification.confidence},
+                        latency_ms=lat,
+                    )
                 )
                 self._traces.append(trace)
                 return ReasoningResult(
@@ -1109,6 +1285,23 @@ class ReasoningCortex:
                     reasoning=f"Proof mesh ({pr.conclusion}): {chain_str}",
                     total_latency_ms=lat,
                     factors=[{"name": "proof_mesh", "score": pr.confidence, "detail": chain_str}],
+                    thought_chain=build_fast_path_chain(
+                        query, pr.conclusion, pr.confidence, "proof_mesh",
+                        route_note=("formal proof mesh grounded the query in "
+                                    f"atoms/bonds ({len(pr.atoms)} atoms, "
+                                    f"{len(pr.bonds)} bonds) and propagated to a verdict"),
+                        evidence_texts=ev_texts,
+                        per_evidence=[
+                            {"index": i, "verdict": "chain-step", "detail": step}
+                            for i, step in enumerate(pr.proof_chain[:6])
+                        ],
+                        ruled_out=(
+                            ["goal recognised but underdetermined — honest "
+                             "abstention rather than a guess"]
+                            if pr.conclusion == "insufficient" else []
+                        ),
+                        latency_ms=lat,
+                    )
                 )
                 self._traces.append(trace)
                 return ReasoningResult(
@@ -1143,6 +1336,23 @@ class ReasoningCortex:
                     reasoning=f"Logical inference ({lr.conclusion}): {chain_str}",
                     total_latency_ms=lat,
                     factors=[{"name": "logical_inference", "score": lr.confidence, "detail": chain_str}],
+                    thought_chain=build_fast_path_chain(
+                        query, lr.conclusion, lr.confidence, "logical_inference",
+                        route_note=("rule-based inference engine matched a "
+                                    "logical form (modus ponens/tollens, "
+                                    "transitivity, or syllogism)"),
+                        evidence_texts=ev_texts,
+                        per_evidence=[
+                            {"index": i, "verdict": "inference-step", "detail": step}
+                            for i, step in enumerate(lr.inference_chain[:6])
+                        ],
+                        ruled_out=(
+                            ["converse of the stated implication is not derivable "
+                             "— abstained instead of answering the reverse"]
+                            if lr.conclusion == "insufficient" else []
+                        ),
+                        latency_ms=lat,
+                    )
                 )
                 self._traces.append(trace)
                 return ReasoningResult(
@@ -1246,10 +1456,14 @@ class ReasoningCortex:
             return
         self._ml_loaded = True
         try:
-            self._embedder = __import__(".".join([".", "semantic_embeddings"]), fromlist=["SemanticEmbedder"]).SemanticEmbedder()
-            self._ner_engine = __import__(".".join([".", "ner_engine"]), fromlist=["NEREngine"]).NEREngine()
-            self._sentiment_engine = __import__(".".join([".", "sentiment_engine"]), fromlist=["SentimentEngine"]).SentimentEngine()
-            self._summarizer = __import__(".".join([".", "text_summarizer"]), fromlist=["TextSummarizer"]).TextSummarizer()
+            from .semantic_embeddings import SemanticEmbedder
+            from .ner_engine import NEREngine
+            from .sentiment_engine import SentimentEngine
+            from .text_summarizer import TextSummarizer
+            self._embedder = SemanticEmbedder()
+            self._ner_engine = NEREngine()
+            self._sentiment_engine = SentimentEngine()
+            self._summarizer = TextSummarizer()
         except Exception as e:
             logger.warning(f"Failed to load ML engines: {e}")
 

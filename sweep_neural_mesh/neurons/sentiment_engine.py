@@ -16,9 +16,13 @@ Keyword scoring loads instantly, no model downloads needed.
 """
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import logging
 import math
+import os
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -138,15 +142,77 @@ def _keyword_sentiment(text: str) -> tuple[float, dict[str, float]]:
 
 
 class SentimentEngine:
-    """Sentiment analysis using built-in keyword scoring (instant, no downloads)."""
+    """Sentiment analysis.
+
+    Backend: pretrained distilbert-sst2 (HF: distilbert-base-uncased-
+    finetuned-sst-2-english, 268MB, 96%+ SST-2 accuracy) loaded lazily in a
+    background thread; the built-in keyword scorer answers instantly until
+    the neural backend is ready. Cortex interface unchanged.
+    """
+
+    # HF id and local cache path are resolved in the loader thread
+    HF_MODEL = "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
 
     def __init__(self):
         self._backend = "keyword"
+        self._nn_model = None
+        self._nn_tok = None
+        self._nn_state = None  # None=idle, "loading", True=ready, False=failed
+        self._nn_lock = threading.Lock()
+        self._start_nn_load()
+
+    # ── neural backend (lazy, non-blocking) ───────────────────────────
+    def _start_nn_load(self) -> None:
+        if self._nn_state is None:
+            self._nn_state = "loading"
+            threading.Thread(target=self._nn_load_worker, daemon=True).start()
+
+    @serialized_model_load
+    def _nn_load_worker(self) -> None:
+        try:
+            import torch
+            from transformers import AutoModelForSequenceClassification, AutoTokenizer
+            tok = AutoTokenizer.from_pretrained(self.HF_MODEL)
+            model = AutoModelForSequenceClassification.from_pretrained(self.HF_MODEL)
+            model.eval()
+            torch.set_num_threads(min(4, os.cpu_count() or 2))
+            with self._nn_lock:
+                self._nn_tok, self._nn_model = tok, model
+                self._nn_state = True
+                self._backend = "distilbert-sst2"
+        except Exception as e:
+            logger.warning("distilbert-sst2 load failed, staying on keyword: %s", e)
+            self._nn_state = False
+
+    def _nn_ready(self) -> bool:
+        return self._nn_state is True and self._nn_model is not None
+
+    def _nn_analyze(self, text: str) -> tuple[float, dict] | None:
+        if not self._nn_ready():
+            return None
+        try:
+            import torch
+            inputs = self._nn_tok(text, return_tensors="pt", truncation=True, max_length=256)
+            with torch.no_grad():
+                logits = self._nn_model(**inputs).logits[0]
+            probs = torch.softmax(logits, dim=0)
+            neg, pos = float(probs[0]), float(probs[1])  # sst2: 0=neg, 1=pos
+            valence = pos - neg
+            raw = {"positive": round(pos, 4), "negative": round(neg, 4),
+                   "neutral": round(1.0 - max(pos, neg), 4)}
+            return valence, raw
+        except Exception as e:
+            logger.debug("nn sentiment failed: %s", e)
+            return None
 
     def analyze(self, text: str) -> SentimentResult:
         t0 = time.perf_counter()
 
-        valence, raw = _keyword_sentiment(text)
+        nn = self._nn_analyze(text)
+        if nn is not None:
+            valence, raw = nn
+        else:
+            valence, raw = _keyword_sentiment(text)
         confidence = 1.0 - raw.get("neutral", 0.0)
 
         if abs(valence) < 0.15:
@@ -159,7 +225,7 @@ class SentimentEngine:
         return SentimentResult(
             text=text, label=label, score=confidence,
             valence=valence, confidence=confidence,
-            backend=self._backend,
+            backend=self._backend if nn is not None else "keyword",
             latency_ms=(time.perf_counter() - t0) * 1000,
             raw_scores=raw,
         )

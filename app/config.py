@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pydantic import Field
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -19,9 +20,10 @@ class Settings(BaseSettings):
 
     # ── App ────────────────────────────────────────────────────────
     app_name: str = "Sweep"
-    debug: bool = False
-    host: str = "0.0.0.0"
+    debug: bool = Field(default=False, validation_alias="SWEEP_DEBUG")
+    host: str = "127.0.0.1"
     port: int = 8787
+    sweep_api_token: str = ""
 
     # ── CORS ───────────────────────────────────────────────────────
     cors_origins: str = ""
@@ -35,6 +37,8 @@ class Settings(BaseSettings):
     # ── Browser automation ─────────────────────────────────────────
     playwright_ws_endpoint: str = ""
     browser_ws_endpoint: str = ""
+    # Remote browsers require their own network isolation for redirects/subresources.
+    allow_remote_browser: bool = False
 
     # ── HTTP fetch ─────────────────────────────────────────────────
     relai_proxy_url: str = ""

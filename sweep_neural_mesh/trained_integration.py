@@ -57,7 +57,7 @@ class TrainedModelRouter:
             if _exp_parent not in sys.path:
                 sys.path.insert(0, _exp_parent)
             from scale_and_integrate import MultiTaskClassifier
-            ckpt = torch.load(str(checkpoint_path), weights_only=False)
+            ckpt = torch.load(str(checkpoint_path), weights_only=True, map_location="cpu")
             
             self._model = MultiTaskClassifier(
                 input_dim=ckpt["input_dim"], shared_dim=128, task_heads=ckpt["task_heads"],

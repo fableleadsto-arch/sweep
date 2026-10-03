@@ -384,6 +384,7 @@ class RealTimeTrainer:
         """Train capability #7: Recursive Investigation Engine."""
         from sweep_neural_mesh.neurons.recursive_investigation import RecursiveInvestigationEngine, NodeType
         m = TrainingMetrics("Recursive Investigation")
+        t0 = time.perf_counter()
 
         engine = RecursiveInvestigationEngine(max_depth=4, confidence_threshold=0.3)
 
@@ -412,7 +413,7 @@ class RealTimeTrainer:
                 m.correct += 1
 
         m.accuracy = m.correct / max(m.total_tests, 1)
-        m.avg_latency_ms = (time.perf_counter() - t0) * 1000 / max(m.total_tests, 1) if 't0' in dir() else 0
+        m.avg_latency_ms = (time.perf_counter() - t0) * 1000 / max(m.total_tests, 1)
         return m
 
     def _train_neural_mesh(self) -> TrainingMetrics:

@@ -428,7 +428,7 @@ def test_native_endpoints_respond():
 
     from companion.main import app
 
-    with TestClient(app) as client:
+    with TestClient(app, headers={"Authorization": "Bearer test-only"}) as client:
         r = client.get("/api/brain/native/recommend")
         assert r.status_code == 200
         body = r.json()
@@ -468,7 +468,7 @@ def test_native_generate_endpoint_end_to_end(tmp_path, monkeypatch):
 
     from fastapi.testclient import TestClient
 
-    with TestClient(app) as client:
+    with TestClient(app, headers={"Authorization": "Bearer test-only"}) as client:
         r = client.get("/api/brain/native/models")
         assert r.status_code == 200
         records = r.json()

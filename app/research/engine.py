@@ -82,7 +82,7 @@ async def plan_research(objective: str, depth: str = "standard") -> SurfPlan:
     queries = [
         objective,
         f"{objective} overview",
-        f"{objective} 2025 2026",
+        f"{objective} {datetime.now(timezone.utc).year}",
     ]
     if keywords:
         queries.append(" ".join(keywords[:5]))
@@ -247,6 +247,7 @@ async def _run_research_loop(session_id: str, opts: dict):
     searches = 0
     pages = 0
     started_at = time.time()
+    deadline = asyncio.get_running_loop().time() + limits["max_runtime_ms"] / 1000
 
     try:
         queries = list(plan.queries)
@@ -265,14 +266,19 @@ async def _run_research_loop(session_id: str, opts: dict):
             action = record_action(session_id, "search", f'Searching: "{query[:80]}"')
 
             try:
-                if plan.depth in ("deep", "exhaustive"):
-                    result = await run_deep_search(query)
-                else:
-                    result = await route_search(query, intent="general")
-
-                hits = result.results
-                provider = result.provider
-                note = result.note or ""
+                async with asyncio.timeout_at(deadline):
+                    if plan.depth in ("deep", "exhaustive"):
+                        result = await run_deep_search(query)
+                        hits = [SearchResult.model_validate({
+                            **hit, "provider": hit.get("provider", hit.get("engine", "unknown")),
+                        }) for hit in result["results"]]
+                        provider, note = result["provider"], ""
+                    else:
+                        result = await route_search(query, intent="general")
+                        hits, provider, note = result.results, result.provider, result.note or ""
+            except TimeoutError:
+                finish_action(action, "error", "Research time budget reached")
+                break
             except Exception as e:
                 finish_action(action, "error", str(e)[:200])
                 continue
@@ -284,20 +290,19 @@ async def _run_research_loop(session_id: str, opts: dict):
             finish_action(action, "done", f"{len(hits)} results via {provider}")
 
             for hit in hits:
-                if _is_budget_exhausted(limits, searches, pages, started_at):
+                if _is_budget_exhausted(limits, 0, pages, started_at):
                     break
                 if _should_stop_early(_get_store(session_id)):
                     break
                 pages += 1
-                # Convert dict hits to SearchResult
-                sr = SearchResult(
-                    url=hit.get("url", ""),
-                    title=hit.get("title", ""),
-                    snippet=hit.get("snippet", ""),
-                    provider=hit.get("provider", "unknown"),
-                    access_mode=SearchAccessMode.PUBLIC,
-                )
-                await process_hit(session_id, sr)
+                try:
+                    async with asyncio.timeout_at(deadline):
+                        await process_hit(session_id, hit)
+                except TimeoutError:
+                    for pending in session.actions:
+                        if pending.status == "running":
+                            finish_action(pending, "error", "Research time budget reached")
+                    break
 
             # Re-query when evidence is thin
             if qi >= len(queries) and not _should_stop_early(_get_store(session_id)):
@@ -315,6 +320,7 @@ async def _run_research_loop(session_id: str, opts: dict):
         sync_evidence(session_id)
         session.status = SurfSessionStatus.FAILED
         session.error = str(e)[:500]
+        session.completed_at = datetime.now(timezone.utc).isoformat()
 
 
 def sync_evidence(session_id: str):

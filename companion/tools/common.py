@@ -82,48 +82,10 @@ def has_cuda() -> bool:
 
 
 def is_safe_http_url(raw: str) -> bool:
-    """SSRF guard for user-supplied endpoint URLs (mirrors the TS data layer).
+    """Validate URL syntax/address literals; fetchers must also validate DNS/redirects."""
+    from app.core.guard import validate_safe_url
 
-    Accepts only http(s) with no embedded credentials and a public host —
-    blocks localhost, .local/.internal, private ranges and IPv6 link-local/
-    ULA so a capability can never be pointed at internal services.
-    """
-    from urllib.parse import urlparse
-
-    if not raw:
-        return False
-    try:
-        parsed = urlparse(raw)
-    except ValueError:
-        return False
-    if parsed.scheme not in ("http", "https"):
-        return False
-    if parsed.username or parsed.password:
-        return False
-    host = (parsed.hostname or "").lower()
-    if not host:
-        return False
-    if host == "localhost" or host.endswith(".local") or host.endswith(".internal"):
-        return False
-    if (
-        host == "0.0.0.0"
-        or host.startswith("127.")
-        or host.startswith("10.")
-        or host.startswith("192.168.")
-        or host.startswith("169.254.")
-    ):
-        return False
-    if host.startswith("172."):
-        try:
-            second = int(host.split(".")[1])
-        except (IndexError, ValueError):
-            second = -1
-        if 16 <= second <= 31:
-            return False
-    if ":" in host:
-        if host.startswith(("fc", "fd")) or host.startswith(("fe8", "fe9", "fea", "feb")):
-            return False
-    return True
+    return isinstance(raw, str) and validate_safe_url(raw)[0]
 
 
 def load(name: str):

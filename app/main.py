@@ -11,13 +11,15 @@ from __future__ import annotations
 
 import logging
 import sys
+from importlib import metadata
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .api.routes import router
+from .core.auth import authorize
 
 logger = logging.getLogger("sweep")
 
@@ -51,42 +53,38 @@ settings = get_settings()
 cors_origins = settings.cors_origin_list
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins if cors_origins else ["*"],
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(router)
+def require_token(authorization: str | None = Header(default=None)) -> None:
+    authorize(authorization, get_settings().sweep_api_token)
+
+
+app.include_router(router, dependencies=[Depends(require_token)])
 
 
 @app.get("/health")
 async def health():
-    torch_ok = False
-    torch_version = ""
-    try:
-        import torch
-        torch_ok = True
-        torch_version = torch.__version__
-    except ImportError:
-        pass
-    tf_ok = False
-    tf_version = ""
-    try:
-        import tensorflow as tf
-        tf_ok = True
-        tf_version = tf.__version__
-    except ImportError:
-        pass
+    def installed_version(name: str) -> str:
+        try:
+            return metadata.version(name)
+        except metadata.PackageNotFoundError:
+            return ""
+
+    torch_version = installed_version("torch")
+    tf_version = installed_version("tensorflow")
     return {
         "status": "ok",
         "service": "Sweep",
         "version": "2.0.0",
         "python": sys.version.split()[0],
         "cpp": _check_cpp(),
-        "pytorch": torch_ok,
+        "pytorch": bool(torch_version),
         "pytorch_version": torch_version,
-        "tensorflow": tf_ok,
+        "tensorflow": bool(tf_version),
         "tensorflow_version": tf_version,
     }
 

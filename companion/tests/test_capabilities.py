@@ -131,11 +131,16 @@ def test_availability_detection() -> None:
 
 
 def test_optional_frameworks_declared_but_not_required_for_startup() -> None:
-    # The catalog itself must import without touching heavy frameworks.
+    # Other suites may already have imported frameworks: check a clean process.
+    import subprocess
     import sys
-
-    for heavy in ("torch", "tensorflow", "jax", "transformers", "llama_index", "litellm", "cv2", "spacy"):
-        assert heavy not in sys.modules, f"{heavy} was imported just by building the catalog"
+    code = (
+        "import sys; from companion.capabilities import list_capabilities; list_capabilities(); "
+        "heavy = {'torch', 'tensorflow', 'jax', 'transformers', 'llama_index', 'litellm', 'cv2', 'spacy'}; "
+        "assert not heavy.intersection(sys.modules), heavy.intersection(sys.modules)"
+    )
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr
 
 
 # ── automatic selection ─────────────────────────────────────────────────
@@ -308,7 +313,7 @@ def test_unknown_capability_returns_clean_error(settings: BrainSettings) -> None
 
 def _client(settings: BrainSettings) -> TestClient:
     app.dependency_overrides[get_settings] = lambda: settings
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer test-only"})
 
 
 def test_capabilities_endpoint(settings: BrainSettings) -> None:

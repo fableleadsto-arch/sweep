@@ -33,7 +33,10 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .learning import ExperienceRecord
 
 from .semantic import SemanticUnderstandingEngine
 from .representation import TextRepresentation

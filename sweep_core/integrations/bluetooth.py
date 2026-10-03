@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
-from sweep.integrations import _module_available
+from sweep_core.integrations import _module_available
 
 
 def availability() -> dict[str, Any]:

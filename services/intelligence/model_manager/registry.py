@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -180,7 +180,7 @@ class ModelRegistry:
         self.models_root = Path(models_root)
         self._entries: dict[str, ModelEntry] = {}
         for entry in REGISTRY:
-            self._entries[entry.name] = entry
+            self._entries[entry.name] = replace(entry)
         self._load_status()
         self.sync_from_disk()
 

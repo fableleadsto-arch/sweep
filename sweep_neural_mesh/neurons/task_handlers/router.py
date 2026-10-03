@@ -14,7 +14,10 @@ Categories:
 """
 from __future__ import annotations
 
+from services.model_loading import serialized_model_load
+
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any
@@ -266,4 +269,104 @@ class TaskRouter:
         if re.search(r"\b(score|relevance|strength|quality|rate)\b", q_lower):
             return "evidence", "evidence_scoring"
 
+        # ── Neural zero-shot fallback ──────────────────────────────
+        # Pattern rules above are deterministic and tried first. For natural
+        # language that matches none of them, use the pretrained MNLI model
+        # (cross-encoder/nli-deberta-v3-base, already cached) to pick the
+        # closest category from hypothesis descriptions — no task-specific
+        # training needed.
+        zs = _zero_shot_category(q)
+        if zs is not None:
+            return zs
+
         return "unknown", "none"
+
+    def _zero_shot_ok(self, q: str) -> bool:
+        """Guard so the zero-shot fallback only fires on genuine questions."""
+        return q.rstrip().endswith(("?", ".")) or len(q.split()) > 3
+
+
+# ────────────────────────────────────────────────────────────────────
+# Zero-shot classifier (pretrained MNLI — no Sweep-specific training)
+# ────────────────────────────────────────────────────────────────────
+
+_ZS_LABELS: dict[str, str] = {
+    # hypothesis text -> category (subcategory resolved by handler rules)
+    "This is a question about a date, a year, a timeline, a schedule, a duration, or how much time passed between events.": "temporal",
+    "This is an arithmetic calculation, a math word problem, or a question about numbers.": "math",
+    "This is a question about causes and effects, about why something happens or what leads to what.": "causal",
+    "This is a question about logical deduction, what must be true, or a syllogism.": "logic",
+}
+_zs_lock = threading.Lock()  # guards inference; created eagerly (a None
+                             # lock here made `with _zs_lock:` raise and the
+                             # caller silently swallow every classification)
+_zs_model = None
+_zs_tok = None
+_zs_ready = False
+_zs_init_lock = threading.Lock()
+
+
+def _zero_shot_category(query: str) -> tuple[str, str] | None:
+    """Classify via entailment between the query and category hypotheses.
+
+    Returns (category, "zero_shot") or None if the model isn't ready or no
+    hypothesis clears the threshold. Runs in <50ms once loaded; loads lazily
+    so the first call doesn't block routing.
+
+    Calibration note: the entailment score separates *domain* but the raw
+    cross-encoder over-entails "math" for nearly any declarative sentence
+    (stories, chat). A query is only routed when it is a genuine question
+    (interrogative or explicit task verb) — chit-chat falls through to the
+    cortex's chat pipeline instead.
+    """
+    global _zs_lock, _zs_model, _zs_tok, _zs_ready
+    import threading
+    import re as _re
+    if not _re.search(r"\b(what|when|where|who|why|how|which|is|are|was|were|does|do|did|can|calculate|compute|convert|solve|verify|check|if)\b",
+                      query.lower()):
+        return None
+    # The zero-shot classifier needs the RAW MNLI head: the engine's
+    # deployed artifact is pair-finetuned (supports/refutes), and its head
+    # reads unrelated-domain pairs as neutral, so it can't score category
+    # hypotheses. Load the raw cross-encoder lazily once (dedicated ~280MB
+    # with fp32; runs <50ms per batch of 4 hypotheses).
+    if not _zs_ready:
+        if not getattr(_zs_load_worker, "_started", False):
+            _zs_load_worker._started = True
+            threading.Thread(target=_zs_load_worker, daemon=True).start()
+        if not _zs_ready:
+            return None
+    try:
+        import torch
+        hypotheses = list(_ZS_LABELS.keys())
+        pairs = [(query, h) for h in hypotheses]
+        with _zs_lock:
+            enc = _zs_tok(pairs, return_tensors="pt", padding=True, truncation=True, max_length=128)
+            with torch.no_grad():
+                logits = _zs_model(**enc).logits
+        # Raw MNLI head: id2label = {0: contradiction, 1: entailment, 2: neutral}
+        # -> entailment probability is column 1.
+        probs = torch.softmax(logits, dim=-1)[:, 1]
+        best = int(probs.argmax())
+        if float(probs[best]) < 0.55:
+            return None
+        cat = _ZS_LABELS[hypotheses[best]]
+        return cat, "zero_shot"
+    except Exception:
+        return None
+
+
+@serialized_model_load
+def _zs_load_worker() -> None:
+    global _zs_model, _zs_tok, _zs_ready
+    try:
+        import os
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer
+        _zs_tok = AutoTokenizer.from_pretrained("cross-encoder/nli-deberta-v3-base")
+        _zs_model = AutoModelForSequenceClassification.from_pretrained(
+            "cross-encoder/nli-deberta-v3-base")
+        _zs_model.eval()
+        _zs_ready = True  # raw MNLI head: id2label = contradiction/entailment/neutral
+    except Exception:
+        _zs_ready = False

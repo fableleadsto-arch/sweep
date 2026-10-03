@@ -32,7 +32,7 @@ def _probe(module: str, attr: str | None = None) -> dict[str, Any]:
 
 def capabilities() -> dict[str, Any]:
     """Return the live status of every integrated third-party capability."""
-    from sweep.integrations import audio, bluetooth, resources, scraping, search, vision
+    from sweep_core.integrations import audio, bluetooth, resources, scraping, search, vision
 
     return {
         "scraping": scraping.availability(),

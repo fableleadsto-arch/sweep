@@ -7,7 +7,10 @@ the data types independently importable.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .thought_chain import ThoughtChain
 
 
 @dataclass
@@ -93,6 +96,10 @@ class ReasoningTrace:
     extracted_entities: list[dict[str, str]] = field(default_factory=list)
     query_embedding_backend: str = "none"
 
+    # Structured thought process (detailed step-by-step chain; optional so
+    # existing code that constructs ReasoningTrace keeps working)
+    thought_chain: "ThoughtChain | None" = None
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "query": self.query,
@@ -161,6 +168,10 @@ class ReasoningTrace:
             },
             "mastery_phase": self.mastery_phase,
             "grade": self.grade,
+            "thought_chain": (
+                self.thought_chain.to_dict()
+                if self.thought_chain is not None else None
+            ),
         }
 
 
