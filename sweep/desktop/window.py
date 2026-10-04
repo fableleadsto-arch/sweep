@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (
 from sweep.store import _save_json
 from .owl import Owl, owl_icon
 from .platform import launch_command, set_startup, startup_enabled
-from .runtime import CAPABILITIES, needs_approval, route
+from .runtime import CAPABILITIES, needs_approval, route, task_timeout
 from .tasks import TaskStore
 
 
@@ -359,6 +359,9 @@ class SweepWindow(QMainWindow):
             approved = dialog.exec() == QMessageBox.StandardButton.Yes
         return approved
 
+    def approve_queued_task(self, task, selected_file=False):
+        return self.approve_task(task["capability"], task["text"], selected_file)
+
     def start_task(self, capability, text, selected_file=False, *, retry_of=None,
                    granted_paths=None, history=None):
         if self.closing:
@@ -381,6 +384,7 @@ class SweepWindow(QMainWindow):
             QMessageBox.warning(self, "Could not save task", str(exc))
             return False
         self.pending.append(task["id"])
+        self.last_enqueued_id = task["id"]
         if selected_file:
             self.selected_file_tasks.add(task["id"])
         self.load_history()
@@ -403,7 +407,7 @@ class SweepWindow(QMainWindow):
                         continue
                     selected = task_id in self.selected_file_tasks
                     self.selected_file_tasks.discard(task_id)
-                    approved = task_id == preapproved or self.approve_task(task["capability"], task["text"], selected)
+                    approved = task_id == preapproved or self.approve_queued_task(task, selected)
                     # Modal dialogs process native events; recheck cancellation/exit afterward.
                     if self.closing or self.task_store.get(task_id)["state"] != "queued":
                         continue
@@ -466,9 +470,10 @@ class SweepWindow(QMainWindow):
     def poll_events(self):
         if self.process is None or self.current_directory is None:
             return
-        if time.monotonic() - self.started > 125:
+        budget = task_timeout(self.task["capability"])
+        if time.monotonic() - self.started > budget + 5:
             if self.task["state"] == "running":
-                self.fail_running("The task exceeded its 120-second time budget and its worker was stopped. Completed actions are not undone.")
+                self.fail_running(f"The task exceeded its {budget}-second time budget and its worker was stopped. Completed actions are not undone.")
             else:
                 self.process.kill()
             return

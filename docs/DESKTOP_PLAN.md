@@ -10,16 +10,16 @@ under `src/` is not a complete desktop frontend.
 | Capability | Existing | Partial | Missing | Existing module | Integration choice | Priority |
 |---|---|---|---|---|---|---|
 | Desktop commands | Yes | Free-text coverage | Verified general GUI agent | sweep/skills.py, parser.py | Reuse controller behind approval | P0 |
-| Desktop window/install | Added | Windows distribution | Signed releases/macOS installers | sweep/desktop | Native Qt + bundled Python | P0 |
-| Conversation | Yes | Requires provider | Unified multimodal conversation | companion/providers.py | Reuse ProviderChain | P0 |
+| Desktop dock/install | Added | Windows distribution | Signed releases/macOS installers | sweep/desktop/dock.py | Native Qt chat dock + bundled Python | P0 |
+| Conversation | Yes | Requires provider; recent thread context | Long-context memory and autonomous workflows | sweep/desktop/chat.py, providers.py, companion/providers.py | Unified chat with reviewed tool proposals | P0 |
 | Web search/scrape | Yes | Provider availability | Full browser workflows in UI | app/search, app/core/http | Direct Python adapters | P0 |
 | Research/evidence | Yes | Heuristic extraction | Durable multi-step planning | app/research, app/evidence | Observable bounded task | P0 |
-| Files/data | Yes | Desktop preview added | Mature transformations UI | sweep/skills.py, companion/tools/data.py | Native picker + CSV table, extend existing tools | P1 |
+| Files/data | Yes | Bounded file previews in chat | Mature transformations UI | sweep/desktop/runtime.py, sweep/skills.py | Native picker/drop with exact-file grants | P1 |
 | Models | Yes | Multiple loaders | Unified availability/cost router | services/intelligence/model_manager | Keep optional/lazy, adapter follow-up | P1 |
 | Task state/events | Added | Persistent FIFO queue, one active worker, explicit retry | DAG scheduling/resume | sweep/desktop/tasks.py, runtime.py, window.py | Isolated worker + task JSON/events/artifacts; no automatic restart replay | P0 |
 | Permission layer | Yes | Desktop task approvals added | OS-enforced isolation | Controller confirmations, desktop adapters | Explicit local/external approval | P0 |
 | Memory | Yes | Several stores | Unified context/search | companion/memory.py, cognition/store.py | Preserve stores; integrate deliberately | P1 |
-| Vision/OCR/media | Yes | Optional dependencies/models | Unified investigation view | services/intelligence, companion/tools | Validate adapters before UI exposure | P2 |
+| Image understanding/OCR | Added | Installed OCR support; configured image model | Verified location inference; broader media workflows | sweep/desktop/images.py, ocr.py | Attachment questions in chat; local metadata/OCR and approved vision request | P0 |
 | Video/audio | Yes | Individual tools | Tracking timeline/streaming voice | services/intelligence, companion/tools | Separate bounded workers | P2 |
 | Browser automation | Yes | Disabled remote browser | Safe desktop-browser session workflow | app/browser, src/RelAI/browser | Playwright tool, not application host | P2 |
 | Maps/satellite | Limited | Research concepts | Map workspace and data adapters | Existing tool/research primitives | Evaluate providers later | P3 |
@@ -27,8 +27,17 @@ under `src/` is not a complete desktop frontend.
 
 ## Architecture
 
-Native Qt window -> capability selection -> explicit permission -> task process
--> existing Python tool -> activity events -> local artifact -> native result UI.
+Native Qt dock chat -> statement/attachment routing -> explicit permission -> task
+process -> Python tool/provider -> activity events -> local artifact -> chat result.
+
+The dock expands from a top-screen bar and contains chat, History and Settings.
+It shares the established queue/worker lifecycle in `window.py`; no separate task
+mode is exposed. Deterministic routes handle explicit commands, URLs and search
+requests, while ordinary conversation uses the chosen provider. Models may propose
+registered tasks for review; proposals are allowlisted and do not execute themselves.
+Browser requests resolve website names to URLs and launch the requested installed
+browser directly through an argument list, without typing a natural-language
+sentence into its address bar.
 
 Each capability has an ID, description, execution location and permission class.
 Tasks carry the exact request and approval, plus file grants when applicable.
@@ -47,6 +56,14 @@ storage enforces terminal states so late worker output cannot undo cancellation.
 The window owns a watchdog for blocked workers and keeps active execution separate
 from the history result being viewed. This is a serial queue, not an autonomous
 planner or a guarantee that completed actions can be rolled back.
+
+Provider preferences live in `providers.json`; Windows DPAPI protects keys entered
+through Settings. Conversation approval can be remembered per chat. Image analysis
+requires approval for each provider request, strips embedded metadata and reports
+provider failures alongside the preserved local inspection result. Local OCR uses
+installed Tesseract or the Windows OCR API. Ollama model discovery and starting an
+installed local server do not download weights. The selected local vision setup is
+`qwen3-vl:2b`, installed separately from Sweep.
 
 ## External technology matrix
 
@@ -69,9 +86,8 @@ required before adopting additional capabilities.
 | Whisper/faster-whisper, VAD/TTS | Voice | Code/model review required | Existing audio modules; upstream review pending | Model-dependent | Local workers; explicit microphone activation | Deferred |
 
 Qt's [licensing overview](https://doc.qt.io/qt-6/licensing.html) distinguishes
-modules and license options. An Inno Setup compiler installation was blocked by
-automatic approval review; the actual build uses the included Python setup
-wizard, so no Inno dependency is adopted.
+modules and license options. The Windows build uses the included Python setup
+wizard and requires no third-party installer compiler.
 
 ## Data/source matrix
 
@@ -83,7 +99,9 @@ wizard, so no Inno dependency is adopted.
 | Scraping | Public URL | app/core/http | Public pages/APIs | Remote | Network validation, response limits, access controls |
 | Research | Objective and sources | app/research/evidence | Search + accessible pages | Remote | Four searches/eight pages/60 seconds in desktop |
 | Conversation | Prompt/recent conversation | companion/providers | Configured cloud API or local Ollama | Configurable | Explicit send approval, provider pricing/configuration |
-| OCR/vision/video | User-authorized media | Optional local models | Optional configured providers | Prefer local | Asset/model readiness; explicit remote transfer if added |
+| Image metadata/OCR | Attached image | Pillow, Windows OCR or installed Tesseract | Local file metadata/text | Local | Exact-file grant; 10 MB/25 MP limits; OCR may misread text |
+| Image understanding | Attached image and question | sweep/desktop/images.py | Ollama, OpenAI or Gemini image model | Configurable | Explicit transfer approval; metadata stripped; no person identification; location unverified |
+| Video | User-authorized media | Optional research modules | No integrated dock workflow | Model-dependent | Separate integration and validation needed |
 | Maps/satellite | Geographic query/date | No integrated desktop source | OSM, Sentinel/Landsat/NASA candidates | Local/remote | Provider terms, rate limits and acquisition dates need review |
 | Learning/datasets | Explicit dataset selection | Existing adapters in sweep | User-listed public/Hugging Face datasets | Local/remote | No automatic large downloads or training |
 

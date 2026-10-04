@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECORDED_DISTRIBUTIONS = (
     "PySide6-Essentials", "shiboken6", "pyinstaller", "httpx", "httpcore", "h11",
     "certifi", "anyio", "pydantic", "pydantic-settings", "python-dotenv",
-    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext",
+    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow",
 )
 
 

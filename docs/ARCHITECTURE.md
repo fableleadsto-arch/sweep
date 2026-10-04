@@ -10,6 +10,7 @@ of every computer or cognitive task.
 | Area | Role | Current use |
 | --- | --- | --- |
 | `sweep/` | Deterministic intent parser, skill registry, local JSON state, optional LLM intent fallback, dataset adapters | Desktop command entry point; launcher defaults to deterministic routing |
+| `sweep/desktop/` | Native Qt dock, chat routing/history, task workers, permissions, provider settings, file/image inspection | Primary installed user interface; conversation and tools share one chat |
 | `app/` | FastAPI, search providers, bounded HTTP fetching, extraction, browser sessions, evidence, research | Web data collection and research APIs |
 | `companion/` | Provider fallback, tools, planning, agent loop, memory/RAG, ingestion, optional compute frameworks | Authenticated companion API; providers/assets depend on configuration |
 | `sweep_core/` | Optional native primitives, audio/vision/scraping integration discovery | Standalone support library; imports now use its own namespace |
@@ -31,8 +32,9 @@ dependency has received a full security audit.
 
 ## Runtime boundaries
 
-The primary user interface is now the native Qt application under `sweep/desktop`.
-It directly adapts existing Python tools using isolated task workers and local
+The primary user interface is the native Qt chat dock under `sweep/desktop`.
+It expands from a top-screen bar, with History and Settings in the same shell.
+It directly adapts Python tools using isolated task workers and local
 events/artifacts, without a browser host or localhost web server. See
 [desktop integration and capability matrices](DESKTOP_PLAN.md) and
 [desktop installation](DESKTOP.md). The HTTP APIs below remain optional tool APIs.
@@ -42,6 +44,21 @@ The packaged Windows application includes Python. `sweep.launcher` remains the C
 `sweep` remains the existing desktop controller command. No C++ compiler,
 TensorFlow installation, model download or vendor framework import is required
 to install the base package. Model extras are explicitly selected.
+
+`chat.py` routes explicit statements and attachments to registered capabilities;
+ordinary messages use `providers.py` and the existing provider chain. Chat context
+includes recent turns and completed tool results from that thread. Model-suggested
+actions pass an allowlist and require review before dispatch. Browser statements
+such as `open YouTube in Brave` resolve a site URL and an installed browser
+executable, then launch an argument list with shell execution disabled.
+
+`images.py` reads only a granted image, bounds its size, extracts metadata and
+uses local OCR. Optional visual reasoning sends an approved resized copy without
+EXIF to the selected Ollama, OpenAI or Gemini image provider. The local setup uses
+an independently installed Ollama vision model; weights are not bundled or fetched
+automatically. Person identification/account matching from a photo is excluded;
+visual location clues and embedded GPS are explicitly unverified. Provider keys
+saved in Settings use Windows DPAPI; chat history and task artifacts remain plaintext.
 
 The web gateway resolves and checks all returned IP addresses, connects to a
 validated address, preserves TLS hostname verification, validates each redirect,
@@ -147,7 +164,7 @@ automation, model accuracy or absence of all security vulnerabilities.
   running task's result. A parent watchdog stops blocked task workers. Failure to
   save state cannot prevent cancellation from terminating the worker.
 - Bounded local IPC names and acknowledged activation report startup failures
-  clearly and preserve background launches without unexpectedly opening a window.
+  clearly. Background launches now show the collapsed dock without expanding its chat.
 - Build metadata records source/runtime provenance; checksums are generated only
   after successful builds, with no secrets or machine-local paths included.
 - Desktop regression suites: **75 passed, 1 skipped**. The skip requires Windows

@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-desktop = ["PySide6-Essentials>=6.8,<7"]
+desktop = ["PySide6-Essentials>=6.8,<7", "pillow>=10.4,<13"]
 build = ["pyinstaller>=6.11,<7"]
 memory = ["qdrant-client>=1.9,<2"]
 native = ["pybind11>=2.12,<3.0"]

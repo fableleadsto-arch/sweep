@@ -152,11 +152,10 @@ def main(argv=None):
     lock, server = instance
     window = None
     try:
-        from .window import SweepWindow
-        window = SweepWindow(root)
+        from .dock import DockWindow
+        window = DockWindow(root)
         server.newConnection.connect(lambda: accept_instance_connections(server, window.reveal))
-        if not args.background or not window.tray.isVisible():
-            window.show()
+        window.show()
         if args.smoke_test:
             QTimer.singleShot(1000, app.quit)
         return app.exec()

@@ -7,7 +7,10 @@ local files, conversation and reusable tool integrations.
 
 On Windows, run **[Sweep-Setup.exe](dist/Sweep-Setup.exe)** to install the desktop
 application and its included Python runtime. Open Sweep from the Start menu.
-Its own native window hosts the experience; no browser or localhost page is needed.
+Sweep opens as a compact native dock at the top of the screen. Hover or click to
+expand its chat, or press Ctrl+Alt+Space on Windows. Conversation, commands,
+search and attached-image questions use the same chat, with History and Settings
+in the dock. No browser or localhost page is needed to use the application.
 See [desktop installation and controls](docs/DESKTOP.md).
 
 For development, Python 3.12 or newer is required. Double-click **setup_sweep.cmd**, or run:
@@ -46,21 +49,34 @@ Optional extras can be installed with
 
 | Task | Entry point | Requirements |
 | --- | --- | --- |
-| Native desktop workspace, tray, shortcuts, file previews, task queue and retry | `python -m sweep.desktop` | Desktop setup (default); Windows installer available |
+| Native chat dock, history, tray, shortcuts, attachments, task queue and retry | `python -m sweep.desktop` | Desktop setup (default); Windows installer available |
 | Open sites/apps/folders; list/create/find files; notes, aliases, math, system information | `python -m sweep` | Controller; app availability depends on the OS |
 | Web search | `python -m sweep.launcher search "query"` | Internet; optional provider keys |
 | Extract public-page text, metadata and links to JSON | `python -m sweep.launcher scrape URL` | Base dependencies and internet |
 | Bounded research with source/evidence collection | `python -m sweep.launcher research "topic"` | Search access; heuristic evidence collection |
+| Conversation and image questions in the dock | Type or attach an image in Sweep | Configure an installed Ollama model or supported cloud provider in Settings |
+| Image metadata and visible-text recognition | Attach an image and ask `inspect locally` | Desktop setup; Windows OCR language support or installed Tesseract |
 | Web API for your tools | `python -m sweep.launcher serve web` | Base dependencies |
 | Companion planning, memory, provider/tool APIs | `python -m sweep.launcher serve companion` | Some endpoints need configured providers or optional libraries |
 | Model-backed chat | `python -m sweep_neural_mesh.chat --no-shell` | Optional AI dependencies and compatible model assets; may download a model |
 | Cognitive/logic/evidence components | Python libraries under `cognition/` and `sweep_cognitive/` | Component-specific inputs; experimental orchestration |
 
+Try `open YouTube in Brave`, `search Python documentation`, `scrape https://example.com`,
+or attach an image and ask about its visible content. Website names resolve to
+URLs, and an explicitly requested browser is used if installed. Ordinary messages
+go to the configured chat model; model-suggested actions appear for review.
+
+For local image understanding, install an image-capable Ollama model such as the
+selected `qwen3-vl:2b`, then set **Image provider** to **Ollama** and **Image-capable
+model** to that name. [Desktop setup instructions](docs/DESKTOP.md#local-chat-and-image-understanding)
+cover model installation and provider settings. The Sweep installer does not
+bundle or automatically download model weights.
+
 Sweep does not yet perform every computer task or provide general intelligence.
-Voice, vision, document models, reverse-image/face search and training remain
-optional components, not promises made by the base installer. The face-search
-implementation and provider requirements are documented in
-[sweep_neural_mesh/face_search/README.md](sweep_neural_mesh/face_search/README.md).
+Voice, video tracking, broad document models and training remain separate optional
+components. The dock supports public-profile searches using a supplied name or
+handle; it does not identify people or match social accounts from a face. Image
+location suggestions are hypotheses, and embedded GPS metadata is unverified.
 
 ## Local APIs and configuration
 

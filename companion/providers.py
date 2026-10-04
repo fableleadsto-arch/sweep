@@ -229,7 +229,7 @@ class OllamaProvider(BaseProvider):
             payload["format"] = "json"
 
         own_client = client is None
-        client = client or httpx.AsyncClient(timeout=120.0)
+        client = client or httpx.AsyncClient(timeout=self.settings.request_timeout_seconds)
         try:
             resp = await client.post(
                 f"{self.settings.ollama_base_url}/api/generate", json=payload
