@@ -25,6 +25,10 @@ upgrading or uninstalling.
 
 - Enter a request and press Ctrl+Enter. Automatic routing selects an existing
   desktop skill, search, scraping, research, or configured conversation provider.
+- While a task runs, **Add to queue** saves another request. Up to 50 tasks can
+  wait; one worker runs at a time, in submission order. Waiting actions ask for
+  permission when their turn arrives. Conversation uses the context captured
+  when its request was submitted.
 - Try `what is 15% of 200`, `open calculator`, `search Python documentation`,
   `research Python packaging`, or a public HTTPS URL.
 - Choose Attach file, press Ctrl+O, or drop a file for local inspection. CSV
@@ -34,8 +38,18 @@ upgrading or uninstalling.
   links, evidence, data tables or media. Export result opens a native save dialog.
 - Stop terminates the task worker. Actions already completed cannot be undone;
   externally launched apps may continue running.
-- Recent tasks and result artifacts remain available after restarting. Interrupted
-  tasks are labeled; they are not automatically resumed.
+- Select a waiting task and choose **Cancel queued task** to remove it before it
+  runs. Select a finished or interrupted task and choose **Retry selected task**
+  to create a new request; the original result and record are preserved. Retrying
+  a file inspection asks before reading that file again.
+- Recent tasks and result artifacts remain available after restarting. Running
+  and waiting tasks from the previous session become **interrupted** and never
+  automatically resume. Review the task and deliberately retry it to run again;
+  computer and provider permissions are checked again.
+- You can inspect earlier results while a new task runs. Task workers have a
+  120-second runtime budget; the window stops an unresponsive worker after a
+  five-second grace period. A cancelled task stays cancelled even if a late
+  result arrives.
 
 Ctrl+Alt+Space brings Sweep forward on Windows, including from other apps.
 Ctrl+K focuses the command bar inside Sweep. If another application has already
@@ -74,6 +88,10 @@ PyInstaller bundles the interpreter and native libraries for the build platform.
 The setup wizard uses Python's native Tk interface and includes the application
 payload. It validates archive paths, creates per-user shortcuts, and registers a
 marker-checked uninstaller. No third-party installer compiler is required.
+`dist/Sweep/build-info.json` records the source revision, working-tree status,
+runtime versions and build time without credentials or local paths.
+`dist/SHA256SUMS.txt` is regenerated only after a successful build. It covers the
+app executable, build metadata and setup executable; `--app-only` excludes setup.
 
 Qt libraries remain dynamically linked. Distribution-provided licenses/notices
 are copied to the app's `licenses` directory. Qt/PySide sources and versioned

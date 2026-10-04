@@ -49,6 +49,32 @@ def test_worker_protocol_emits_real_result(tmp_path, monkeypatch):
     assert "4" in messages[-1]["data"]["message"]
 
 
+def test_worker_reports_invalid_request_through_event_protocol(tmp_path):
+    task = tmp_path / "task.json"
+    task.write_text("[]")
+    events = tmp_path / "events.jsonl"
+    assert run_worker(str(task), str(events)) == 1
+    result = json.loads(events.read_text().splitlines()[-1])
+    assert result["kind"] == "error"
+    assert "JSON object" in result["message"]
+
+
+def test_worker_timeout_has_actionable_message(tmp_path, monkeypatch):
+    from sweep.desktop import runtime
+
+    async def timeout(*args):
+        raise TimeoutError
+
+    monkeypatch.setattr(runtime, "execute", timeout)
+    task = tmp_path / "task.json"
+    task.write_text("{}")
+    events = tmp_path / "events.jsonl"
+    assert run_worker(str(task), str(events)) == 1
+    result = json.loads(events.read_text().splitlines()[-1])
+    assert result["kind"] == "error"
+    assert "120-second time budget" in result["message"]
+
+
 def test_installer_rejects_traversal_before_writing(tmp_path):
     payload = tmp_path / "payload.zip"
     with ZipFile(payload, "w") as archive:

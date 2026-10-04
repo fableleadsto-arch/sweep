@@ -46,7 +46,7 @@ Optional extras can be installed with
 
 | Task | Entry point | Requirements |
 | --- | --- | --- |
-| Native desktop workspace, tray, shortcuts, file previews and task history | `python -m sweep.desktop` | Desktop setup (default); Windows installer available |
+| Native desktop workspace, tray, shortcuts, file previews, task queue and retry | `python -m sweep.desktop` | Desktop setup (default); Windows installer available |
 | Open sites/apps/folders; list/create/find files; notes, aliases, math, system information | `python -m sweep` | Controller; app availability depends on the OS |
 | Web search | `python -m sweep.launcher search "query"` | Internet; optional provider keys |
 | Extract public-page text, metadata and links to JSON | `python -m sweep.launcher scrape URL` | Base dependencies and internet |

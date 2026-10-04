@@ -16,7 +16,7 @@ under `src/` is not a complete desktop frontend.
 | Research/evidence | Yes | Heuristic extraction | Durable multi-step planning | app/research, app/evidence | Observable bounded task | P0 |
 | Files/data | Yes | Desktop preview added | Mature transformations UI | sweep/skills.py, companion/tools/data.py | Native picker + CSV table, extend existing tools | P1 |
 | Models | Yes | Multiple loaders | Unified availability/cost router | services/intelligence/model_manager | Keep optional/lazy, adapter follow-up | P1 |
-| Task state/events | Added | One active desktop task | DAG scheduling/resume | sweep/desktop/runtime.py, window.py | Isolated worker + task JSON/events/artifacts | P0 |
+| Task state/events | Added | Persistent FIFO queue, one active worker, explicit retry | DAG scheduling/resume | sweep/desktop/tasks.py, runtime.py, window.py | Isolated worker + task JSON/events/artifacts; no automatic restart replay | P0 |
 | Permission layer | Yes | Desktop task approvals added | OS-enforced isolation | Controller confirmations, desktop adapters | Explicit local/external approval | P0 |
 | Memory | Yes | Several stores | Unified context/search | companion/memory.py, cognition/store.py | Preserve stores; integrate deliberately | P1 |
 | Vision/OCR/media | Yes | Optional dependencies/models | Unified investigation view | services/intelligence, companion/tools | Validate adapters before UI exposure | P2 |
@@ -33,13 +33,20 @@ Native Qt window -> capability selection -> explicit permission -> task process
 Each capability has an ID, description, execution location and permission class.
 Tasks carry the exact request and approval, plus file grants when applicable.
 Events distinguish progress, result and error; the desktop task manager owns
-running/completed/failed/cancelled state. Model output does not become a shell
+queued/running/completed/failed/cancelled/interrupted state. Model output does not become a shell
 command. The workspace receives artifacts, not executable UI markup. Source
 content is escaped before display. Public source links require a user click.
 
 There is no localhost HTTP bridge. QProcess workers and local task files keep
 network/model work outside the UI event loop. QLocalServer uses local OS IPC only
 to activate an already-running window. Idle Sweep does not load model weights.
+Queued tasks receive execution approval at dispatch. Closing Sweep interrupts
+waiting work; reopening only restores records and never replays actions. Retry
+creates a new ID linked to the original task, with fresh permission checks. Task
+storage enforces terminal states so late worker output cannot undo cancellation.
+The window owns a watchdog for blocked workers and keeps active execution separate
+from the history result being viewed. This is a serial queue, not an autonomous
+planner or a guarantee that completed actions can be rolled back.
 
 ## External technology matrix
 

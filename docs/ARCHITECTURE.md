@@ -138,3 +138,19 @@ and test scratch directories are ignored by Git.
 
 These checks establish the tested behavior, not a guarantee of universal
 automation, model accuracy or absence of all security vulnerabilities.
+
+## Desktop task reliability milestone (2026-10-04)
+
+- Persistent FIFO queue, explicit retry with a new task ID, cancellation before
+  dispatch, and interrupted-state recovery without replaying actions on startup.
+- Terminal task states reject late results; viewing history cannot redirect a
+  running task's result. A parent watchdog stops blocked task workers. Failure to
+  save state cannot prevent cancellation from terminating the worker.
+- Bounded local IPC names and acknowledged activation report startup failures
+  clearly and preserve background launches without unexpectedly opening a window.
+- Build metadata records source/runtime provenance; checksums are generated only
+  after successful builds, with no secrets or machine-local paths included.
+- Desktop regression suites: **75 passed, 1 skipped**. The skip requires Windows
+  file-symlink privilege; directory-junction protections ran successfully. Tests
+  include real queued workers and cross-process local IPC. Native queue/result
+  rendering was also inspected on Windows.

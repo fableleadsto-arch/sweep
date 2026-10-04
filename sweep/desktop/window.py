@@ -2,13 +2,11 @@
 from __future__ import annotations
 
 import ctypes
-from datetime import datetime
 import html
 import json
 from pathlib import Path
 import sys
 import time
-import uuid
 
 from PySide6.QtCore import Qt, QProcess, QSettings, QTimer, QUrl, QAbstractNativeEventFilter
 from PySide6.QtGui import QAction, QDesktopServices, QKeySequence, QShortcut, QImageReader, QPixmap
@@ -23,6 +21,7 @@ from sweep.store import _save_json
 from .owl import Owl, owl_icon
 from .platform import launch_command, set_startup, startup_enabled
 from .runtime import CAPABILITIES, needs_approval, route
+from .tasks import TaskStore
 
 
 STYLE = """
@@ -88,6 +87,12 @@ class SweepWindow(QMainWindow):
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self.settings = QSettings(str(root / "desktop.ini"), QSettings.Format.IniFormat)
+        self.task_store = TaskStore(root)
+        self.recovered_count = self.task_store.recover_interrupted()
+        self.pending = []
+        self.selected_file_tasks = set()
+        self.dispatching = False
+        self.viewed_task_id = None
         self.process = None
         self.task = None
         self.current_directory = None
@@ -106,6 +111,8 @@ class SweepWindow(QMainWindow):
         self.build_ui()
         self.build_tray()
         self.load_history()
+        if self.recovered_count:
+            self.status.setText(f"{self.recovered_count} unfinished task(s) need a deliberate retry")
         geometry = self.settings.value("geometry")
         if geometry:
             self.restoreGeometry(geometry)
@@ -149,7 +156,18 @@ class SweepWindow(QMainWindow):
         self.history = QListWidget()
         self.history.setAccessibleName("Recent tasks")
         self.history.itemClicked.connect(self.open_history)
+        self.history.currentItemChanged.connect(self.update_history_actions)
         side.addWidget(self.history, 1)
+        self.queue_summary = label("No tasks waiting", "muted")
+        side.addWidget(self.queue_summary)
+        self.retry_button = QPushButton("Retry selected task")
+        self.retry_button.setEnabled(False)
+        self.retry_button.clicked.connect(self.retry_selected)
+        side.addWidget(self.retry_button)
+        self.cancel_queued_button = QPushButton("Cancel queued task")
+        self.cancel_queued_button.setEnabled(False)
+        self.cancel_queued_button.clicked.connect(self.cancel_selected_queued)
+        side.addWidget(self.cancel_queued_button)
         side.addWidget(label("Local workspace\nFiles stay local unless you choose a web task.", "muted"))
         settings = QPushButton("Settings & capabilities")
         settings.clicked.connect(self.show_settings)
@@ -163,6 +181,7 @@ class SweepWindow(QMainWindow):
         top.addWidget(label("WORKSPACE", "eyebrow"))
         top.addStretch()
         self.status = label("●  Ready", "muted")
+        self.status.setWordWrap(False)
         top.addWidget(self.status)
         body.addLayout(top)
         body.addWidget(label("A little clarity. A lot done.", "title"))
@@ -292,19 +311,24 @@ class SweepWindow(QMainWindow):
             self.reveal()
             return
         self.last_result = None
+        self.viewed_task_id = None
         self.conversation.clear()
         self.activity.clear()
         self.sources.clear()
         self.table.clear()
+        self.table.setRowCount(0)
+        self.table.setColumnCount(0)
         self.image_view.clear()
         self.prompt.clear()
         self.export_button.setEnabled(False)
+        self.mode.setCurrentIndex(0)
+        self.status.setText("●  Ready")
+        self.activity_summary.setText("A clear view of the work, as it happens.")
+        self.tabs.setTabText(1, "Sources")
         self.show_welcome()
         self.reveal()
 
     def submit(self):
-        if self.process is not None:
-            return
         try:
             capability, text = route(self.prompt.toPlainText(), self.mode.currentData())
         except ValueError as exc:
@@ -313,22 +337,19 @@ class SweepWindow(QMainWindow):
         self.start_task(capability, text)
 
     def choose_file(self):
-        if self.process is not None:
-            return
         path, _ = QFileDialog.getOpenFileName(self, "Choose a file to inspect locally")
         if path:
             self.start_task("files.inspect", path, selected_file=True)
 
-    def start_task(self, capability, text, selected_file=False):
-        if self.process is not None:
-            return False
-        approved = not needs_approval(capability, text) or selected_file
+    def approve_task(self, capability, text, selected_file=False):
+        approved = not needs_approval(capability, text) or (selected_file and capability == "files.inspect")
         public_web = capability in {"web.search", "web.scrape", "web.research"}
         if public_web and self.settings.value("allow_web", False, type=bool):
             approved = True
         if not approved:
             detail = ("This sends the request to public web services." if public_web else
-                      "This sends your message and recent conversation to your configured AI provider." if capability == "conversation" else
+                      "This sends your message and the conversation captured when you queued it to your configured AI provider." if capability == "conversation" else
+                      "This reads the selected file locally again. The file may have changed since the original task." if capability == "files.inspect" else
                       "This can read or change local files, run commands, or control applications as requested.")
             dialog = QMessageBox(QMessageBox.Icon.Question, "Allow this task?",
                 f"{CAPABILITIES[capability].title}\n\n{text[:4000]}\n\n{detail}",
@@ -336,25 +357,94 @@ class SweepWindow(QMainWindow):
             dialog.setTextFormat(Qt.TextFormat.PlainText)
             dialog.setDefaultButton(QMessageBox.StandardButton.No)
             approved = dialog.exec() == QMessageBox.StandardButton.Yes
-        if not approved:
+        return approved
+
+    def start_task(self, capability, text, selected_file=False, *, retry_of=None,
+                   granted_paths=None, history=None):
+        if self.closing:
             return False
-        task_id = uuid.uuid4().hex
-        self.current_directory = self.root / "tasks" / task_id
-        self.current_directory.mkdir(parents=True)
-        self.task = {"id": task_id, "capability": capability, "text": text, "approved": True,
-                     "granted_paths": [str(Path(text).resolve())] if selected_file else [],
-                     "history": self.conversation[-12:] if capability == "conversation" else [],
-                     "state": "running", "created": datetime.now().isoformat()}
-        _save_json(self.current_directory / "task.json", self.task)
+        if capability not in CAPABILITIES or not isinstance(text, str) or not text.strip():
+            QMessageBox.information(self, "Sweep", "Choose a capability and enter a request first.")
+            return False
+        if len(self.pending) >= 50:
+            QMessageBox.information(self, "Queue full", "Finish or cancel queued tasks before adding more (limit 50).")
+            return False
+        immediate = self.process is None and not self.dispatching and not self.pending
+        if immediate and not self.approve_task(capability, text, selected_file):
+            return False
+        try:
+            task = self.task_store.create(capability, text,
+                granted_paths=[str(Path(text).resolve())] if selected_file else granted_paths,
+                history=(self.conversation[-12:] if capability == "conversation" else []) if history is None else history,
+                retry_of=retry_of)
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, "Could not save task", str(exc))
+            return False
+        self.pending.append(task["id"])
+        if selected_file:
+            self.selected_file_tasks.add(task["id"])
+        self.load_history()
+        if immediate:
+            self.run_next(preapproved=task["id"])
+        elif self.process is None and not self.dispatching:
+            QTimer.singleShot(0, self.run_next)
+        return True
+
+    def run_next(self, preapproved=None):
+        if self.closing or self.process is not None or self.dispatching:
+            return
+        self.dispatching = True
+        try:
+            while self.pending and not self.closing:
+                task_id = self.pending.pop(0)
+                try:
+                    task = self.task_store.get(task_id)
+                    if task["state"] != "queued":
+                        continue
+                    selected = task_id in self.selected_file_tasks
+                    self.selected_file_tasks.discard(task_id)
+                    approved = task_id == preapproved or self.approve_task(task["capability"], task["text"], selected)
+                    # Modal dialogs process native events; recheck cancellation/exit afterward.
+                    if self.closing or self.task_store.get(task_id)["state"] != "queued":
+                        continue
+                    if not approved:
+                        self.task_store.update(task_id, state="cancelled", error="Permission was declined before execution.")
+                        continue
+                    self.task = self.task_store.update(task_id, state="running", approved=True)
+                    self.current_directory = self.task_store.directory(task_id)
+                    self.launch_task()
+                    break
+                except (OSError, ValueError) as exc:
+                    QMessageBox.warning(self, "Could not start queued task", str(exc))
+            self.load_history()
+        finally:
+            self.dispatching = False
+
+    def clear_result(self):
+        self.last_result = None
+        self.sources.clear()
+        self.table.clear()
+        self.table.setColumnCount(0)
+        self.table.setRowCount(0)
+        self.image_view.clear()
+        self.tabs.setTabText(1, "Sources")
+        self.tabs.setCurrentIndex(0)
+        self.export_button.setEnabled(False)
+
+    def launch_task(self):
+        capability, text = self.task["capability"], self.task["text"]
+        self.viewed_task_id = self.task["id"]
+        self.history.setCurrentItem(None)
+        self.clear_result()
         self.last_result = None
         self.event_offset = 0
         self.started = time.monotonic()
         self.activity.clear()
         self.sources.clear()
         self.result_view.setHtml(f"<h2>{html.escape(CAPABILITIES[capability].title)}</h2><p>{html.escape(text)}</p><p>Starting the task. Activity and sources will appear as they become available.</p>")
-        self.activity.addItem("Starting an isolated task worker")
+        self.activity.addItem("Starting task")
         self.activity_summary.setText("Starting")
-        self.run_button.setEnabled(False)
+        self.run_button.setText("Add to queue  ↵")
         self.cancel_button.setEnabled(True)
         self.export_button.setEnabled(False)
         self.owl.active = True
@@ -366,53 +456,104 @@ class SweepWindow(QMainWindow):
         process.setWorkingDirectory(str(self.root))
         process.setStandardOutputFile(str(self.current_directory / "worker.log"))
         process.setStandardErrorFile(str(self.current_directory / "worker.log"), QProcess.OpenModeFlag.Append)
-        process.finished.connect(self.worker_finished)
-        process.errorOccurred.connect(self.worker_error)
+        process.finished.connect(lambda code, status, worker=process: self.worker_finished(code, status)
+                                 if self.process is worker else None)
+        process.errorOccurred.connect(lambda error, worker=process: self.worker_error(error)
+                                      if self.process is worker else None)
         process.start(command[0], command[1:])
         self.load_history()
-        return True
 
     def poll_events(self):
         if self.process is None or self.current_directory is None:
+            return
+        if time.monotonic() - self.started > 125:
+            if self.task["state"] == "running":
+                self.fail_running("The task exceeded its 120-second time budget and its worker was stopped. Completed actions are not undone.")
+            else:
+                self.process.kill()
             return
         self.status.setText(f"●  Working · {int(time.monotonic() - self.started)}s")
         path = self.current_directory / "events.jsonl"
         if not path.exists():
             return
-        with path.open("rb") as handle:
-            handle.seek(self.event_offset)
-            while True:
-                line = handle.readline()
-                if not line or not line.endswith(b"\n"):
-                    break
-                self.event_offset = handle.tell()
-                try:
-                    event = json.loads(line)
-                except ValueError:
-                    continue
-                self.accept_event(event)
+        try:
+            with path.open("rb") as handle:
+                handle.seek(self.event_offset)
+                # Bound each UI tick so a noisy worker cannot freeze the window.
+                for _ in range(200):
+                    line = handle.readline(1_000_001)
+                    if len(line) > 1_000_000:
+                        self.fail_running("The task produced an event larger than the desktop limit.")
+                        break
+                    if not line or not line.endswith(b"\n"):
+                        break
+                    self.event_offset = handle.tell()
+                    try:
+                        event = json.loads(line)
+                    except ValueError:
+                        continue
+                    if isinstance(event, dict):
+                        self.accept_event(event)
+        except OSError:
+            self.fail_running("Sweep could not read the task's activity file.")
+
+    def fail_running(self, message):
+        if self.process is None or self.task["state"] != "running":
+            return
+        self.accept_event({"kind": "error", "message": message})
+        self.process.kill()
+
+    def storage_failed(self):
+        """Fail closed in memory even when durable state cannot be written."""
+        message = "Sweep could not save this task's state. Its worker was stopped. Check available disk space and folder permissions; the task may appear interrupted after restart."
+        self.task = {**self.task, "state": "failed", "approved": False, "error": message}
+        if self.process is not None:
+            self.process.kill()
+        if self.viewed_task_id == self.task["id"]:
+            self.clear_result()
+            self.result_view.setPlainText(message)
+            self.activity.addItem(message)
 
     def accept_event(self, event):
+        if not self.task or self.task["state"] != "running":
+            return
+        visible = self.viewed_task_id == self.task["id"]
         kind = event.get("kind")
         if kind == "progress":
-            message = event["message"]
+            if not visible:
+                return
+            message = str(event.get("message", ""))
             detail = event.get("detail") or ""
-            self.activity.addItem(message + ("\n" + detail if detail else ""))
+            self.activity.addItem(message + ("\n" + str(detail) if detail else ""))
             self.activity.scrollToBottom()
             self.activity_summary.setText(message[:90])
         elif kind == "result":
-            self.last_result = event["data"]
-            self.task["state"] = "completed"
-            _save_json(self.current_directory / "result.json", self.last_result)
-            self.render_result(self.last_result)
+            result = event.get("data")
+            if not isinstance(result, dict):
+                self.fail_running("The task returned an invalid result.")
+                return
+            try:
+                _save_json(self.current_directory / "result.json", result)
+                self.task = self.task_store.update(self.task["id"], state="completed")
+            except (OSError, ValueError):
+                self.storage_failed()
+                return
+            if visible:
+                self.render_result(result)
             if self.task["capability"] == "conversation":
                 self.conversation.extend([{"role": "user", "content": self.task["text"]},
-                    {"role": "assistant", "content": self.last_result.get("message", "")}])
+                    {"role": "assistant", "content": result.get("message", "")}])
         elif kind == "error":
-            self.task["state"] = "failed"
-            self.task["error"] = event["message"]
-            self.result_view.setHtml(f"<h2>This task needs attention.</h2><p>{html.escape(event['message'])}</p><p>Edit the request and run it again. The activity log is preserved.</p>")
-            self.activity.addItem(event["message"])
+            message = str(event.get("message") or "The task failed without an error description.")
+            try:
+                self.task = self.task_store.update(self.task["id"], state="failed", error=message)
+            except (OSError, ValueError):
+                self.storage_failed()
+                return
+            if visible:
+                self.clear_result()
+                self.result_view.setHtml(f"<h2>This task needs attention.</h2><p>{html.escape(message)}</p><p>Edit the request or select Retry. The activity log is preserved.</p>")
+                self.activity.addItem(message)
 
     def render_result(self, result):
         self.last_result = result
@@ -470,25 +611,29 @@ class SweepWindow(QMainWindow):
     def worker_finished(self, code, status):
         if self.process is None:
             return
-        self.poll_events()
+        # Drain several bounded batches if the worker exited between timer ticks.
+        for _ in range(10):
+            previous_offset = self.event_offset
+            self.poll_events()
+            if self.task["state"] != "running" or self.event_offset == previous_offset:
+                break
         if self.task["state"] == "running":
-            self.task["state"] = "failed"
-            self.task["error"] = f"Task worker stopped (exit {code}). See the local activity log."
-            self.result_view.setPlainText(self.task["error"])
-        self.task["finished"] = datetime.now().isoformat()
-        _save_json(self.current_directory / "task.json", self.task)
+            self.accept_event({"kind": "error", "message": f"Task worker stopped (exit {code}). See the local activity log."})
         self.status.setText("●  " + self.task["state"].capitalize())
-        self.activity_summary.setText(f"{self.task['state'].capitalize()} · {time.monotonic() - self.started:.1f}s")
-        self.activity.addItem(self.task["state"].capitalize())
+        if self.viewed_task_id == self.task["id"]:
+            self.activity_summary.setText(f"{self.task['state'].capitalize()} · {time.monotonic() - self.started:.1f}s")
+            self.activity.addItem(self.task["state"].capitalize())
         self.process.deleteLater()
         self.process = None
-        self.run_button.setEnabled(True)
+        self.run_button.setText("Run task  ↵")
         self.cancel_button.setEnabled(False)
         self.owl.active = False
         self.owl.update()
         self.load_history()
         if not self.isActiveWindow() and self.settings.value("notifications", True, type=bool):
             self.tray.showMessage("Sweep", "Your task " + self.task["state"] + ".", QSystemTrayIcon.MessageIcon.Information, 4000)
+        if self.pending and not self.closing:
+            QTimer.singleShot(0, self.run_next)
 
     def worker_error(self, error):
         if error == QProcess.ProcessError.FailedToStart and self.process is not None:
@@ -496,47 +641,113 @@ class SweepWindow(QMainWindow):
             self.worker_finished(-1, QProcess.ExitStatus.CrashExit)
 
     def cancel_task(self):
-        if self.process is not None:
-            self.task["state"] = "cancelled"
-            self.activity.addItem("Cancellation requested; completed actions are not undone.")
-            self.process.kill()
+        if self.process is not None and self.task["state"] == "running":
+            try:
+                self.task = self.task_store.update(self.task["id"], state="cancelled",
+                    error="Stopped by you. Completed actions are not undone; externally launched apps may continue running.")
+            except (OSError, ValueError):
+                self.storage_failed()
+                return
+            finally:
+                if self.process is not None:
+                    self.process.kill()
+            if self.viewed_task_id == self.task["id"]:
+                self.activity.addItem(self.task["error"])
+                self.clear_result()
+                self.result_view.setPlainText(self.task["error"])
 
     def load_history(self):
+        selected = self.history.currentItem()
+        selected_id = selected.data(Qt.ItemDataRole.UserRole) if selected else self.viewed_task_id
         self.history.clear()
-        tasks_root = self.root / "tasks"
-        for path in sorted(tasks_root.glob("*/task.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:60]:
-            try:
-                task = json.loads(path.read_text(encoding="utf-8"))
-            except (ValueError, OSError):
-                continue
+        for task in self.task_store.list(limit=1000):
             state = task.get("state", "unknown")
-            if state == "running" and (not self.task or task["id"] != self.task["id"]):
-                state = "interrupted"
             item = QListWidgetItem(f"{task.get('text', 'Task')[:33]}\n{state}")
             item.setToolTip(task.get("text", ""))
-            item.setData(Qt.ItemDataRole.UserRole, str(path.parent))
+            item.setData(Qt.ItemDataRole.UserRole, task["id"])
             self.history.addItem(item)
+            if task["id"] == selected_id:
+                self.history.setCurrentItem(item)
+        count = len(self.pending)
+        self.queue_summary.setText(f"{count} task{'s' if count != 1 else ''} waiting" if count else "No tasks waiting")
+        self.update_history_actions()
+
+    def update_history_actions(self, *_):
+        if not hasattr(self, "retry_button"):
+            return
+        item = self.history.currentItem()
+        state = None
+        if item:
+            try:
+                state = self.task_store.get(item.data(Qt.ItemDataRole.UserRole))["state"]
+            except (OSError, ValueError):
+                pass
+        self.retry_button.setEnabled(state in {"completed", "failed", "cancelled", "interrupted"})
+        self.cancel_queued_button.setEnabled(state == "queued")
+
+    def retry_selected(self):
+        item = self.history.currentItem()
+        if not item:
+            return
+        try:
+            task = self.task_store.get(item.data(Qt.ItemDataRole.UserRole))
+            if task["state"] not in {"completed", "failed", "cancelled", "interrupted"}:
+                return
+            self.start_task(task["capability"], task["text"], retry_of=task["id"],
+                granted_paths=task.get("granted_paths", []), history=task.get("history", []))
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, "Could not retry task", str(exc))
+
+    def cancel_selected_queued(self):
+        item = self.history.currentItem()
+        if not item:
+            return
+        task_id = item.data(Qt.ItemDataRole.UserRole)
+        try:
+            if self.task_store.get(task_id)["state"] != "queued":
+                return
+            self.task_store.update(task_id, state="cancelled", error="Cancelled before execution.")
+            self.pending = [pending for pending in self.pending if pending != task_id]
+            self.selected_file_tasks.discard(task_id)
+            self.load_history()
+            if self.viewed_task_id == task_id:
+                self.clear_result()
+                self.result_view.setPlainText("Cancelled before execution.")
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, "Could not cancel task", str(exc))
+        finally:
+            # Cancel still stops in-session dispatch if the disk cannot be updated.
+            self.pending = [pending for pending in self.pending if pending != task_id]
+            self.selected_file_tasks.discard(task_id)
 
     def open_history(self, item):
-        if self.process is not None:
-            return
-        directory = Path(item.data(Qt.ItemDataRole.UserRole))
         try:
-            task = json.loads((directory / "task.json").read_text(encoding="utf-8"))
+            task_id = item.data(Qt.ItemDataRole.UserRole)
+            task = self.task_store.get(task_id)
+            directory = self.task_store.directory(task_id)
+            self.viewed_task_id = task_id
+            self.clear_result()
             self.fill_prompt(task["text"])
+            mode = self.mode.findData(task["capability"])
+            self.mode.setCurrentIndex(max(mode, 0))
             self.activity.clear()
+            self.activity_summary.setText(task["state"].capitalize())
             path = directory / "events.jsonl"
             if path.exists():
-                for line in path.read_text(encoding="utf-8").splitlines():
-                    event = json.loads(line)
-                    if event.get("message"):
-                        self.activity.addItem(event["message"])
-            if (directory / "result.json").exists():
+                with path.open(encoding="utf-8") as stream:
+                    for line in stream.read(2_000_000).splitlines()[-1000:]:
+                        try:
+                            event = json.loads(line)
+                        except ValueError:
+                            continue
+                        if isinstance(event, dict) and event.get("message"):
+                            self.activity.addItem(str(event["message"]))
+            if task["state"] == "completed" and (directory / "result.json").exists():
                 self.render_result(json.loads((directory / "result.json").read_text(encoding="utf-8")))
             else:
-                self.last_result = None
-                self.export_button.setEnabled(False)
-                self.result_view.setPlainText(task.get("error", "No completed result. Edit the request to try again."))
+                self.result_view.setPlainText(task.get("error", "Waiting in the queue. Permission is checked before execution." if task["state"] == "queued" else
+                    "This task is running. Its activity appears here." if task["state"] == "running" else
+                    "No completed result. Select Retry to create a new task with fresh permission."))
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, "Could not open task", str(exc))
 
@@ -601,8 +812,6 @@ class SweepWindow(QMainWindow):
             event.acceptProposedAction()
 
     def dropEvent(self, event):
-        if self.process is not None:
-            return
         for url in event.mimeData().urls():
             if url.isLocalFile() and Path(url.toLocalFile()).is_file():
                 self.start_task("files.inspect", url.toLocalFile(), selected_file=True)
@@ -619,10 +828,19 @@ class SweepWindow(QMainWindow):
             event.accept()
 
     def shutdown(self):
+        self.closing = True
+        self.timer.stop()
         if self.process is not None:
             self.cancel_task()
             if self.process is not None:
+                self.process.kill()
                 self.process.waitForFinished(3000)
+        self.pending.clear()
+        self.selected_file_tasks.clear()
+        try:
+            self.task_store.recover_interrupted()
+        except (OSError, ValueError):
+            pass  # A later startup will retry recovery when storage is available.
         if self.hotkey_registered:
             ctypes.windll.user32.UnregisterHotKey(int(self.winId()), 0x5357)
             self.hotkey_registered = False

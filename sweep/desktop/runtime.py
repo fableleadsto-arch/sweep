@@ -172,18 +172,23 @@ async def execute(request: dict, emit: Callable[[dict], None]) -> dict:
 
 def run_worker(task_path: str, events_path: str) -> int:
     """File-based IPC also works in a frozen Windows windowed executable."""
-    request = json.loads(Path(task_path).read_text(encoding="utf-8"))
     with Path(events_path).open("a", encoding="utf-8", buffering=1) as stream:
         def emit(event):
             event["at"] = datetime.now(timezone.utc).isoformat()
             stream.write(json.dumps(event, ensure_ascii=False) + "\n")
         try:
+            request = json.loads(Path(task_path).read_text(encoding="utf-8"))
+            if not isinstance(request, dict):
+                raise ValueError("The task request must be a JSON object.")
             async def bounded():
                 async with asyncio.timeout(120):
                     return await execute(request, emit)
             result = asyncio.run(bounded())
             emit({"kind": "result", "data": result})
             return 0
+        except TimeoutError:
+            emit({"kind": "error", "message": "The task exceeded its 120-second time budget. Completed actions are not undone."})
+            return 1
         except Exception as exc:
-            emit({"kind": "error", "message": str(exc)[:1000]})
+            emit({"kind": "error", "message": str(exc)[:1000] or "The task failed without an error description."})
             return 1
