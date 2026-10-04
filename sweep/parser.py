@@ -16,7 +16,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from .skills import APPS, SITES
+from .skills import APPS, BROWSER_ALIASES, SITES
 
 # ── politeness handling ───────────────────────────────────────────────
 
@@ -103,7 +103,12 @@ def strip_politeness(text: str) -> str:
     if len(words) >= 2 and _tok(words[-1]) == "me" and _tok(words[-2]) in {"help", "tell", "show"}:
         words = words[:-2]
 
-    joined = " ".join(words).rstrip(".,!?;:")
+    joined = " ".join(words)
+    if not words:
+        return joined
+    # A URL's final punctuation can be part of its path/query, not a sentence.
+    if not re.match(r"^[\"']?https?://", words[-1], re.IGNORECASE):
+        joined = joined.rstrip(".,!?;:")
     return joined
 
 
@@ -194,6 +199,36 @@ def _bare_open_target(text: str) -> Optional[str]:
     if lowered in SITES or lowered in APPS or lowered in {"downloads", "download", "desktop", "documents", "home"}:
         return lowered
     return None
+
+
+_BROWSER_NAMES = "|".join(re.escape(name) for name in sorted(BROWSER_ALIASES, key=len, reverse=True))
+
+
+def _open_command(text: str) -> Optional[ParsedCommand]:
+    """Separate the destination from a requested browser without rewriting either."""
+    browser_first = re.fullmatch(
+        rf"(?:open|launch|start)\s+(?:the\s+|my\s+)?({_BROWSER_NAMES})"
+        r"(?:\s+browser)?\s+and\s+(?:go\s+to|navigate\s+to|visit|open)\s+(.+)",
+        text, re.IGNORECASE,
+    )
+    if browser_first:
+        return ParsedCommand("open", {"target": browser_first[2].strip(),
+                                      "browser": BROWSER_ALIASES[browser_first[1].lower()]}, text)
+    match = re.fullmatch(
+        r"(?:open|launch|start|show(?:\s+me)?|go\s+to|take\s+me\s+to|navigate\s+to|visit|goto)\s+(.+)",
+        text, re.IGNORECASE,
+    )
+    if not match:
+        return None
+    target = re.sub(r"^(?:the|a|an|my|that)\s+", "", match[1], flags=re.IGNORECASE)
+    browser = re.fullmatch(
+        rf"(.+?)\s+(?:in|using|with|on)\s+(?:(?:the|my)\s+)?({_BROWSER_NAMES})(?:\s+browser)?",
+        target, re.IGNORECASE,
+    )
+    params = {"target": target.strip()}
+    if browser:
+        params = {"target": browser[1].strip(), "browser": BROWSER_ALIASES[browser[2].lower()]}
+    return ParsedCommand("open", params, text) if params["target"] else None
 
 
 def _dataset_command(words: list[str], first: str, whole: str, t: str) -> Optional[ParsedCommand]:
@@ -368,6 +403,11 @@ def parse_rules(text: str) -> Optional[ParsedCommand]:
         command = f"pip install {package}" if package else "pip install"
         return ParsedCommand("run", {"command": command}, t, "rule")
 
+    # Open payloads can contain arithmetic-looking URL paths; parse them first.
+    opened = _open_command(t)
+    if opened:
+        return opened
+
     # calculator (after run so "run 2+2" wins as a command, before search)
     expr = _find_calc(t)
     if expr and _looks_like_math(expr):
@@ -388,19 +428,6 @@ def parse_rules(text: str) -> Optional[ParsedCommand]:
             return ParsedCommand("alias", {"action": "list"}, t, "rule")
         if len(words) >= 2:
             return ParsedCommand("alias", {"action": "set", "name": words[1], "target": " ".join(words[2:])}, t, "rule")
-
-    # open / launch / go to
-    if first in {"open", "launch", "start", "show"} or (len(words) > 1 and words[0] in {"go", "take", "navigate", "visit", "goto"} and words[1] in {"to", "me", "at"}):
-        if first == "show" and len(words) > 1 and words[1] in {"me", "files"}:
-            if words[1] == "files":
-                return ParsedCommand("files", {"action": "list", "target": "here"}, t, "rule")
-            body = " ".join(words[2:])
-            if body:
-                return ParsedCommand("open", {"target": body}, t, "rule")
-        body = " ".join(words[1:])
-        body = re.sub(r"^(the|a|an|my|that)\s+", "", body)
-        if body:
-            return ParsedCommand("open", {"target": body}, t, "rule")
 
     # search (question-style leads)
     if first in _SEARCH_LEADERS or first in {"search", "google", "look", "find", "tell", "describe", "explain", "give", "define"}:
@@ -427,7 +454,7 @@ _LLM_SYSTEM = """You are the Sweep terminal controller dispatcher. Map the user'
 {"intent": "<intent>", "params": {...}}
 
 Allowed intents and their params:
-- open: {"target": "site alias, app name, url, or path"}
+- open: {"target": "site alias, app name, url, or path", "browser": "optional brave|chrome|edge|firefox, only when requested"}
 - search: {"query": "text to search for"}
 - run: {"command": "shell command"}
 - calc: {"expression": "safe math expression"}

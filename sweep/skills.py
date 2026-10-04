@@ -12,6 +12,7 @@ import asyncio
 import datetime
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -20,6 +21,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 from .store import ControllerStore
 
@@ -221,6 +223,26 @@ FOLDERS: dict[str, str] = {
 _ARTICLES = {"the", "a", "an", "my"}
 CREATE_NO_WINDOW = 0x08000000 if os.name == "nt" else 0
 
+BROWSER_ALIASES = {
+    "brave": "brave", "brave browser": "brave",
+    "chrome": "chrome", "google chrome": "chrome",
+    "edge": "edge", "microsoft edge": "edge",
+    "firefox": "firefox", "mozilla firefox": "firefox",
+}
+_BROWSER_LABELS = {"brave": "Brave", "chrome": "Chrome", "edge": "Edge", "firefox": "Firefox"}
+_BROWSER_EXECUTABLES = {
+    "brave": ("brave.exe", "brave-browser", "brave"),
+    "chrome": ("chrome.exe", "google-chrome", "google-chrome-stable", "chromium"),
+    "edge": ("msedge.exe", "microsoft-edge", "microsoft-edge-stable"),
+    "firefox": ("firefox.exe", "firefox"),
+}
+_WINDOWS_BROWSER_PATHS = {
+    "brave": "BraveSoftware/Brave-Browser/Application/brave.exe",
+    "chrome": "Google/Chrome/Application/chrome.exe",
+    "edge": "Microsoft/Edge/Application/msedge.exe",
+    "firefox": "Mozilla Firefox/firefox.exe",
+}
+
 
 @dataclass
 class SkillContext:
@@ -248,6 +270,107 @@ class ActionResult:
 def open_url(url: str) -> None:
     """Open an http(s) URL in the default browser."""
     webbrowser.open(url, new=2)
+
+
+def _browser_executable(value: str, names: tuple[str, ...]) -> Optional[str]:
+    """Accept a single existing executable path, never a registry command line."""
+    if not isinstance(value, str) or any(ord(char) < 32 for char in value):
+        return None
+    value = value.strip()
+    if value.startswith('"') and value.endswith('"'):
+        value = value[1:-1]
+    if '"' in value or value.startswith(("\\\\", "//")):
+        return None
+    try:
+        path = Path(value)
+        if not path.is_absolute() or path.name.lower() not in {name.lower() for name in names}:
+            return None
+        if path.is_file() and (os.name == "nt" or os.access(path, os.X_OK)):
+            return str(path.resolve())
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def _registered_browser(executable: str) -> Optional[str]:
+    """Read only the executable value of Windows App Paths, not shell commands."""
+    try:
+        import winreg
+    except ImportError:
+        return None
+    subkey = rf"Software\Microsoft\Windows\CurrentVersion\App Paths\{executable}"
+    for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+        for view in (winreg.KEY_WOW64_64KEY, winreg.KEY_WOW64_32KEY):
+            try:
+                with winreg.OpenKey(hive, subkey, 0, winreg.KEY_READ | view) as key:
+                    value, kind = winreg.QueryValueEx(key, "")
+                if kind == winreg.REG_EXPAND_SZ and isinstance(value, str):
+                    value = winreg.ExpandEnvironmentStrings(value)
+                if kind not in {winreg.REG_SZ, winreg.REG_EXPAND_SZ}:
+                    continue
+                candidate = _browser_executable(value, (executable,))
+                if candidate:
+                    return candidate
+            except OSError:
+                continue
+    return None
+
+
+def find_browser(browser: str) -> Optional[str]:
+    """Discover one named browser using install folders, App Paths and PATH."""
+    canonical = BROWSER_ALIASES.get(browser.strip().lower())
+    if canonical is None:
+        return None
+    names = _BROWSER_EXECUTABLES[canonical]
+    if os.name == "nt":
+        names = names[:1]
+        for variable in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA", "ProgramW6432"):
+            root = os.environ.get(variable)
+            if root:
+                candidate = _browser_executable(str(Path(root) / _WINDOWS_BROWSER_PATHS[canonical]), names)
+                if candidate:
+                    return candidate
+        registered = _registered_browser(names[0])
+        if registered:
+            return registered
+    elif sys.platform == "darwin":
+        app, executable = {
+            "brave": ("Brave Browser", "Brave Browser"), "chrome": ("Google Chrome", "Google Chrome"),
+            "edge": ("Microsoft Edge", "Microsoft Edge"), "firefox": ("Firefox", "firefox"),
+        }[canonical]
+        for root in (Path("/Applications"), HOME / "Applications"):
+            candidate = _browser_executable(str(root / f"{app}.app/Contents/MacOS/{executable}"), (executable,))
+            if candidate:
+                return candidate
+        names = names[1:]
+    else:
+        names = names[1:]
+    # Ignore empty/relative PATH entries: never implicitly execute from the work folder.
+    for directory in os.get_exec_path():
+        if not directory or not Path(directory).is_absolute():
+            continue
+        for name in names:
+            candidate = _browser_executable(str(Path(directory) / name), names)
+            if candidate:
+                return candidate
+    return None
+
+
+def _launch_browser(browser: str, url: Optional[str] = None) -> ActionResult:
+    canonical = BROWSER_ALIASES.get(browser.strip().lower())
+    if canonical is None:
+        return ActionResult("error", "Choose Brave, Chrome, Edge or Firefox for an explicit browser request.")
+    label = _BROWSER_LABELS[canonical]
+    executable = find_browser(canonical)
+    if not executable:
+        return ActionResult("error", f"I couldn't find {label}. Install it or add its executable folder to PATH, then try again.")
+    arguments = [executable] + ([url] if url is not None else [])
+    try:
+        subprocess.Popen(arguments, shell=False, creationflags=CREATE_NO_WINDOW,
+                         start_new_session=os.name != "nt")
+    except OSError as exc:
+        return ActionResult("error", f"Couldn't launch {label}: {exc}")
+    return ActionResult("ok", f"Opened {url} in {label}." if url else f"Launched {label}.")
 
 
 def start_app(command: str) -> bool:
@@ -293,16 +416,34 @@ def search_url(query: str, engine: str = "duckduckgo") -> str:
 
 def _browser_target(target: str, ctx: SkillContext) -> Optional[str]:
     """Resolve a site-name / alias / url-ish string to a URL."""
-    lowered = target.lower().strip()
+    target = target.strip()
+    if len(target) >= 2 and target[0] == target[-1] and target[0] in {'"', "'"}:
+        target = target[1:-1]
+    lowered = target.lower()
     alias = ctx.store.get_alias(lowered)
-    if alias:
-        return alias if "://" in alias else f"https://{alias}"
-    if lowered in SITES:
-        return SITES[lowered]
-    if lowered.startswith(("http://", "https://")):
-        return target.strip()
-    if len(target.split()) == 1 and "." in target and target.count(".") == 1 and not target.startswith("."):
-        return f"https://{target}"
+    candidate = alias or SITES.get(lowered) or target
+    if "://" not in candidate:
+        host = candidate.split("/", 1)[0].split(":", 1)[0]
+        if "." not in host or host.startswith("."):
+            return None
+        candidate = f"https://{candidate}"
+    if any(ord(char) <= 32 or ord(char) == 127 or char in '\\"<>' for char in candidate):
+        return None
+    try:
+        parsed = urlsplit(candidate)
+        if parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname:
+            return None
+        if parsed.username is not None or parsed.password is not None:
+            return None
+        if parsed.port is not None and not 1 <= parsed.port <= 65535:
+            return None
+        host = parsed.hostname.encode("idna").decode("ascii")
+        if ":" not in host and not all(re.fullmatch(r"[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?", label)
+                                       for label in host.rstrip(".").split(".")):
+            return None
+        return candidate
+    except (ValueError, UnicodeError):
+        return None
     return None
 
 
@@ -320,10 +461,8 @@ def _strip_browser_hint(target: str) -> tuple[bool, str]:
     """Return (True, cleaned) when the user asked for the browser/web version."""
     lower = target.lower()
     for phrase in _BROWSER_HINTS:
-        idx = lower.find(phrase)
-        if idx != -1:
-            cleaned = target[:idx] + " " + target[idx + len(phrase):]
-            return True, " ".join(cleaned.split()).strip()
+        if lower.endswith(" " + phrase):
+            return True, target[:-len(phrase)].strip()
     return False, target
 
 
@@ -425,6 +564,15 @@ def skill_open(params: dict[str, Any], ctx: SkillContext) -> ActionResult:
         return ActionResult("error", "What should I open? Say something like \"open youtube\".")
 
     browser_url = _browser_target(target, ctx)
+    requested_browser = str(params.get("browser") or "").strip()
+    if requested_browser:
+        if not browser_url:
+            return ActionResult("error", f"I couldn't resolve {target!r} to a valid HTTP or HTTPS website. Use a site name such as YouTube or provide its full web address.")
+        return _launch_browser(requested_browser, browser_url)
+    if target.lower() in BROWSER_ALIASES and not forced_browser:
+        return _launch_browser(target)
+    if target.lower().lstrip('"\'').startswith(("http://", "https://")) and not browser_url:
+        return ActionResult("error", "That web address is invalid. Provide a valid HTTP or HTTPS URL.")
     app_cmd = _app_target(target)
     app_names = [target]
     if app_cmd:

@@ -1,27 +1,31 @@
 """Multi-engine web search with HTML parsers and API provider fallback.
 
 Provider list (in default routing order):
-  keyless  — Multi-engine HTML search (always available, no key needed)
+  keyless  — Multi-engine HTML search (no key needed; providers can block requests)
   tavily   — when TAVILY_API_KEY is set
   exa      — when EXA_API_KEY is set
   searxng  — when SEARXNG_BASE_URL is set
-  jina     — free-tier reader/search (always available)
+  jina     — when JINA_API_KEY is set
 """
 
 from __future__ import annotations
 
 import asyncio
+import base64
+import binascii
+from datetime import datetime, timedelta, timezone
+from html import unescape
+import json
 import re
 import time
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import parse_qs, quote_plus, unquote, urlparse
 
-import httpx
+from bs4 import BeautifulSoup
 
-from ..core.cache import cache_get, cache_set
+from ..core.guard import validate_safe_url
 from ..core.http import relai_fetch
-from ..core.types import SearchRun
 
 
 # ── Engine Parsers ────────────────────────────────────────────────────
@@ -32,23 +36,37 @@ def _first_match(text: str, patterns: list[re.Pattern]) -> str:
     for pat in patterns:
         m = pat.search(text)
         if m and m.group(1):
-            return re.sub(r"<[^>]+>", "", m.group(1)).strip()
+            return _strip_html(m.group(1))
     return ""
 
 
 def _strip_html(text: str) -> str:
-    return re.sub(r"<[^>]+>", "", text).strip()
+    return unescape(re.sub(r"<[^>]+>", "", text)).strip()
 
 
 def _decode_redirect(href: str) -> str:
-    """Decode DuckDuckGo redirect URLs."""
-    if "duckduckgo.com/l/" in href:
+    """Extract the actual destination, never a search engine's displayed citation."""
+    href = unescape(href)
+    try:
+        parsed = urlparse(href if not href.startswith("//") else f"https:{href}")
+    except ValueError:
+        return ""
+    host = (parsed.hostname or "").lower()
+    if host in {"duckduckgo.com", "www.duckduckgo.com"} and parsed.path == "/l/":
         try:
-            u = urlparse(href if href.startswith("http") else f"https:{href}")
-            qs = parse_qs(u.query)
+            qs = parse_qs(parsed.query)
             return qs.get("uddg", [href])[0]
         except Exception:
             pass
+    if host in {"bing.com", "www.bing.com"} and parsed.path == "/ck/a":
+        target = parse_qs(parsed.query).get("u", [""])[0]
+        if target.startswith("a1"):
+            encoded = target[2:]
+            try:
+                return base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)).decode("utf-8")
+            except (ValueError, UnicodeDecodeError, binascii.Error):
+                return ""
+        return target if target.startswith(("https://", "http://")) else ""
     if href.startswith("/url?q="):
         try:
             return unquote(href[7].split("&")[0])
@@ -58,110 +76,52 @@ def _decode_redirect(href: str) -> str:
 
 
 def _parse_ddg(html: str) -> list[dict]:
-    """DuckDuckGo HTML parser with multiple fallback strategies."""
+    """Parse public HTML results independent of anchor attribute order."""
+    document = BeautifulSoup(html, "html.parser")
     results = []
-    seen = set()
-
-    # Strategy 1: Result blocks
-    blocks = re.findall(
-        r'<div[^>]*class="[^"]*result[^"]*results_links[^"]*"[^>]*>([\s\S]*?)</div>\s*</div>',
-        html,
-        re.IGNORECASE,
-    )
-    if len(blocks) < 2:
-        blocks = re.findall(
-            r'<div[^>]*class="[^"]*result\b[^"]*"[^>]*>([\s\S]*?)(?:</div>\s*){2,3}',
-            html,
-            re.IGNORECASE,
-        )
-
-    for block in blocks:
-        url_m = re.search(r'<a[^>]+href="(https?://[^"]+)"', block, re.IGNORECASE)
-        if not url_m:
-            continue
-        url = _decode_redirect(url_m.group(1))
-        title = _first_match(
-            block,
-            [
-                re.compile(r'class="[^"]*result__a[^"]*"[^>]*>([\s\S]*?)</a>', re.I),
-                re.compile(r'<a[^>]+href="https?://[^"]+"[^>]*>([\s\S]*?)</a>', re.I),
-            ],
-        )
-        snippet = _first_match(
-            block,
-            [
-                re.compile(r'class="[^"]*result__snippet[^"]*"[^>]*>([\s\S]*?)</', re.I),
-                re.compile(r'class="[^"]*snippet[^"]*"[^>]*>([\s\S]*?)</', re.I),
-            ],
-        )
-        if url.startswith("http") and title and url not in seen:
-            seen.add(url)
-            results.append({"url": url, "title": _strip_html(title), "snippet": _strip_html(snippet), "engine": "duckduckgo"})
-
-    if results:
-        return results
-
-    # Strategy 2: Anchor tags with result classes
-    for m in re.finditer(r'<a[^>]+class="[^"]*result__a[^"]*"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)</a>', html, re.IGNORECASE):
-        url = _decode_redirect(m.group(1))
-        title = _strip_html(m.group(2))
-        if url.startswith("http") and title and url not in seen:
-            seen.add(url)
-            results.append({"url": url, "title": title, "snippet": "", "engine": "duckduckgo"})
-            if len(results) >= 40:
-                break
-
+    for anchor in document.select("a.result__a[href]"):
+        url = _decode_redirect(str(anchor.get("href", "")))
+        title = anchor.get_text(" ", strip=True)
+        block = anchor.find_parent(class_="result")
+        snippet = block.select_one(".result__snippet") if block else None
+        if validate_safe_url(url)[0] and title:
+            results.append({"url": url, "title": title,
+                            "snippet": snippet.get_text(" ", strip=True) if snippet else "",
+                            "engine": "duckduckgo"})
     return results
 
 
 def _parse_ddg_lite(html: str) -> list[dict]:
-    """DuckDuckGo Lite parser."""
+    """Parse Lite results, including snippets placed in the following table row."""
+    document = BeautifulSoup(html, "html.parser")
     results = []
-    for row in re.findall(r'<tr[^>]*>[\s\S]*?</tr>', html, re.IGNORECASE):
-        if "result-link" not in row and "result-snippet" not in row:
-            continue
-        url_m = re.search(r'<a[^>]+href="([^"]+)"[^>]*class="[^"]*result-link', row, re.I)
-        if not url_m:
-            continue
-        url = url_m.group(1)
-        title_m = re.search(r'class="[^"]*result-link[^"]*"[^>]*>([\s\S]*?)</a>', row, re.I)
-        title = _strip_html(title_m.group(1)) if title_m else ""
-        snippet_m = re.search(r'class="[^"]*result-snippet[^"]*"[^>]*>([\s\S]*?)</t[dD]', row, re.I)
-        snippet = _strip_html(snippet_m.group(1)) if snippet_m else ""
-        if url and title:
-            results.append({"url": url, "title": title, "snippet": snippet, "engine": "duckduckgo-lite"})
+    for anchor in document.select("a.result-link[href]"):
+        url = _decode_redirect(str(anchor.get("href", "")))
+        title = anchor.get_text(" ", strip=True)
+        row = anchor.find_parent("tr")
+        following = row.find_next_sibling("tr") if row else None
+        snippet = following.select_one(".result-snippet") if following else None
+        if validate_safe_url(url)[0] and title:
+            results.append({"url": url, "title": title,
+                            "snippet": snippet.get_text(" ", strip=True) if snippet else "",
+                            "engine": "duckduckgo-lite"})
     return results
 
 
 def _parse_bing(html: str) -> list[dict]:
-    """Bing parser with multiple fallback patterns."""
+    """Use result anchors; displayed citations can contain spaces and shortened paths."""
     results = []
     seen = set()
-
-    blocks = re.findall(r'<li[^>]*class="[^"]*b_algo[^"]*"[^>]*>[\s\S]*?</li>', html, re.IGNORECASE)
-    if not blocks:
-        blocks = re.findall(r'<div[^>]*class="[^"]*b_algo[^"]*"[^>]*>[\s\S]*?</div>', html, re.IGNORECASE)
-
-    for block in blocks:
-        cite_m = re.search(r'<cite[^>]*>([\s\S]*?)</cite>', block, re.I)
-        cite_text = _strip_html(cite_m.group(1)) if cite_m else ""
-        if cite_text.startswith("http"):
-            url = cite_text.replace("›", "/").replace("&amp;", "&").strip()
-        else:
-            url_m = re.search(r'<a[^>]+href="(https?://[^"]+)"', block, re.I)
-            url = url_m.group(1) if url_m else ""
-            if "/url?q=" in url:
-                try:
-                    url = unquote(url.split("/url?q=")[1].split("&")[0])
-                except Exception:
-                    pass
-
-        title_m = re.search(r'<h2[^>]*>([\s\S]*?)</h2>', block, re.I)
-        title = _strip_html(title_m.group(1)) if title_m else ""
-        snippet_m = re.search(r'<p[^>]*>([\s\S]*?)</p>', block, re.I)
-        snippet = _strip_html(snippet_m.group(1)) if snippet_m else ""
-
-        if url.startswith("http") and title and url not in seen:
+    document = BeautifulSoup(html, "html.parser")
+    for block in document.select("li.b_algo, div.b_algo"):
+        anchor = block.select_one("h2 a[href]")
+        if anchor is None:
+            continue
+        url = _decode_redirect(str(anchor.get("href", "")))
+        title = anchor.get_text(" ", strip=True)
+        paragraph = block.select_one(".b_caption p, p")
+        snippet = paragraph.get_text(" ", strip=True) if paragraph else ""
+        if validate_safe_url(url)[0] and title and url not in seen:
             seen.add(url)
             results.append({"url": url, "title": title, "snippet": snippet, "engine": "bing"})
 
@@ -305,114 +265,92 @@ ENGINES: list[Engine] = [
 _circuit_broken_until: dict[str, float] = {}
 
 
+async def _provider_json(name: str, url: str, *, headers: dict | None = None,
+                         payload: dict | None = None) -> tuple[dict | None, str | None]:
+    """All search providers share the bounded, public-address HTTP guard."""
+    response = await relai_fetch(
+        url, method="POST" if payload is not None else "GET",
+        body=json.dumps(payload) if payload is not None else None,
+        headers={"Accept": "application/json", **({"Content-Type": "application/json"} if payload is not None else {}),
+                 **(headers or {})},
+        timeout_ms=6000, retries=0, cache=False, max_bytes=2_000_000,
+    )
+    if not response.ok:
+        if response.status in {401, 402}:
+            return None, "authentication or account credits required"
+        if response.status == 429:
+            _circuit_broken_until[name] = time.monotonic() + 60
+            return None, "rate limited; trying another provider"
+        if response.blocked:
+            return None, f"provider blocked or challenged the request (HTTP {response.status})"
+        if response.status:
+            return None, f"HTTP {response.status}"
+        return None, "connection failed or the public-address safety check refused the endpoint"
+    try:
+        data = json.loads(response.text)
+    except (ValueError, TypeError):
+        return None, "provider returned invalid JSON"
+    if not isinstance(data, dict):
+        return None, "provider returned an invalid response"
+    return data, None
+
+
+def _api_hits(data: dict, key: str, name: str, limit: int, snippet_key: str) -> dict:
+    rows = data.get(key)
+    if not isinstance(rows, list):
+        return {"hits": [], "error": "provider returned no result list"}
+    return {"hits": [
+        {"url": row.get("url", ""), "title": row.get("title", ""),
+         "snippet": str(row.get(snippet_key) or "")[:1500], "engine": name}
+        for row in rows[:limit] if isinstance(row, dict)
+    ]}
+
+
 async def _tavily_search(query: str, limit: int = 10) -> dict:
     from ..config import get_settings
-
     settings = get_settings()
     if not settings.tavily_api_key:
         return {"hits": [], "error": "TAVILY_API_KEY not set"}
-
-    if _circuit_broken_until.get("tavily", 0) > time.time():
-        return {"hits": [], "error": "tavily: circuit broken (rate limited)"}
-
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.post(
-                "https://api.tavily.com/search",
-                json={"api_key": settings.tavily_api_key, "query": query, "max_results": limit, "include_answer": False},
-            )
-            data = resp.json()
-            if "results" not in data:
-                error = str(data.get("detail", data.get("error", "unknown")))
-                if re.search(r"limit|quota|credit|rate|exceeds", error, re.I):
-                    _circuit_broken_until["tavily"] = time.time() + 60
-                return {"hits": [], "error": error}
-            hits = [
-                {"url": r["url"], "title": r.get("title", ""), "snippet": r.get("content", "")[:300], "engine": "tavily"}
-                for r in data["results"]
-            ]
-            return {"hits": hits}
-    except Exception as e:
-        if re.search(r"limit|quota|credit|rate|exceeds", str(e), re.I):
-            _circuit_broken_until["tavily"] = time.time() + 60
-        return {"hits": [], "error": str(e)}
+    if _circuit_broken_until.get("tavily", 0) > time.monotonic():
+        return {"hits": [], "error": "temporarily rate limited"}
+    data, error = await _provider_json("tavily", "https://api.tavily.com/search", payload={
+        "api_key": settings.tavily_api_key, "query": query, "max_results": min(limit, 20), "include_answer": False,
+    })
+    return {"hits": [], "error": error} if error else _api_hits(data, "results", "tavily", limit, "content")
 
 
 async def _exa_search(query: str, limit: int = 10) -> dict:
     from ..config import get_settings
-
     settings = get_settings()
     if not settings.exa_api_key:
         return {"hits": [], "error": "EXA_API_KEY not set"}
-
-    if _circuit_broken_until.get("exa", 0) > time.time():
-        return {"hits": [], "error": "exa: circuit broken (rate limited)"}
-
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.post(
-                "https://api.exa.ai/search",
-                headers={"x-api-key": settings.exa_api_key, "Content-Type": "application/json"},
-                json={"query": query, "numResults": limit, "type": "neural", "contents": {"text": True}},
-            )
-            data = resp.json()
-            if "results" not in data:
-                error = str(data.get("error", "unknown"))
-                if re.search(r"limit|quota|credit|rate|exceeds|429", error, re.I):
-                    _circuit_broken_until["exa"] = time.time() + 60
-                return {"hits": [], "error": error}
-            hits = [
-                {"url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("text", "")[:300], "engine": "exa"}
-                for r in data["results"]
-            ]
-            return {"hits": hits}
-    except Exception as e:
-        if re.search(r"limit|quota|credit|rate|exceeds|429", str(e), re.I):
-            _circuit_broken_until["exa"] = time.time() + 60
-        return {"hits": [], "error": str(e)}
+    if _circuit_broken_until.get("exa", 0) > time.monotonic():
+        return {"hits": [], "error": "temporarily rate limited"}
+    data, error = await _provider_json("exa", "https://api.exa.ai/search",
+        headers={"x-api-key": settings.exa_api_key}, payload={
+            "query": query, "numResults": limit, "type": "neural", "contents": {"text": True},
+        })
+    return {"hits": [], "error": error} if error else _api_hits(data, "results", "exa", limit, "text")
 
 
 async def _searxng_search(query: str, limit: int = 10) -> dict:
     from ..config import get_settings
-
     settings = get_settings()
     if not settings.searxng_base_url:
         return {"hits": [], "error": "SEARXNG_BASE_URL not set"}
-
-    try:
-        url = f"{settings.searxng_base_url.rstrip('/')}/search?q={quote_plus(query)}&format=json&categories=general"
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.get(url)
-            data = resp.json()
-            hits = [
-                {"url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("content", "")[:300], "engine": "searxng"}
-                for r in data.get("results", [])[:limit]
-            ]
-            return {"hits": hits}
-    except Exception as e:
-        return {"hits": [], "error": str(e)}
+    url = f"{settings.searxng_base_url.rstrip('/')}/search?q={quote_plus(query)}&format=json&categories=general"
+    data, error = await _provider_json("searxng", url)
+    return {"hits": [], "error": error} if error else _api_hits(data, "results", "searxng", limit, "content")
 
 
 async def _jina_search(query: str, limit: int = 10) -> dict:
     from ..config import get_settings
-
     settings = get_settings()
-    try:
-        url = f"https://s.jina.ai/{quote_plus(query)}"
-        headers = {"Accept": "application/json"}
-        if settings.jina_api_key:
-            headers["Authorization"] = f"Bearer {settings.jina_api_key}"
-
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.get(url, headers=headers)
-            data = resp.json()
-            hits = [
-                {"url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("content", "")[:300], "engine": "jina"}
-                for r in data.get("data", [])[:limit]
-            ]
-            return {"hits": hits}
-    except Exception as e:
-        return {"hits": [], "error": str(e)}
+    if not settings.jina_api_key:
+        return {"hits": [], "error": "JINA_API_KEY not set"}
+    data, error = await _provider_json("jina", f"https://s.jina.ai/{quote_plus(query)}",
+        headers={"Authorization": f"Bearer {settings.jina_api_key}"})
+    return {"hits": [], "error": error} if error else _api_hits(data, "data", "jina", limit, "content")
 
 
 # ── Bing Rate Gate ────────────────────────────────────────────────────
@@ -432,6 +370,30 @@ async def _bing_gate() -> None:
 # ── Main Search Function ──────────────────────────────────────────────
 
 
+SEARCH_TIMEOUT_SECONDS = 20.0
+AGGREGATE_TIMEOUT_SECONDS = 45.0
+PROVIDER_TIMEOUT_SECONDS = 6.0
+
+
+def _usable_hits(rows: object, provider: str) -> list[dict]:
+    """Normalize provider output to the desktop/API result contract."""
+    if not isinstance(rows, list):
+        return []
+    hits = []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("url"), str):
+            continue
+        url = _decode_redirect(row["url"].strip())
+        if len(url) > 4096 or not validate_safe_url(url)[0]:
+            continue
+        title = _strip_html(str(row.get("title") or ""))[:500]
+        if not title:
+            title = urlparse(url).hostname or url
+        hits.append({"url": url, "title": title,
+                     "snippet": _strip_html(str(row.get("snippet") or ""))[:1500], "engine": provider})
+    return hits
+
+
 async def relai_search(
     query: str,
     *,
@@ -442,117 +404,112 @@ async def relai_search(
     page: int = 1,
     aggregate: bool = False,
 ) -> dict:
-    """Public web search. Tries engines in succession with hard timeout."""
-    q = f"site:{site} {query}" if site else query
+    """Return genuine public results with bounded provider fallbacks and diagnostics."""
+    if not query.strip():
+        raise ValueError("Enter a search query first.")
+    search_query = f"site:{site} {query.strip()}" if site else query.strip()
     limit = min(max(limit, 1), 60)
     page = max(page, 1)
+    if mode == "news" and "after:" not in search_query and "before:" not in search_query:
+        recent = datetime.now(timezone.utc) - timedelta(days=365)
+        search_query += f" after:{recent.date().isoformat()}"
 
-    search_query = q
-    if mode == "news" and "after:" not in q and "before:" not in q:
-        search_query = q + " after:2025-01-01"
-
-    seen: set[str] = set()
     all_hits: list[dict] = []
+    seen: set[str] = set()
     errors: list[str] = []
+    attempted: list[str] = []
+    loop = asyncio.get_running_loop()
+    budget = AGGREGATE_TIMEOUT_SECONDS if aggregate else SEARCH_TIMEOUT_SECONDS
+    deadline = loop.time() + budget
 
-    budget_ms = 45_000 if aggregate else 20_000
-    search_start = time.time()
-
-    # Build provider list: API providers first, then HTML engines
-    from ..config import get_settings
-
-    settings = get_settings()
-    api_providers: list[tuple[str, callable]] = []
-    if settings.tavily_api_key:
-        api_providers.append(("tavily", _tavily_search))
-    if settings.exa_api_key:
-        api_providers.append(("exa", _exa_search))
-    if settings.searxng_base_url:
-        api_providers.append(("searxng", _searxng_search))
-    api_providers.append(("jina", _jina_search))
-
-    # Run API providers first
-    for name, search_fn in api_providers:
-        if (time.time() - search_start) * 1000 > budget_ms:
-            break
-        if not aggregate and len(all_hits) >= limit:
-            break
-
-        try:
-            result = await asyncio.wait_for(search_fn(search_query, limit), timeout=10)
-        except asyncio.TimeoutError:
-            errors.append(f"{name}: timed out")
-            continue
-        except Exception as e:
-            errors.append(f"{name}: {str(e)[:100]}")
-            continue
-
-        hits = result.get("hits", [])
-        error = result.get("error")
-        if error:
-            errors.append(error)
-        if not hits and not error:
-            continue
-
+    def record(name: str, result: dict):
+        hits = _usable_hits(result.get("hits"), name)
+        if result.get("error"):
+            errors.append(f"{name}: {result['error']}")
+        elif not hits:
+            errors.append(f"{name}: no usable results returned")
         for hit in hits:
-            key = hit["url"].split("#")[0]
-            if key in seen:
-                continue
-            seen.add(key)
-            all_hits.append(hit)
-            if not aggregate and len(all_hits) >= limit:
-                break
+            key = hit["url"].split("#", 1)[0]
+            if key not in seen:
+                seen.add(key)
+                all_hits.append(hit)
 
-        if not aggregate and all_hits:
-            return {"hits": all_hits[:limit], "engine": name, "query": search_query, "tried": len(all_hits), "errors": errors}
+    def finish() -> dict:
+        hits = all_hits[:limit]
+        return {
+            "hits": hits, "engine": hits[0]["engine"] if hits else "none",
+            "query": search_query,
+            # Existing route_search uses this legacy field to detect an empty result.
+            "tried": len(hits), "attempts": len(attempted), "attempted_providers": attempted,
+            "errors": errors, "status": "complete" if hits else "unavailable", "blocked": not hits,
+            "message": (f"Found {len(hits)} sources." if hits else
+                        "No search provider returned usable results. Try again or configure a search API provider."),
+        }
 
-    # Run HTML engines
-    html_timeout = 8_000 if aggregate else 10_000
-    for engine in ENGINES:
-        if (time.time() - search_start) * 1000 > budget_ms:
+    from ..config import get_settings
+    settings = get_settings()
+    providers = []
+    for configured, name, search_fn in (
+        (settings.tavily_api_key, "tavily", _tavily_search),
+        (settings.exa_api_key, "exa", _exa_search),
+        (settings.searxng_base_url, "searxng", _searxng_search),
+        (settings.jina_api_key, "jina", _jina_search),
+    ):
+        if configured:
+            providers.append((name, search_fn))
+
+    # Reserve at least half the total budget for public HTML fallback. A slow or
+    # misconfigured API must not prevent the keyless path from being attempted.
+    api_deadline = loop.time() + budget / 2
+    for name, search_fn in providers:
+        remaining = min(deadline, api_deadline) - loop.time()
+        if remaining <= 0:
             break
-        if not aggregate and len(all_hits) >= limit:
-            break
+        attempted.append(name)
+        try:
+            result = await asyncio.wait_for(search_fn(search_query, limit),
+                                            timeout=min(PROVIDER_TIMEOUT_SECONDS, remaining))
+            record(name, result)
+        except TimeoutError:
+            errors.append(f"{name}: timed out")
+        except Exception as exc:
+            # Provider exception strings can include URLs or API credentials.
+            errors.append(f"{name}: request failed ({type(exc).__name__})")
+        if all_hits and not aggregate:
+            return finish()
 
+    async def html_search(engine: Engine) -> dict:
         if engine.name == "bing":
             await _bing_gate()
+        response = await relai_fetch(engine.build_url(search_query, page),
+                                     timeout_ms=int(PROVIDER_TIMEOUT_SECONDS * 1000),
+                                     retries=0, cache=False, max_bytes=2_000_000)
+        if not response.ok:
+            if response.blocked:
+                error = f"provider blocked or challenged the request (HTTP {response.status})"
+            elif response.status:
+                error = f"HTTP {response.status}"
+            else:
+                error = "connection failed or public-address safety check refused the endpoint"
+            return {"hits": [], "error": error}
+        return {"hits": engine.parse(response.text)}
 
-        url = engine.build_url(search_query, page)
+    for engine in ENGINES:
+        remaining = deadline - loop.time()
+        if remaining <= 0:
+            errors.append("Search time budget reached; remaining providers were not attempted")
+            break
+        attempted.append(engine.name)
         try:
-            result = await relai_fetch(url, timeout_ms=html_timeout, retries=1 if aggregate else 2, cache=False)
-        except Exception as e:
-            errors.append(f"{engine.name}: {str(e)[:100]}")
-            continue
-
-        if not result.ok or not result.text:
-            error_msg = result.error or f"HTTP {result.status or 'no response'}"
-            errors.append(f"{engine.name}: {error_msg}")
-            continue
-        if len(result.text) < 100:
-            errors.append(f"{engine.name}: response too short ({len(result.text)} chars)")
-            continue
-
-        hits = engine.parse(result.text)
-        if not hits:
-            errors.append(f"{engine.name}: parsed 0 results from {len(result.text)} chars")
-            continue
-
-        for hit in hits:
-            key = hit["url"].split("#")[0]
-            if key in seen:
-                continue
-            seen.add(key)
-            all_hits.append(hit)
-            if not aggregate and len(all_hits) >= limit:
-                break
-
-        if not aggregate and all_hits:
-            return {"hits": all_hits[:limit], "engine": engine.name, "query": search_query, "tried": len(all_hits), "errors": errors}
-
-    return {
-        "hits": all_hits[:limit] if aggregate else all_hits,
-        "engine": all_hits[0]["engine"] if all_hits else "none",
-        "query": search_query,
-        "tried": len(all_hits),
-        "errors": errors or ["All engines returned no results"],
-    }
+            result = await asyncio.wait_for(html_search(engine),
+                                            timeout=min(PROVIDER_TIMEOUT_SECONDS, remaining))
+            record(engine.name, result)
+        except TimeoutError:
+            errors.append(f"{engine.name}: timed out")
+        except Exception as exc:
+            errors.append(f"{engine.name}: request failed ({type(exc).__name__})")
+        if all_hits and not aggregate:
+            break
+    if not all_hits and not errors:
+        errors.append("No search providers were available")
+    return finish()
