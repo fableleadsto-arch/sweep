@@ -221,6 +221,8 @@ class OllamaProvider(BaseProvider):
             prompt_parts.append(f"<{msg.get('role', 'user')}>\n{msg.get('content', '')}\n</{msg.get('role', 'user')}>")
         payload: dict[str, Any] = {
             "model": self.settings.ollama_model,
+            "think": False,
+            "keep_alive": "1m",
             "prompt": "\n".join(prompt_parts),
             "stream": False,
             "options": {"temperature": temperature, "num_predict": max_tokens},
@@ -229,7 +231,7 @@ class OllamaProvider(BaseProvider):
             payload["format"] = "json"
 
         own_client = client is None
-        client = client or httpx.AsyncClient(timeout=self.settings.request_timeout_seconds)
+        client = client or httpx.AsyncClient(timeout=self.settings.request_timeout_seconds, trust_env=False, follow_redirects=False)
         try:
             resp = await client.post(
                 f"{self.settings.ollama_base_url}/api/generate", json=payload

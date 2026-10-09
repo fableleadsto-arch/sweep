@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import httpx
 
 from companion.config import BrainSettings
-from companion.providers import GeminiProvider, ProviderChain
+from companion.providers import GeminiProvider, OllamaProvider, ProviderChain
 
 
 def _run(coro):
@@ -68,3 +69,37 @@ def test_chain_skips_unavailable_providers(settings: BrainSettings) -> None:
         "ollama": True,  # default base url
         "anthropic": False,
     }
+
+
+def test_local_inference_disables_proxies_redirects_and_thinking(settings, monkeypatch):
+    """Use the configured CPU timeout without sending local prompts through proxies."""
+    options = []
+    sent = []
+    original_client = httpx.AsyncClient
+
+    def respond(request):
+        sent.append(request)
+        assert request.url == "http://127.0.0.1:11434/api/generate"
+        payload = json.loads(request.content)
+        assert payload["think"] is False
+        assert payload["keep_alive"] == "1m"
+        assert payload["stream"] is False
+        assert payload["options"]["num_predict"] == 600
+        assert payload["model"] == "downloaded:3b"
+        assert "A private local question" in payload["prompt"]
+        return httpx.Response(200, json={"response": "A local answer", "model": "downloaded:3b", "prompt_eval_count": 20, "eval_count": 3})
+
+    def client(**kwargs):
+        options.append(kwargs)
+        return original_client(transport=httpx.MockTransport(respond), **kwargs)
+
+    monkeypatch.setattr(httpx, "AsyncClient", client)
+    provider = OllamaProvider(settings.model_copy(update={
+        "ollama_base_url": "http://127.0.0.1:11434", "ollama_model": "downloaded:3b", "request_timeout_seconds": 180,
+    }))
+    result = _run(provider.generate(system="test", messages=[{"role": "user", "content": "A private local question"}], max_tokens=600, json_mode=False))
+    assert len(sent) == 1
+    assert options == [{"timeout": 180, "trust_env": False, "follow_redirects": False}]
+    assert result.text == "A local answer"
+    assert result.prompt_tokens == 20
+    assert result.completion_tokens == 3
