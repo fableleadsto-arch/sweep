@@ -54,8 +54,10 @@ Optional extras can be installed with
 | Web search | `python -m sweep.launcher search "query"` | Internet; optional provider keys |
 | Extract public-page text, metadata and links to JSON | `python -m sweep.launcher scrape URL` | Base dependencies and internet |
 | Bounded research with source/evidence collection | `python -m sweep.launcher research "topic"` | Search access; heuristic evidence collection |
-| Conversation and image questions in the dock | Type or attach an image in Sweep | Configure an installed Ollama model or supported cloud provider in Settings |
+| Local conversation and image questions in the dock | Type or attach an image in Sweep | Installed local engine and compatible downloaded models; no cloud fallback |
 | Image metadata and visible-text recognition | Attach an image and ask `inspect locally` | Desktop setup; Windows OCR language support or installed Tesseract |
+| Document reading and local questions | Attach PDF, DOCX or plain text in the dock | Desktop setup; local chat model for summaries/questions |
+| Data profiles, cleaning, filtering, deduplication and conversion | Attach CSV, TSV, JSON, JSONL or standalone SQLite | Bounded local processing; transformations create separate output artifacts |
 | Web API for your tools | `python -m sweep.launcher serve web` | Base dependencies |
 | Companion planning, memory, provider/tool APIs | `python -m sweep.launcher serve companion` | Some endpoints need configured providers or optional libraries |
 | Model-backed chat | `python -m sweep_neural_mesh.chat --no-shell` | Optional AI dependencies and compatible model assets; may download a model |
@@ -64,19 +66,25 @@ Optional extras can be installed with
 Try `open YouTube in Brave`, `search Python documentation`, `scrape https://example.com`,
 or attach an image and ask about its visible content. Website names resolve to
 URLs, and an explicitly requested browser is used if installed. Ordinary messages
-go to the configured chat model; model-suggested actions appear for review.
+run locally; suggested actions appear for review. Try `clean this dataset` or
+`filter where age >= 18 and export to JSON` with a dataset attached. The original
+file stays unchanged, and the output appears as a downloadable file card.
 
-For local image understanding, install an image-capable Ollama model such as the
-selected `qwen3-vl:2b`, then set **Image provider** to **Ollama** and **Image-capable
-model** to that name. [Desktop setup instructions](docs/DESKTOP.md#local-chat-and-image-understanding)
-cover model installation and provider settings. The Sweep installer does not
-bundle or automatically download model weights.
+The desktop enforces local-only inference even if old cloud settings or API keys
+exist. Remote model aliases and non-loopback inference endpoints are rejected.
+Requested web research and browser tasks still access public websites.
+[Desktop setup instructions](docs/DESKTOP.md#local-chat-and-image-understanding)
+cover installation of the local runtime and model selection under **Settings →
+Advanced local settings**. The Sweep installer does not bundle or automatically
+download model weights.
 
 Sweep does not yet perform every computer task or provide general intelligence.
-Voice, video tracking, broad document models and training remain separate optional
+Voice, video tracking, geospatial analysis and training remain separate optional
 components. The dock supports public-profile searches using a supplied name or
 handle; it does not identify people or match social accounts from a face. Image
 location suggestions are hypotheses, and embedded GPS metadata is unverified.
+See the [full product requirements audit](docs/PRODUCT_REQUIREMENTS.md) for the
+original feature set, actual reusable modules and remaining integration work.
 
 ## Local APIs and configuration
 

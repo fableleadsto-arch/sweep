@@ -4,9 +4,16 @@ import time
 import pytest
 
 pytest.importorskip("PySide6")
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QUrl
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QTableWidget,
+)
 
 from sweep.desktop.chat import ChatStore, understand, validate_proposal
 from sweep.desktop.dock import DockWindow
@@ -192,3 +199,34 @@ def test_new_answers_scroll_into_view_without_moving_a_reader(dock):
     window.refresh_chat()
     app.processEvents()
     assert bar.value() == 0
+
+
+def test_chat_cleans_data_in_worker_and_previews_created_artifact(dock, tmp_path, monkeypatch):
+    app, window = dock
+    selected = tmp_path / "observations.csv"
+    original = "name,total\n  Alpha  ,3\nAlpha,3\nBeta,7\n,\n"
+    selected.write_text(original, encoding="utf-8")
+    monkeypatch.setattr(QMessageBox, "exec", lambda dialog: QMessageBox.StandardButton.Yes)
+    window.set_attachment(selected)
+    window.prompt.setPlainText("Clean this dataset and save as JSON")
+    window.submit()
+    finish(app, window)
+    task = window.task_store.get(window.last_enqueued_id)
+    assert task["capability"] == "data.transform" and task["state"] == "completed"
+    result = json.loads((window.task_store.directory(task["id"]) / "result.json").read_text(encoding="utf-8"))
+    assert result["input_rows"] == 4 and result["output_rows"] == 2
+    assert selected.read_text(encoding="utf-8") == original
+    assert window.transcript.findChild(QTableWidget) is not None
+    assert any(button.text() == "View file ↗" for button in window.transcript.findChildren(QPushButton))
+    seen = []
+
+    def inspect(dialog):
+        preview = dialog.findChild(QPlainTextEdit)
+        assert preview.isReadOnly()
+        assert json.loads(preview.toPlainText()) == [{"name": "Alpha", "total": "3"}, {"name": "Beta", "total": "7"}]
+        seen.append(True)
+        return QDialog.DialogCode.Rejected
+
+    monkeypatch.setattr(QDialog, "exec", inspect)
+    window.chat_link(QUrl(f"sweep:artifact/{task['id']}/0"))
+    assert seen
