@@ -190,7 +190,7 @@ async def process_hit(session_id: str, hit: SearchResult):
 
     source = Source(
         title=hit.title, url=hit.url, access_mode=hit.access_mode,
-        retrieved_at=time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        retrieved_at=datetime.now(timezone.utc).isoformat(),
     )
     score = score_source(source, session.objective)
     source.score = score

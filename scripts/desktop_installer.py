@@ -146,7 +146,7 @@ def main():
     frame.pack(fill="both", expand=True)
     ttk.Label(frame, text="Meet Sweep.", font=("Segoe UI", 25, "bold")).pack(anchor="w")
     ttk.Label(frame, text="Your desktop companion for research, files and everyday tasks.", wraplength=510).pack(anchor="w", pady=12)
-    ttk.Label(frame, text="Installs for your Windows account. Python is included.\nNo browser, administrator account or model download is required.", wraplength=510).pack(anchor="w", pady=8)
+    ttk.Label(frame, text="Installs for your Windows account. Python is included.\nChat and image understanding use separately installed local models.", wraplength=510).pack(anchor="w", pady=8)
     desktop = tk.BooleanVar(value=False)
     ttk.Checkbutton(frame, text="Create a desktop shortcut", variable=desktop).pack(anchor="w", pady=12)
     status = tk.StringVar(value="Ready to install in LocalAppData\\Programs\\Sweep")

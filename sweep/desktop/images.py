@@ -310,9 +310,11 @@ async def analyze_image(
                         content.extend(chunk)
             data = json.loads(content)
             answer = _answer(provider, data)
-            report["analysis"] = {"status": "completed", "text": answer[:40_000],
+            partial = data.get("done_reason") == "length"
+            report["analysis"] = {"status": "partial" if partial else "completed", "text": answer[:40_000],
                 "provider": provider, "model": model, "source": "Model interpretation of a resized image with embedded metadata removed.",
-                "message": "Visual interpretation can be mistaken; location suggestions are unverified hypotheses."}
+                "message": ("The local answer reached its output limit and is incomplete. Try a shorter question or an instruction model in advanced settings. " if partial else "")
+                           + "Visual interpretation can be mistaken; location suggestions are unverified hypotheses."}
             report["transmission"]["status"] = "completed"
         except httpx.HTTPStatusError as exc:
             status = exc.response.status_code

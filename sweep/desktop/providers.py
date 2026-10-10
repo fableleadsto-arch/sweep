@@ -242,7 +242,8 @@ async def start_local_server(root: Path) -> dict:
     raise RuntimeError("Local intelligence did not become ready. Check the local engine in advanced settings.")
 
 
-async def generate_chat(root: Path, *, system: str, messages: list[dict], json_mode: bool = False) -> ProviderResult:
+async def generate_chat(root: Path, *, system: str, messages: list[dict], json_mode: bool = False,
+                        on_preview=None) -> ProviderResult:
     """Generate locally; never fall back to a remote service."""
     settings = resolve_settings(root)
     config = load_config(root)
@@ -275,6 +276,10 @@ async def generate_chat(root: Path, *, system: str, messages: list[dict], json_m
     timeout = 180
     try:
         async with asyncio.timeout(timeout):
+            if on_preview is not None:
+                from .local_stream import stream_chat
+                return await stream_chat(settings, system=system, messages=list(reversed(bounded)),
+                                         json_mode=json_mode, on_preview=on_preview)
             return await ProviderChain(settings).generate(
                 system=system, messages=list(reversed(bounded)), json_mode=json_mode, max_tokens=600,
                 preferred="ollama",

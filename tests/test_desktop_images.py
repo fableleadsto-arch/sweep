@@ -46,7 +46,8 @@ def test_face_account_matching_is_not_sent_to_any_provider(sample, monkeypatch):
     assert result["analysis"]["status"] == "unsupported"
 
 
-def test_approved_local_image_analysis_verifies_model_before_sending_pixels(sample, monkeypatch):
+@pytest.mark.parametrize("reason,status", [("stop", "completed"), ("length", "partial")])
+def test_approved_local_image_analysis_verifies_model_before_sending_pixels(sample, monkeypatch, reason, status):
     sent = []
     client_options = []
     original_client = httpx.AsyncClient
@@ -58,7 +59,7 @@ def test_approved_local_image_analysis_verifies_model_before_sending_pixels(samp
             assert json.loads(request.content) == {"model": "image-model"}
             return httpx.Response(200, json={"model_info": {"general.architecture": "qwen"}, "capabilities": ["completion", "vision"]})
         assert [item.url.path for item in sent] == ["/api/show", "/api/chat"]
-        return httpx.Response(200, json={"message": {"content": "A green rectangle."}})
+        return httpx.Response(200, json={"message": {"content": "A green rectangle."}, "done_reason": reason})
 
     def client(**kwargs):
         client_options.append(kwargs)
@@ -67,7 +68,8 @@ def test_approved_local_image_analysis_verifies_model_before_sending_pixels(samp
     monkeypatch.setattr(httpx, "AsyncClient", client)
     result = asyncio.run(images.analyze_image(str(sample), [str(sample)], "Describe the shapes", upload_approved=True,
         model="image-model", base_url="http://127.0.0.1:11434", api_key="test-not-real"))
-    assert result["analysis"]["status"] == "completed"
+    assert result["analysis"]["status"] == status
+    assert ("incomplete" in result["analysis"]["message"]) == (status == "partial")
     assert result["analysis"]["text"] == "A green rectangle."
     assert result["transmission"]["embedded_metadata_included"] is False
     assert result["transmission"]["execution"] == "local"

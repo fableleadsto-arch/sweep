@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECORDED_DISTRIBUTIONS = (
     "PySide6-Essentials", "shiboken6", "pyinstaller", "httpx", "httpcore", "h11",
     "certifi", "anyio", "pydantic", "pydantic-settings", "python-dotenv",
-    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow",
+    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow", "pypdf",
 )
 
 
@@ -113,7 +113,7 @@ def main(argv=None):
                "--collect-data", "trafilatura", "--collect-data", "courlan", "--collect-data", "tld",
                "--collect-data", "justext"]
     for module in ("torch", "tensorflow", "transformers", "sentence_transformers", "companion.vendor",
-                   "sweep_neural_mesh", "sweep_cognitive", "cognition", "pandas", "scipy", "sklearn",
+                   "sweep_neural_mesh", "sweep_cognitive", "pandas", "scipy", "sklearn",
                    "numpy", "matplotlib", "IPython", "pytest", "PySide6.QtQml", "PySide6.QtQuick"):
         command.extend(["--exclude-module", module])
     command.append(str(ROOT / "scripts" / "desktop_entry.py"))

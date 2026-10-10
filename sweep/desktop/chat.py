@@ -18,9 +18,20 @@ def understand(text: str, attachments: list[str] | None = None) -> tuple[str, st
     if not original:
         raise ValueError("Write a message or attach a file first.")
     if attachments:
+        from .data_tools import DATA_SUFFIXES, DOCUMENT_SUFFIXES, parse_data_request
         suffix = Path(attachments[0]).suffix.lower()
+        if suffix in DATA_SUFFIXES:
+            try:
+                operation = parse_data_request(original)["operation"]
+            except ValueError as exc:
+                return "chat.clarify", str(exc)
+            return ("data.inspect" if operation == "inspect" else "data.transform"), original
+        if suffix in DOCUMENT_SUFFIXES:
+            return "documents.inspect", original
         return ("images.inspect" if suffix in {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
                 else "files.inspect"), original
+    if re.search(r"\b(?:this|that|attached) (?:document|pdf|csv|dataset|spreadsheet|data file)\b", core, re.I):
+        return "chat.clarify", "Attach the document or data file here. I can read PDF, DOCX and text, or inspect, clean, filter and convert supported data files locally."
     if re.search(r"\b(?:this|that) (?:image|photo|picture|screenshot)\b", core, re.I):
         return "chat.clarify", "Attach the image here so I can inspect it. You can then ask about its text, metadata, objects or location clues."
     if re.search(r"\b(?:this|that) (?:person(?:'s|s)?|man|woman|face)\b", core, re.I) and re.search(r"social|profile|identity|who|find", core, re.I):
