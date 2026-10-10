@@ -1,6 +1,6 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-10. Baseline: `bbe93ade1`, with the current local desktop changes
+Audit date: 2026-10-10. Baseline: `b4b338ec1`, with the current local desktop changes
 identified below. This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
 product backlog and release checklist, not a claim that every listed feature ships.
@@ -39,7 +39,7 @@ ordinary tables. Transformations create a new task-owned artifact, not an edited
 input. Generated SQL, joins, imputation, Excel/Parquet and arbitrary data code are
 not implemented by these routes.
 
-The data adapter's 92 passing checks cover actual document/data inputs, source
+The data adapter's 94 passing checks cover actual document/data inputs, source
 preservation, output round trips, path grants, malformed files, bounded PDF
 decompression and SQLite schema hazards; one Windows symlink check is skipped
 when the OS cannot create the fixture. Runtime/chat integration checks and a real

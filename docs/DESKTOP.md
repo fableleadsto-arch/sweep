@@ -44,9 +44,9 @@ upgrading or uninstalling.
   completed tool results. Context is captured when a message is submitted.
 - Continue sending while a task runs to add requests to the queue. Up to 50 tasks
   can wait; one worker runs at a time. Waiting actions receive permission checks
-  when dispatched. Use the inline **Cancel waiting task** link or **Stop** for the
+  when dispatched. Use the inline **Remove from queue** link or **Stop** for the
   active worker. Completed actions cannot be undone, and launched apps may remain open.
-- Results include source links and inline **Export result** and **Retry** actions.
+- Results include source links and inline **Export result** and **Try again** actions.
   Research also saves a readable Markdown report and a JSON evidence graph, with
   actual excerpts, source URLs, recorded timestamps and unresolved work. Open their
   file cards to preview or save a copy. These records do not verify every source claim.
@@ -95,8 +95,10 @@ do not carry it.
 
 ## Local chat and image understanding
 
-The current local runtime adapter uses Ollama. Install it separately if it is not
-already installed, then explicitly download a chat model and image-capable model:
+The current local runtime adapter uses Ollama. If it is not already installed,
+open the [official Windows download page](https://ollama.com/download/windows),
+choose the manual download and run its installer. Then open a new PowerShell
+window and explicitly download a chat model and image-capable model:
 
 ```powershell
 ollama pull qwen2.5-coder:3b
@@ -154,8 +156,11 @@ represent those cells as JSON text. CSV formula-like text is retained as data an
 is not automatically opened in a spreadsheet application.
 
 Limits are 20 MB per input/output, 20,000 data rows, 128 columns, 40,000 characters
-per cell, and 80,000 characters of document text. Data previews show 30 rows. PDF
-extraction reads at most 100 pages and reports truncation. Scanned PDFs without
+per cell, and 80,000 characters of document text. Result previews contain at most
+30 rows; the inline dock table displays up to 15. Preview cells and profile details
+are also limited by display size, with truncation disclosed. These display limits
+do not shorten exported data. PDF extraction reads at most 100 pages and reports
+truncation. Scanned PDFs without
 selectable text need page OCR, which is not integrated yet. DOCX reading covers
 body paragraphs and table text; headers, tracked changes and layout are not a
 faithful document rendering.
