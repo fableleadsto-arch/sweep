@@ -1,12 +1,37 @@
 import os
 import subprocess
 import sys
+import tempfile
 import time
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from sweep.desktop import __main__ as desktop
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows native Qt release lifecycle")
+def test_native_smoke_launch_exits_and_releases_its_instance_lock():
+    pytest.importorskip("PySide6.QtWidgets")
+    # The smoke check must exercise the real dock close handler and event loop,
+    # not a mocked QApplication or a hidden/offscreen platform plugin.
+    with tempfile.TemporaryDirectory(prefix="sweep-native-smoke-") as temporary:
+        directory = Path(temporary)
+        profile = directory / "profile"
+        environment = os.environ.copy()
+        environment.update(SWEEP_DESKTOP_DIR=str(profile),
+                           SWEEP_CONTROLLER_DIR=str(directory / "controller"),
+                           PYTHONPATH=str(Path(__file__).resolve().parents[1]),
+                           QT_QPA_PLATFORM="windows")
+        process = subprocess.run([sys.executable, "-m", "sweep.desktop", "--smoke-test"],
+            cwd=directory, env=environment, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=20,
+            creationflags=subprocess.CREATE_NO_WINDOW)
+        assert process.returncode == 0, process.stdout + process.stderr
+        assert (profile / "desktop.ini").exists(), "The native dock did not initialize"
+        assert not (profile / "desktop.lock").exists(), "The smoke launch left its instance lock"
+        assert not (profile / "startup-error.log").exists()
 
 
 def test_instance_name_is_stable_normalized_and_bounded(tmp_path):

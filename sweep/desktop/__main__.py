@@ -157,7 +157,9 @@ def main(argv=None):
         server.newConnection.connect(lambda: accept_instance_connections(server, window.reveal))
         window.show()
         if args.smoke_test:
-            QTimer.singleShot(1000, app.quit)
+            # The dock normally ignores window close to stay in the tray. Use
+            # its explicit quit lifecycle so the smoke process really exits.
+            QTimer.singleShot(1000, window.quit_app)
         return app.exec()
     finally:
         try:
