@@ -42,6 +42,47 @@ def test_csv_profile_has_real_statistics_and_bounded_preview(csv_file):
     assert csv_file.read_bytes() == before
 
 
+def test_wide_unicode_preview_and_profile_fit_worker_event_without_changing_export(tmp_path):
+    names = [f"{index:03d}" + "🧭" * 247 for index in range(128)]
+    records = [{name: "🌏" * 3000 + str(row) for name in names} for row in range(5)]
+    records[1][names[-1]] = None
+    records.append(dict(records[0]))
+    source = tmp_path / "wide-unicode.json"
+    original = json.dumps(records, ensure_ascii=False).encode("utf-8")
+    assert len(original) < data.MAX_BYTES
+    source.write_bytes(original)
+
+    result = process(source, "convert to json", tmp_path)
+    assert len(json.dumps(result).encode("utf-8")) < 850_000
+    assert len(json.dumps({key: result[key] for key in ("columns", "rows")}).encode("utf-8")) <= 120_000
+    assert len(json.dumps(result["profile"]).encode("utf-8")) <= 550_000
+    assert result["rows"] and result["columns"]
+    assert all(len(cell) <= 120 for row in result["rows"] for cell in row if isinstance(cell, str))
+    assert all(name in names for name in result["columns"])
+    assert result["preview"]["truncated"] is True
+    assert result["preview"]["cells_clipped"] > 0
+    assert result["profile"]["truncated"] is True
+    assert result["profile"]["omitted_column_details"] > 0
+    assert result["profile"]["rows"] == 6
+    assert result["profile"]["columns"] == 128
+    assert result["profile"]["duplicate_rows"] == 1
+    assert result["profile"]["missing_cells"] == 1
+    assert "column profiles omitted" in result["message"]
+    artifact = Path(result["artifacts"][0]["path"])
+    assert json.loads(artifact.read_text(encoding="utf-8")) == records
+    assert source.read_bytes() == original
+
+
+def test_long_structured_cells_are_clipped_only_in_display(tmp_path):
+    records = [{"nested": {"value": "x" * 1000}, "list": ["y" * 1000]}]
+    source = tmp_path / "nested-display.json"
+    source.write_text(json.dumps(records), encoding="utf-8")
+    result = process(source, "convert to json", tmp_path)
+    assert result["preview"]["cells_clipped"] == 2
+    assert all(len(cell) == 120 and cell.endswith("…") for cell in result["rows"][0])
+    assert json.loads(Path(result["artifacts"][0]["path"]).read_text(encoding="utf-8")) == records
+
+
 def test_exact_file_grant_required_for_inspection_and_transformation(csv_file, tmp_path):
     for grants in ([], [str(tmp_path)], [str(tmp_path / "another.csv")]):
         with pytest.raises(PermissionError, match="Attach this file"):

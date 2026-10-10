@@ -30,6 +30,9 @@ MAX_COLUMNS = 128
 MAX_TEXT = 80_000
 MAX_CELL = 40_000
 MAX_SECONDS = 15
+MAX_PREVIEW_BYTES = 120_000
+MAX_PROFILE_BYTES = 550_000
+MAX_DISPLAY_CHARS = 120
 DATA_SUFFIXES = frozenset({".csv", ".tsv", ".json", ".jsonl", ".ndjson", ".sqlite", ".sqlite3", ".db"})
 DOCUMENT_SUFFIXES = frozenset({".pdf", ".docx", ".txt", ".md", ".log", ".xml", ".yaml", ".yml", ".py"})
 _DEDUPLICATE = r"deduplicat\w*|(?:remove|drop) duplicate(?:s| rows)"
@@ -383,10 +386,80 @@ def _profile(columns: list[str], rows: list[dict]) -> dict:
 
 def _describe(result: dict, columns: list[str], rows: list[dict]) -> dict:
     profile = _profile(columns, rows)
-    result.update(columns=columns, rows=[[_display_cell(row.get(name)) for name in columns] for row in rows[:30]], profile=profile)
+    missing_cells = sum(profile["missing"].values())
+
+    def encoded_size(value):
+        # ASCII escaping is the worst-case worker JSON representation, including
+        # astral Unicode and the default separators used by event serialization.
+        return len(json.dumps(value, ensure_ascii=True, allow_nan=False).encode("utf-8"))
+
+    def display(value):
+        value = _display_cell(value)
+        if isinstance(value, str) and len(value) > MAX_DISPLAY_CHARS:
+            return value[:MAX_DISPLAY_CHARS - 1] + "…", True
+        return value, False
+
+    # Preserve complete column names. Limit visible columns when a wide schema
+    # or large Unicode labels would leave no space for even one preview row.
+    visible_columns = []
+    column_cost = 0
+    for name in columns:
+        cell_cost = max((encoded_size(display(row.get(name))[0]) for row in rows[:30]), default=4)
+        cost = encoded_size(name) + cell_cost + 4
+        if column_cost + cost > MAX_PREVIEW_BYTES // 2:
+            break
+        visible_columns.append(name)
+        column_cost += cost
+    preview_rows = []
+    clipped_cells = 0
+    preview_size = encoded_size({"columns": visible_columns, "rows": []})
+    for row in rows[:30]:
+        cells = [display(row.get(name)) for name in visible_columns]
+        values = [value for value, _clipped in cells]
+        cost = encoded_size(values) + (2 if preview_rows else 0)
+        if preview_size + cost > MAX_PREVIEW_BYTES:
+            break
+        preview_rows.append(values)
+        clipped_cells += sum(clipped for _value, clipped in cells)
+        preview_size += cost
+
+    # Full names recur across profile dictionaries, and category strings can
+    # make those details much larger than the source. Retain complete details
+    # only while they fit. Totals always describe the entire data, not the view.
+    bounded = {"rows": profile["rows"], "columns": profile["columns"],
+               "duplicate_rows": profile["duplicate_rows"], "missing_cells": missing_cells,
+               "column_names": [], "missing": {}, "numeric_columns": [],
+               "numeric_summary": {}, "categorical_summary": {}, "dtypes": {}}
+    maps = ("missing", "numeric_summary", "categorical_summary", "dtypes")
+    omitted = 0
+    for name in columns:
+        bounded["column_names"].append(name)
+        numeric = name in profile["numeric_columns"]
+        if numeric:
+            bounded["numeric_columns"].append(name)
+        for key in maps:
+            if name in profile[key]:
+                bounded[key][name] = profile[key][name]
+        if encoded_size(bounded) > MAX_PROFILE_BYTES - 200:
+            omitted += 1
+            bounded["column_names"].pop()
+            if numeric:
+                bounded["numeric_columns"].pop()
+            for key in maps:
+                bounded[key].pop(name, None)
+    bounded.update(truncated=bool(omitted), omitted_column_details=omitted)
+    preview = {"truncated": bool(clipped_cells or len(preview_rows) < len(rows) or len(visible_columns) < len(columns)),
+               "rows_shown": len(preview_rows), "columns_shown": len(visible_columns),
+               "cells_clipped": clipped_cells}
+    result.update(columns=visible_columns, rows=preview_rows, profile=bounded, preview=preview)
     result["message"] = (f"{result['title']}: {len(rows):,} rows, {len(columns)} columns. "
-        f"{profile['duplicate_rows']:,} duplicate rows and {sum(profile['missing'].values()):,} missing cells. "
+        f"{profile['duplicate_rows']:,} duplicate rows and {missing_cells:,} missing cells. "
         "Processed locally; the original file is unchanged.")
+    if preview["truncated"] or omitted:
+        result["display_notice"] = (f"Display limited to {len(preview_rows)} rows and {len(visible_columns)} columns; "
+            f"{clipped_cells} long display cells shortened and {omitted} column profiles omitted. "
+            "Full values are preserved in data exports.")
+        result["message"] += " " + result["display_notice"]
     if result.get("needs_table"):
         result["message"] = "Choose a table to inspect: " + ", ".join(item["name"] for item in result["tables"] if item["available"]) + '. Say “inspect table \'name\'”.'
     elif result.get("no_tables"):
@@ -562,4 +635,6 @@ def process_data(path: str, granted_paths: list[str], text: str, artifact_dir: s
         result["artifacts"] = [_artifact(artifact_dir, columns, rows, output_format)]
         action = {"filter": "Filtered", "clean": "Cleaned", "deduplicate": "Removed duplicates from", "convert": "Converted"}[operation]
         result["message"] = f"{action} {result['title']}. {before:,} input rows → {len(rows):,} output rows. Saved a new {output_format.upper()} file; the original is unchanged."
+        if result.get("display_notice"):
+            result["message"] += " " + result["display_notice"]
     return result
