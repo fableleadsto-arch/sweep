@@ -400,7 +400,11 @@ class DockWindow(SweepWindow):
     def submit(self):
         text = self.prompt.toPlainText().strip()
         if not text and self.attachments:
-            text = "Inspect this image" if Path(self.attachments[0]).suffix.lower() in {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"} else "Inspect this file"
+            from .media import AUDIO_SUFFIXES, VIDEO_SUFFIXES
+            suffix = Path(self.attachments[0]).suffix.lower()
+            text = ("Transcribe this recording" if suffix in AUDIO_SUFFIXES else
+                    "Inspect this video" if suffix in VIDEO_SUFFIXES else
+                    "Inspect this image" if suffix in {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"} else "Inspect this file")
         if not text:
             return
         if len(text) > 60_000:
@@ -452,8 +456,25 @@ class DockWindow(SweepWindow):
                                  thread_id=self._task_threads.get(task["id"], ""))
 
     def approve_task(self, capability, text, selected_file=False, *, thread_id=None):
-        if capability in {"images.inspect", "files.inspect", "documents.inspect", "data.inspect"}:
+        if capability in {"images.inspect", "files.inspect", "documents.inspect", "data.inspect", "media.inspect", "audio.transcribe"}:
             return True  # Picker/drop grants are independently checked in the worker.
+        if capability == "speech.setup":
+            dialog = QMessageBox(QMessageBox.Icon.Question, "Set up local speech?",
+                "Download the English speech model (about 40 MB) from alphacephei.com?\n\n"
+                "This is a one-time setup download. Recordings are never sent to that site; transcription runs on this device. "
+                "About 100 MB of free local storage is needed.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
+            dialog.setTextFormat(Qt.TextFormat.PlainText)
+            dialog.setDefaultButton(QMessageBox.StandardButton.No)
+            return dialog.exec() == QMessageBox.StandardButton.Yes
+        if capability == "media.analyze":
+            dialog = QMessageBox(QMessageBox.Icon.Question, "Describe video frames?",
+                f"{text}\n\nSweep will sample up to eight still frames and describe them locally. "
+                "This does not analyze continuous motion or audio. The video stays on this computer.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
+            dialog.setTextFormat(Qt.TextFormat.PlainText)
+            dialog.setDefaultButton(QMessageBox.StandardButton.No)
+            return dialog.exec() == QMessageBox.StandardButton.Yes
         if capability == "conversation":
             config = load_config(self.root)
             signature = json.dumps({key: config[key] for key in ("provider", "model", "ollama_base_url")}, sort_keys=True)
@@ -532,9 +553,9 @@ class DockWindow(SweepWindow):
                 state = "responding"
             elif capability.startswith("web."):
                 state = "searching"
-            elif capability in {"images.analyze", "data.inspect", "data.transform"}:
+            elif capability in {"images.analyze", "data.inspect", "data.transform", "media.analyze", "audio.transcribe"}:
                 state = "analyzing"
-            elif capability in {"images.inspect", "documents.inspect", "files.inspect"}:
+            elif capability in {"images.inspect", "documents.inspect", "files.inspect", "media.inspect"}:
                 state = "reading"
             elif capability == "conversation":
                 state = "thinking"
@@ -568,7 +589,7 @@ class DockWindow(SweepWindow):
             value.pop("state_label")
         if result.get("text") and result.get("message") and result["text"] != result["message"]:
             extracted = str(result["text"])
-            if not result.get("summary"):
+            if not result.get("summary") and result.get("kind") != "transcript":
                 value["text"] += "\n\n" + extracted[:1200] + ("…" if len(extracted) > 1200 else "")
         if result.get("evidence"):
             value["text"] = result_text({key: item for key, item in result.items() if key not in {"hits", "sources"}})
@@ -582,6 +603,29 @@ class DockWindow(SweepWindow):
         if location.get("status") == "embedded_gps":
             value["text"] += f"\nEmbedded GPS (unverified): {location['latitude']}, {location['longitude']}"
         value["actions"] = []
+        transcription = result.get("transcription", {})
+        if isinstance(transcription, dict) and transcription.get("status") == "unavailable":
+            value["state_label"] = "Setup needed"
+            value["actions"].append(("Set up speech", f"sweep:speech-setup/{task_id}", True))
+        if isinstance(transcription, dict) and transcription.get("status") == "partial":
+            value["state_label"] = "Partial transcript"
+        if task["capability"] == "media.analyze":
+            analysis_status = result.get("analysis", {}).get("status")
+            value["state_label"] = {"partial": "Partial description", "failed": "Frames ready",
+                                    "not_configured": "Setup needed"}.get(analysis_status, "Complete")
+        if result.get("segments"):
+            value["columns"] = ["Start (s)", "End (s)", "Recognized speech"]
+            value["rows"] = [[item.get("start", ""), item.get("end", ""), str(item.get("text", ""))[:300]]
+                             for item in result["segments"][:15] if isinstance(item, dict)]
+        sheet = result.get("contact_sheet")
+        if isinstance(sheet, dict) and isinstance(sheet.get("path"), str):
+            try:
+                path = Path(sheet["path"]).resolve(strict=True)
+                directory = self.task_store.directory(task_id).resolve() / "artifacts"
+                if path.is_relative_to(directory):
+                    value["preview"] = self._task_preview({"granted_paths": [str(path)]})
+            except (OSError, ValueError):
+                pass
         if result.get("text") and (result.get("summary") or len(str(result["text"])) > 1200):
             value["actions"].append(("Read extracted text", f"sweep:text/{task_id}", False))
         if result.get("proposal"):
@@ -590,10 +634,14 @@ class DockWindow(SweepWindow):
                                   ("Try again", f"sweep:retry/{task_id}", False)])
         artifacts = result.get("artifacts", [])
         if isinstance(artifacts, list):
+            indexed = [(index, item) for index, item in enumerate(artifacts[:10]) if isinstance(item, dict)]
+            if result.get("contact_sheet"):
+                # Keep the overview and its timing manifest ahead of individual frames.
+                indexed.sort(key=lambda pair: {"png": 0, "json": 1}.get(pair[1].get("format"), 2))
             value["artifacts"] = [{"name": str(item.get("name") or item.get("title") or "Created file"),
                                    "type": str(item.get("format") or item.get("type") or "File"),
                                    "url": f"sweep:artifact/{task_id}/{index}"}
-                                  for index, item in enumerate(artifacts[:10]) if isinstance(item, dict)]
+                                  for index, item in indexed]
         return value
 
     def refresh_chat(self):
@@ -606,6 +654,8 @@ class DockWindow(SweepWindow):
                   "images.inspect": "Reading image details", "documents.inspect": "Reading your document",
                   "data.inspect": "Exploring your data", "data.transform": "Preparing your file",
                   "files.inspect": "Reading your file", "conversation": "Thinking",
+                  "media.inspect": "Sampling your media", "media.analyze": "Describing sampled frames",
+                  "audio.transcribe": "Recognizing speech locally", "speech.setup": "Setting up local speech",
                   "computer.command": "Taking care of your request", "providers.check": "Checking local processing",
                   "providers.start": "Starting local processing"}
         for index, turn in enumerate(turns):
@@ -650,7 +700,10 @@ class DockWindow(SweepWindow):
             segments = url.path().split("/")
             action, task_id = segments[:2]
             task = self.task_store.get(task_id)
-            if action == "cancel" and task["state"] == "queued":
+            if action == "speech-setup":
+                if self.start_task("speech.setup", "Set up English speech recognition on this device"):
+                    self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
+            elif action == "cancel" and task["state"] == "queued":
                 self.task_store.update(task_id, state="cancelled", error="Cancelled before execution.")
                 self.pending = [item for item in self.pending if item != task_id]
                 self.load_history()
@@ -678,7 +731,7 @@ class DockWindow(SweepWindow):
                     artifact_directory = directory / "artifacts"
                     candidate = Path(artifacts[index]["path"])
                     path = (candidate if candidate.is_absolute() else directory / candidate).resolve(strict=True)
-                    allowed = {".csv", ".tsv", ".json", ".jsonl", ".txt", ".md", ".pdf", ".docx", ".xlsx", ".parquet", ".png", ".jpg", ".jpeg", ".webp"}
+                    allowed = {".csv", ".tsv", ".json", ".jsonl", ".txt", ".md", ".srt", ".pdf", ".docx", ".xlsx", ".parquet", ".png", ".jpg", ".jpeg", ".webp"}
                     if not path.is_relative_to(artifact_directory) or not path.is_file() or path.suffix.lower() not in allowed:
                         raise ValueError("This file cannot be opened from the task.")
                     self.show_artifact(path)
@@ -715,7 +768,7 @@ class DockWindow(SweepWindow):
         layout = QVBoxLayout(dialog)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.addWidget(label(path.name, "settingsSection"))
-        if path.suffix.lower() in {".csv", ".tsv", ".json", ".jsonl", ".txt", ".md"}:
+        if path.suffix.lower() in {".csv", ".tsv", ".json", ".jsonl", ".txt", ".md", ".srt"}:
             with path.open("rb") as stream:
                 raw = stream.read(500_001)
             preview = QPlainTextEdit()
@@ -864,6 +917,17 @@ class DockWindow(SweepWindow):
         local_actions.addWidget(check)
         local_actions.addWidget(start)
         layout.addLayout(local_actions)
+        from .media_setup import model_ready
+        speech_ready = model_ready(self.root)
+        speech_actions = QHBoxLayout()
+        speech_status = label("English speech is ready on this device." if speech_ready else
+                              "English speech needs a one-time setup download (about 40 MB).", "muted")
+        speech_status.setWordWrap(True)
+        speech_actions.addWidget(speech_status, 1)
+        speech_setup = QPushButton("Speech ready" if speech_ready else "Set up speech")
+        speech_setup.setEnabled(not speech_ready)
+        speech_actions.addWidget(speech_setup)
+        layout.addLayout(speech_actions)
         layout.addWidget(label("Your desktop", "settingsSection"))
         allow = QCheckBox("Remember permission for public web tasks")
         allow.setChecked(self.settings.value("allow_web", False, type=bool))
@@ -937,6 +1001,7 @@ class DockWindow(SweepWindow):
 
         check.clicked.connect(lambda: local_task("providers.check", "Check local processing readiness"))
         start.clicked.connect(lambda: local_task("providers.start", "Start local processing on this device"))
+        speech_setup.clicked.connect(lambda: local_task("speech.setup", "Set up English speech recognition on this device"))
         buttons.accepted.connect(save)
         dialog.exec()
 

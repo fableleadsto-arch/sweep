@@ -1,0 +1,322 @@
+{
+  "reviewed_on": "2026-10-12",
+  "distributions": {
+    "av": "19.0.1",
+    "vosk": "0.3.45"
+  },
+  "ffmpeg_version": "9.0.2",
+  "ffmpeg_runtime_report": {
+    "license": "LGPL version 3 or later",
+    "configuration": "--disable-static --enable-shared --libdir=/c/cibw/vendor/lib --prefix=/c/cibw/vendor --disable-programs --disable-doc --disable-libxml2 --disable-lzma --disable-libtheora --disable-libfreetype --disable-libfontconfig --disable-libbluray --disable-libopenjpeg --enable-mediafoundation --enable-version3 --disable-alsa --disable-gnutls --enable-libdav1d --enable-libmp3lame --enable-libopus --enable-libsvtav1 --enable-libvmaf --enable-libvpx --enable-libwebp --disable-libxcb --enable-zlib --enable-libx265 --enable-libx264 --enable-nvenc --enable-nvdec --enable-amf --enable-libvpl --disable-encoder='avui,dca,mlp,opus,s302m,sonic,sonic_ls,truehd' --disable-decoder=sonic --disable-libjack --disable-indev=jack --disable-filter=gfxcapture"
+  },
+  "notice_sources": [
+    {
+      "path": "vosk/COPYING",
+      "source_url": "https://raw.githubusercontent.com/alphacep/vosk-api/v0.3.45/COPYING",
+      "bytes": 10173,
+      "sha256": "bb618af833c817ab01c1564bd3ec75ba4b4f9cf30910a4a2168e30a674ee8cc6"
+    },
+    {
+      "path": "ffmpeg/COPYING.LGPLv2.1",
+      "source_url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n9.0.2/COPYING.LGPLv2.1",
+      "bytes": 26517,
+      "sha256": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30"
+    },
+    {
+      "path": "ffmpeg/COPYING.LGPLv3",
+      "source_url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n9.0.2/COPYING.LGPLv3",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "ffmpeg/COPYING.GPLv2",
+      "source_url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n9.0.2/COPYING.GPLv2",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "path": "ffmpeg/COPYING.GPLv3",
+      "source_url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n9.0.2/COPYING.GPLv3",
+      "bytes": 35147,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "path": "ffmpeg/LICENSE.md",
+      "source_url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n9.0.2/LICENSE.md",
+      "bytes": 4346,
+      "sha256": "2e1d16c72fd74e12063776371da757322f8b77589386532f4fd8634bde7de1af"
+    },
+    {
+      "path": "libvpx/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/webmproject/libvpx/v1.17.0/LICENSE",
+      "bytes": 1537,
+      "sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615"
+    },
+    {
+      "path": "libvpx/PATENTS",
+      "source_url": "https://raw.githubusercontent.com/webmproject/libvpx/v1.17.0/PATENTS",
+      "bytes": 1436,
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "path": "libwebp/COPYING",
+      "source_url": "https://raw.githubusercontent.com/webmproject/libwebp/v1.6.0/COPYING",
+      "bytes": 1496,
+      "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf"
+    },
+    {
+      "path": "libwebp/PATENTS",
+      "source_url": "https://raw.githubusercontent.com/webmproject/libwebp/v1.6.0/PATENTS",
+      "bytes": 1436,
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "path": "vmaf/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/Netflix/vmaf/v3.2.1/LICENSE",
+      "bytes": 2833,
+      "sha256": "a6fdb51d02b9dfe198e55534bb8047fe6d756eda117f4ff83de98f92c1952710"
+    },
+    {
+      "path": "libvpl/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/intel/libvpl/v2.16.0/LICENSE",
+      "bytes": 1074,
+      "sha256": "bf1cfac2e2792b6e1e995ce103d70796aecaf2ec7e4c5fe5474f7acec7b4a677"
+    },
+    {
+      "path": "libvpl/third-party-programs.txt",
+      "source_url": "https://raw.githubusercontent.com/intel/libvpl/v2.16.0/third-party-programs.txt",
+      "bytes": 14142,
+      "sha256": "e3c92992b1df02b467ac086d7d3730f4c1fc2c2a1f2c520657c4c9f2085305a3"
+    },
+    {
+      "path": "opus/COPYING",
+      "source_url": "https://raw.githubusercontent.com/xiph/opus/v1.6.1/COPYING",
+      "bytes": 1945,
+      "sha256": "01e1167d54a096d123cf6dfbbeb19587278845c6481d2d66d545669846079551"
+    },
+    {
+      "path": "dav1d/COPYING",
+      "source_url": "https://code.videolan.org/videolan/dav1d/-/raw/1.5.4/COPYING",
+      "bytes": 1317,
+      "sha256": "dd92c3c2247c5651606fc23a5e2d6a1ebc5ace9a3e49cbde0e12f05ad1cb1ee5"
+    },
+    {
+      "path": "SVT-AV1/LICENSE.md",
+      "source_url": "https://gitlab.com/AOMediaCodec/SVT-AV1/-/raw/v4.2.0/LICENSE.md",
+      "bytes": 1709,
+      "sha256": "0acc2fcb27472bdc9aaf8b71f37055bbdac4f54671b7d922f241bd7fcd0dd3e6"
+    },
+    {
+      "path": "lamer/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/basswood-io/lamer/v3.101.0/LICENSE",
+      "bytes": 26517,
+      "sha256": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30"
+    },
+    {
+      "path": "x264/COPYING",
+      "source_url": "https://code.videolan.org/videolan/x264/-/raw/b35605ace3ddf7c1a5d67a2eb553f034aef41d55/COPYING",
+      "bytes": 17992,
+      "sha256": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670"
+    },
+    {
+      "path": "x265/COPYING",
+      "source_url": "https://raw.githubusercontent.com/Multicorewareinc/x265/4.3/COPYING",
+      "bytes": 18120,
+      "sha256": "d8afb1bcc7a2cfc603683b168d6987ef0a48e59e0da3693bf55c5d33b67e2b49"
+    },
+    {
+      "path": "png/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/pnggroup/libpng/v1.6.58/LICENSE",
+      "bytes": 5345,
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+    },
+    {
+      "path": "gcc/COPYING.RUNTIME",
+      "source_url": "https://raw.githubusercontent.com/gcc-mirror/gcc/164e45f035160df9e3eac7decb8202ba098e2f3c/COPYING.RUNTIME",
+      "bytes": 3324,
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74"
+    },
+    {
+      "path": "gcc/COPYING3",
+      "source_url": "https://raw.githubusercontent.com/gcc-mirror/gcc/164e45f035160df9e3eac7decb8202ba098e2f3c/COPYING3",
+      "bytes": 35147,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "path": "winpthreads/COPYING",
+      "source_url": "https://raw.githubusercontent.com/mingw-w64/mingw-w64/63ebe6cdb3ec4d5c586b7f0f0c03dd502e44c296/mingw-w64-libraries/winpthreads/COPYING",
+      "bytes": 2883,
+      "sha256": "63263614cdd29f2f93cba85e992f041b31f9fc7b4033692f31269489a8a1b177"
+    },
+    {
+      "path": "iconv/COPYING.LIB",
+      "source_url": "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt",
+      "bytes": 26419,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "source": "GNU LGPL 2.1 reference text; exact libiconv DLL source version not verified"
+    },
+    {
+      "path": "zlib/LICENSE",
+      "source_url": "https://raw.githubusercontent.com/madler/zlib/v1.3.1/LICENSE",
+      "bytes": 1002,
+      "sha256": "845efc77857d485d91fb3e0b884aaa929368c717ae8186b66fe1ed2495753243"
+    },
+    {
+      "path": "AMF/LICENSE.txt",
+      "source_url": "https://raw.githubusercontent.com/GPUOpen-LibrariesAndSDKs/AMF/v1.5.2/LICENSE.txt",
+      "bytes": 1747,
+      "sha256": "eb297397aaa455b5668ab67d216b83828466152dab123fa92384c6ec16b74170"
+    },
+    {
+      "path": "PyAV/LICENSE.txt",
+      "source_url": "https://github.com/PyAV-Org/PyAV/blob/v19.0.1/LICENSE.txt",
+      "source": "Installed av 19.0.1 Windows cp312-abi3 wheel",
+      "bytes": 1528,
+      "sha256": "f32ebcb6007dcc05eea369b3820e6391b0a7ef1ed763f30f1aca15dfdbacbe96"
+    },
+    {
+      "path": "PyAV/AUTHORS.rst",
+      "source_url": "https://github.com/PyAV-Org/PyAV/blob/v19.0.1/AUTHORS.rst",
+      "source": "Installed av 19.0.1 Windows cp312-abi3 wheel",
+      "bytes": 6472,
+      "sha256": "2abfebe175cefe78fcb14db260a3c8972d3b52156f50dedd0bc416ac4f884a96"
+    }
+  ],
+  "observed_wheel_dlls": [
+    {
+      "path": "av.libs/avcodec-63-2756d4fffb772585dcdece87427716a4.dll",
+      "bytes": 19569664,
+      "sha256": "8e13fdedbeefb6a8b5d22b567122ec3c00384add569de9e589e53a86bd08422c"
+    },
+    {
+      "path": "av.libs/avdevice-63-2b26d22512639c049532c0bc6f6c022f.dll",
+      "bytes": 156160,
+      "sha256": "43247c1bdaaec40977738037fdea7e8b779b3e93213dd529b1d25735b3099d8c"
+    },
+    {
+      "path": "av.libs/avfilter-12-87c7677b784d3ea4ecceb3e6cae9c9f1.dll",
+      "bytes": 5956608,
+      "sha256": "a9b9e84178dd73162f47a3a531c321fad955ca3a7ff04a9517db7e7c78bf9ab2"
+    },
+    {
+      "path": "av.libs/avformat-63-e8c4f8fc30664f2b7e85dcc683bd4b0d.dll",
+      "bytes": 2888704,
+      "sha256": "49759edae5286f10e4b11a442f51fb70bacde1f92b7b876038231c4d8140c506"
+    },
+    {
+      "path": "av.libs/avutil-61-e540ec7976bbd26a4a94dc737be3001c.dll",
+      "bytes": 1157632,
+      "sha256": "ff2ba1b0d884336d53f1aee7b05873c5a3bbb987d0ffc79a49b92ed77579cd19"
+    },
+    {
+      "path": "av.libs/libdav1d-5469d6ef7baf7426269a9483c24587b7.dll",
+      "bytes": 2203136,
+      "sha256": "5469d6ef7baf7426269a9483c24587b77bf6cb6a005f2bd98443a396f528e82b"
+    },
+    {
+      "path": "av.libs/libgcc_s_seh-1-3e3b83c1f8de213bb810010a5622b180.dll",
+      "bytes": 150016,
+      "sha256": "502e8318a096f0bfb26d9f628f768bfab72853eabc1b6b262f2412263aad605b"
+    },
+    {
+      "path": "av.libs/libiconv-2-5e7e51fe6a6e182df6c9f30f41700345.dll",
+      "bytes": 1141248,
+      "sha256": "5e7e51fe6a6e182df6c9f30f4170034575acd10d2079c3f1098411d21a311619"
+    },
+    {
+      "path": "av.libs/libopus-0-278e2dd25a2793d306204c9d966fe0de.dll",
+      "bytes": 482816,
+      "sha256": "278e2dd25a2793d306204c9d966fe0dee6b4f56659b1ea7b759897e406980d79"
+    },
+    {
+      "path": "av.libs/libsharpyuv-90c3f670f207c806d3e44db799e78832.dll",
+      "bytes": 51712,
+      "sha256": "90c3f670f207c806d3e44db799e78832750826c47a0cf8dea907603d240f9dbe"
+    },
+    {
+      "path": "av.libs/libstdc++-6-7ad22040206bf70776b13a24ec3f87b2.dll",
+      "bytes": 2660352,
+      "sha256": "1cba2ca3b6f410fa4b03b01b479f7663493ea9903857cd753dc8dbc772f67447"
+    },
+    {
+      "path": "av.libs/libSvtAv1Enc-7a2b2046575991edd70ef501ca085458.dll",
+      "bytes": 7724032,
+      "sha256": "7a2b2046575991edd70ef501ca085458ebdff3bf96282350057ae1dee0afaf9f"
+    },
+    {
+      "path": "av.libs/libvmaf-e1698aa5c58a07400697833b5f19b0a3.dll",
+      "bytes": 1639936,
+      "sha256": "12e93e157295be651758eee56af4ed95c6a2ee5b3b91c65a83c8c6818af4c35f"
+    },
+    {
+      "path": "av.libs/libvpl-45cd70cb42c579529a30ad6fc282c626.dll",
+      "bytes": 444416,
+      "sha256": "1a0bc607afbd8a224cc0c2db6fd5efa51245d7715ff1b659c16b47e773009115"
+    },
+    {
+      "path": "av.libs/libvpx-1-dd81d2b55a771749d485047772201cc1.dll",
+      "bytes": 2583552,
+      "sha256": "738629b026940c256dfe988a62062bdc96ae5065d13163bf7e579dc95a4634f4"
+    },
+    {
+      "path": "av.libs/libwebp-abac96c4759f9eb9b31588c8a839816c.dll",
+      "bytes": 759296,
+      "sha256": "e253a4adb1c133a690662e46d8c41e0a3b81b0e62d0f3a5e1a1109484a020dca"
+    },
+    {
+      "path": "av.libs/libwebpmux-0b9545d83accdb1110a7efa5d1c54007.dll",
+      "bytes": 78336,
+      "sha256": "ce17228391b86192f201da1ce9c345ff5f7a9c1eca95ab04150491c24032f74e"
+    },
+    {
+      "path": "av.libs/libwinpthread-1-3e9f18fdf7e856e1e9fedd138e84e874.dll",
+      "bytes": 62464,
+      "sha256": "3e9f18fdf7e856e1e9fedd138e84e874542e8717272fa7fdae5d0d826e88658c"
+    },
+    {
+      "path": "av.libs/libx264-165-0f71f37cf3f3ee0e2ecac2b06829e9ff.dll",
+      "bytes": 2267648,
+      "sha256": "0f71f37cf3f3ee0e2ecac2b06829e9ff3cf2b3e237f25bb14aef6b8de14cd777"
+    },
+    {
+      "path": "av.libs/libx265-ee9d492f3fb55d0a3b564bb1bf4f6822.dll",
+      "bytes": 12830720,
+      "sha256": "efe075f1ee008c722eb71adfe00d926071836d777cc9ef23b59c9ecb9db7d57f"
+    },
+    {
+      "path": "av.libs/swresample-7-4f9462a1fb73b949ccad2774dd941624.dll",
+      "bytes": 180736,
+      "sha256": "a8bfee136c4c4e49d95b4439b1b80136504b2783cf93638f64bd3ad7de8e0ebe"
+    },
+    {
+      "path": "av.libs/swscale-10-9af0a10ad7003982e48548ff39e98465.dll",
+      "bytes": 2124800,
+      "sha256": "f2956978470b3ed26c4f5db80b45d4c3a9188a4a8622133f73ded71504df85d6"
+    },
+    {
+      "path": "av.libs/zlib1-4d767210e087ff082d94ef0a09ddc7f8.dll",
+      "bytes": 126464,
+      "sha256": "4d767210e087ff082d94ef0a09ddc7f8c04316c64d69d5a7b9ee802ceab407dd"
+    },
+    {
+      "path": "vosk/libgcc_s_seh-1.dll",
+      "bytes": 606425,
+      "sha256": "201bf8a54ebb490f93ea4beb20740a483bf67036b90b5720f32d0c746a72d1e9"
+    },
+    {
+      "path": "vosk/libstdc++-6.dll",
+      "bytes": 26619146,
+      "sha256": "a1d96a848a567d7657e152cfe92e2fd62da412968cc11ec8bdb04bf20ebc5747"
+    },
+    {
+      "path": "vosk/libvosk.dll",
+      "bytes": 26447872,
+      "sha256": "9331c2f6a32cf77141af27c9750e79532718f51bbc2e3cea3c60f14ca4251e4e"
+    },
+    {
+      "path": "vosk/libwinpthread-1.dll",
+      "bytes": 366907,
+      "sha256": "92caeb8a4ea281c674003462a233f3b445b685b0a6f93eb11254feda2dda9cde"
+    }
+  ]
+}

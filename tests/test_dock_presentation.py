@@ -82,6 +82,69 @@ def test_cards_include_sources_data_and_created_files(dock):
     transcript.deleteLater()
 
 
+@pytest.mark.parametrize("count", [1, 2, 3])
+def test_small_generated_file_groups_remain_visible(dock, count):
+    app, window = dock
+    transcript = ChatTranscript()
+    artifacts = [{"name": f"report-{index}.txt", "type": "txt", "url": f"sweep:artifact/abc/{index}"}
+                 for index in range(count)]
+    transcript.render([{"role": "assistant", "artifacts": artifacts}])
+    cards = transcript.findChildren(QWidget, "artifactCard")
+    assert len(cards) == count
+    assert all(card.isVisibleTo(transcript) for card in cards)
+    assert not any(button.property("artifactToggle") for button in transcript.findChildren(QPushButton))
+    transcript.deleteLater()
+
+
+def test_large_generated_file_group_expands_folds_and_keeps_action_urls(dock):
+    app, window = dock
+    transcript = ChatTranscript()
+    artifacts = [{"name": f"frame-{index}.jpg", "type": "jpg", "url": f"sweep:artifact/abc/{index}"}
+                 for index in range(10)]
+    artifacts[5]["name"] = '<img src="file:///private">.jpg'
+    message = {"role": "assistant", "text": "Sampled frames are ready.", "artifacts": artifacts}
+    transcript.render([message])
+    cards = transcript.findChildren(QWidget, "artifactCard")
+    toggle = next(button for button in transcript.findChildren(QPushButton) if button.property("artifactToggle"))
+    assert len(cards) == 10
+    assert sum(card.isVisibleTo(transcript) for card in cards) == 2
+    assert toggle.isCheckable() and not toggle.isChecked()
+    assert toggle.text() == toggle.accessibleName() == "Show 8 more files"
+    emitted = []
+    transcript.anchorClicked.connect(lambda url: emitted.append(url.toString()))
+    toggle.click()
+    assert toggle.isChecked() and toggle.text() == "Hide 8 extra files"
+    assert all(card.isVisibleTo(transcript) for card in cards)
+    for card, artifact in zip(cards, artifacts, strict=True):
+        name = card.findChildren(QLabel)[0]
+        assert name.text() == artifact["name"] and name.textFormat() == Qt.TextFormat.PlainText
+        card.findChild(QPushButton).click()
+    assert emitted == [artifact["url"] for artifact in artifacts]
+    toggle.click()
+    assert not toggle.isChecked() and toggle.text() == "Show 8 more files"
+    assert sum(card.isVisibleTo(transcript) for card in cards) == 2
+    assert emitted == [artifact["url"] for artifact in artifacts]
+    transcript.deleteLater()
+
+
+def test_expanded_generated_files_stay_open_when_chat_refreshes(dock):
+    app, window = dock
+    transcript = ChatTranscript()
+    artifacts = [{"name": f"file-{index}.txt", "url": f"sweep:artifact/abc/{index}"} for index in range(4)]
+    message = {"role": "assistant", "artifacts": artifacts}
+    transcript.render([message])
+    toggle = next(button for button in transcript.findChildren(QPushButton) if button.property("artifactToggle"))
+    toggle.click()
+    transcript.render([message, {"role": "user", "text": "Explain the first frame."}])
+    current_toggle = next(button for button in transcript.findChildren(QPushButton)
+                          if button.property("artifactToggle") and button.isVisibleTo(transcript))
+    assert current_toggle.isChecked()
+    assert sum(card.isVisibleTo(transcript) for card in transcript.findChildren(QWidget, "artifactCard")) == 4
+    current_toggle.click()
+    assert sum(card.isVisibleTo(transcript) for card in transcript.findChildren(QWidget, "artifactCard")) == 2
+    transcript.deleteLater()
+
+
 def test_settings_hides_implementation_and_has_no_cloud_controls(dock, monkeypatch):
     app, window = dock
     checked = []

@@ -35,6 +35,10 @@ CAPABILITIES = {item.id: item for item in (
     Capability("data.transform", "Transform data", "WRITE", "local", "Clean, filter, deduplicate or convert selected data into a new file."),
     Capability("images.inspect", "Inspect an image", "READ", "local", "Read selected image metadata and available local OCR."),
     Capability("images.analyze", "Understand an image", "READ", "local", "Analyze a selected image using a downloaded local model."),
+    Capability("media.inspect", "Inspect audio or video", "READ", "local", "Read local media details and sample timestamped video frames."),
+    Capability("media.analyze", "Describe sampled video frames", "READ", "local", "Describe a bounded selection of frames using local image understanding."),
+    Capability("audio.transcribe", "Transcribe a recording", "READ", "local", "Recognize English speech locally with timestamps and subtitle files."),
+    Capability("speech.setup", "Set up local speech", "EXTERNAL", "remote", "Download the fixed English speech model (about 40 MB); recordings are never uploaded."),
     Capability("providers.check", "Check local processing", "NONE", "local", "Check local intelligence and downloaded models."),
     Capability("providers.start", "Start local processing", "COMPUTER_CONTROL", "local", "Start the installed local engine without downloading models."),
     Capability("conversation", "Conversation", "READ", "local", "Talk with Sweep using local intelligence."),
@@ -43,7 +47,8 @@ CAPABILITIES = {item.id: item for item in (
 
 def task_timeout(capability: str) -> int:
     """CPU inference needs more time than ordinary desktop and network tools."""
-    return {"conversation": 240, "images.analyze": 300, "documents.inspect": 240}.get(capability, 120)
+    return {"conversation": 240, "images.analyze": 300, "documents.inspect": 240,
+            "media.analyze": 300, "audio.transcribe": 300, "speech.setup": 240}.get(capability, 120)
 
 
 def route(text: str, selected: str = "auto") -> tuple[str, str]:
@@ -120,6 +125,9 @@ async def execute(request: dict, emit: Callable[[dict], None]) -> dict:
         emit({"kind": "progress", "message": message, **extra})
 
     progress(CAPABILITIES[capability].title, execution=CAPABILITIES[capability].execution)
+    if capability in {"media.inspect", "media.analyze", "audio.transcribe", "speech.setup"}:
+        from .media_tasks import execute_media
+        return await execute_media(request, progress)
     if capability == "providers.check":
         from .platform import data_directory
         from .providers import readiness

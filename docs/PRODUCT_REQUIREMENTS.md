@@ -1,7 +1,7 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-10. Baseline: `b4b338ec1`, with the current local desktop changes
-identified below. This document maps the **entire original Sweep
+Audit date: 2026-10-12. Previous installed release: `f42371654` (2026-10-10), with
+the current media/audio changes identified below. This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
 product backlog and release checklist, not a claim that every listed feature ships.
 
@@ -21,7 +21,10 @@ Local chat streams bounded response previews into its originating task; final
 answers replace previews and restore from the persisted task record. The owl
 reflects thinking, searching, reading, analyzing, responding, working, success
 and attention states, with accessible descriptions and no continuous idle timer.
-Packaged release checks remain a separate acceptance gate.
+The 2026-10-10 release passed nine packaged tool checks and native installer/launch
+checks. Its upgrade preserved 26 personal files and verified all 2,782 installed
+application files. Those results describe `f42371654`; media/audio has its own
+packaged acceptance gate described below.
 
 Bounded research creates an attributed Markdown report and a JSON evidence graph
 compatible with the existing cognition graph. These retain observed excerpts,
@@ -45,6 +48,26 @@ decompression and SQLite schema hazards; one Windows symlink check is skipped
 when the OS cannot create the fixture. Runtime/chat integration checks and a real
 local document question were also exercised during this slice. These tests do not
 substitute for the native installer smoke test or make the wider backlog complete.
+
+The media slice adds `media.inspect`, `media.analyze`, `audio.transcribe` and
+`speech.setup` to that same chat/task system. A granted video can produce up to
+eight sampled frames with actual presentation timestamps, a contact sheet and a
+JSON manifest. A local visual model describes only those sampled stills, without
+claiming continuous motion or audio analysis. A recording or video audio track can
+produce English transcript segments and TXT/SRT/JSON artifacts; a recording
+question uses the first 5,000 recognized characters and discloses that scope.
+
+Settings offers explicit **Set up speech**, a roughly 40 MB download of one fixed
+English model with progress and a pinned archive checksum. Readiness checks and
+transcription never download a model or upload a recording. Media inputs are
+limited to 200 MB, inspection to a reported duration of 30 minutes and at most
+eight sampled frames, and transcription to the first five minutes of the first
+audio track with further processing/output limits. Missing or discontinuous
+timing is disclosed, and speakers are not identified. Native contact-sheet,
+transcript-row and artifact views are connected; playback, microphone sessions,
+live voice, tracking and cross-recording comparison remain missing. This is a
+bounded implementation, not completion of the
+original multimodal requirements.
 
 ## Product contract
 
@@ -116,14 +139,15 @@ workflows. They are not a decision to abandon later work.
 | Local AI/model management | `sweep/desktop/providers.py`, `companion/providers.py`, `services/intelligence/model_manager/` | Reuse inference and lazy-loading adapters, enforce local-only desktop selection, and keep model availability distinct from capability readiness. |
 | Images/OCR | `sweep/desktop/images.py`, `ocr.py`, `companion/tools/vision.py`, `services/intelligence/document/ocr_engine.py` | Keep permission-bound image inspection and native OCR. Normalize detection/OCR/embedding outputs before exposing advanced adapters. |
 | Documents/data | `sweep/desktop/data_tools.py`, `companion/tools/data.py`, `sweep_cognitive/perception/document.py` | Bounded local adapter now connects to chat and task artifacts. Existing companion tool profiles/aggregates/plots; its “clean” docstring does not implement cleaning. Existing perception code parses text/structure, not a complete PDF reader. |
-| Video/audio | `services/intelligence/vision/opencv_engine.py`, `sweep_core/integrations/audio.py` | Real frame extraction/metadata and transcription building blocks exist. Add grants, installed-only assets, time budgets, timestamps and task artifacts before exposing them. |
+| Video/audio | `sweep/desktop/media.py`, `speech.py`, `media_setup.py`, `media_tasks.py`; separate legacy OpenCV/audio modules | New bounded desktop adapter uses PyAV and installed-only Vosk with grants, sampled-frame timing, transcript artifacts and explicit speech setup. Tracking, playback and live microphone remain separate work. |
 | Optional scientific/data tools | `companion/tools/numeric.py`, `symbolic.py`, `ml.py`, `vectors.py`, `sweep/datasets/` | Reuse behind typed requests and availability checks. Dataset downloads/training are explicit tasks, not desktop startup work. |
 | Legacy/experimental systems | `src/`, `cpp/`, `sweep_cognitive/`, `sweep_neural_mesh/`, `companion/vendor/` | Preserve useful algorithms/assets/licenses; no blanket claim that research modules are production features. |
 | Distribution | `scripts/build_desktop.py`, `scripts/desktop_installer.py`, `setup_sweep.py`, `pyproject.toml` | Keep Windows per-user setup and bundled Python; validate the current dock from the built payload outside the repository. |
 
 The core dependency set contains the Python web/extraction and scientific stack;
-the desktop extra adds Qt, Pillow and bounded PDF reading through pypdf. Advanced
-browser, vision, speech and model frameworks are optional extras. A manifest entry does not establish that an asset
+the desktop extra adds Qt, Pillow, bounded PDF reading through pypdf, PyAV and Vosk.
+The speech model remains a separate explicit setup asset. Advanced browser,
+vision and alternative model frameworks are optional extras. A manifest entry does not establish that an asset
 exists on the user's machine, has the correct license, runs without downloading,
 or fits memory. Optional imports must stay out of idle desktop startup.
 
@@ -139,7 +163,7 @@ The intended shared contract remains:
 |---|---|---|---|---|
 | Natural conversation plus actions in one chat | Partial | `chat.py`, `providers.py`, `dock.py`; local inference, thread context and reviewed task proposals | Retain actual tool observations in context; handle compound objectives without inventing completion. | P0 |
 | Statement understanding, including “open YouTube in Brave” | Verified, bounded | `parser.py`, `skills.py`, `tests/test_browser_commands.py` | Preserve requested browser and actual URL. Expand intent tests using real user phrasing; add action verification for complex workflows. | P0 |
-| Native installation, launch, tray, shortcut, notifications, optional startup | Partial | `__main__.py`, `platform.py`, `window.py`; desktop/instance/build tests | Rebuild and smoke-test the current dock installer; verify upgrade, startup toggle and second-instance activation. Windows is the tested platform. | P0 |
+| Native installation, launch, tray, shortcut, notifications, optional startup | Verified, bounded on Windows release `f42371654` | `__main__.py`, `platform.py`, `window.py`; packaged installer/launch, upgrade preservation and installed-file integrity checks on 2026-10-10 | Repeat packaged checks for media/audio changes; expand DPI/multi-monitor and other-platform coverage. | P0 |
 | Lightweight top dock, command bar, chat, history/settings, contextual expansion | Partial | `dock.py` implements collapse/expand, hover, pin, drag, resize and dialogs | Finish focus/keyboard/multi-monitor/DPI behavior; keep task result expansion within the same conversation. | P0 |
 | Calm materials, typography, spacing, radii, shadows, color, density | Partial | `DOCK_STYLE`, native presentation cards | Establish consistent tokens; inspect real native windows at multiple scale factors; eliminate generic technical dumps and clipped controls. | P0 |
 | Spring movement, smooth expansion, continuity, contextual morphing and hover | Partial | Dock opacity animation and hover expansion | Add short meaningful transitions with reduced-motion setting; animate state changes only when they communicate progress. Map/timeline transitions depend on those views. | P0/P2 |
@@ -152,13 +176,13 @@ The intended shared contract remains:
 
 | Requirement family | Status | Existing module/evidence | Concrete completion work | Priority |
 |---|---|---|---|---|
-| Entirely local AI; no cloud fallback or vendor branding | Implemented in current desktop slice; release validation pending | `providers.py` rejects remote addresses/aliases, strips cloud credentials, checks model metadata; `images.py` shares the gate | Exercise packaged chat/image/document tasks with poisoned environment/legacy config and verify no remote AI calls. Reusable developer APIs retain their separate configuration. | P0 |
+| Entirely local AI; no cloud fallback or vendor branding | Verified, bounded in release `f42371654`; media extension pending | `providers.py` rejects remote addresses/aliases, strips cloud credentials, checks model metadata; packaged local chat/image/document tasks exercised | Repeat the boundary checks for media descriptions and transcript questions. Reusable developer APIs retain their separate configuration. | P0 |
 | Tool metadata: ID/description/inputs/output/permission/provider/location/latency/cost | Partial | Desktop `Capability` plus companion `ToolSpec` and registries | Consolidate schemas through adapters; add validated input/output contracts, availability and estimates. Internal provider fields remain diagnostics. | P1 |
 | Capability registry across vision/audio/data/web/maps/files/computer | Partial | Small desktop registry; larger disconnected companion/mesh registries | Register only working adapters under stable IDs. A capability becomes available only after dependencies, local assets and required permissions are checked. | P1 |
 | Shared task state, cancellation, retry, restart recovery | Verified, bounded | `tasks.py`, worker lifecycle; task/queue regression suites | Preserve no-replay restart recovery. Extend to child tasks while keeping late results from resurrecting cancelled work. | P0/P1 |
 | DAG/task graph with independent work in parallel | Missing from desktop | Companion bounded agent loop and experimental graph primitives; desktop is FIFO | Add parent/dependency IDs and bounded child scheduling in existing task store; independent metadata/OCR/source tasks can run concurrently; failure preserves siblings. | P1 |
 | Observe/plan/select/execute/observe/correlate/verify/present loop | Partial | `companion/orchestrator.py`, research loop, cognition verification | Adapt a bounded local planner to registered desktop tools, ground each next step in an observation, attach verification and stop conditions, and expose the plan as activity. | P1/P3 |
-| Artifact system, first-class outputs and context | Partial | Task `result.json`, named data/report artifacts with hashes, native cards, inert text/image preview and Save a copy | Add typed MIME/source manifest and reuse in follow-ups; audio/video preview remains missing. Task-owned path checks prevent arbitrary file reads. | P1 |
+| Artifact system, first-class outputs and context | Partial | Task `result.json`, named data/report/media artifacts with hashes, native cards, inert text/image preview and Save a copy; new sampled-frame manifests and transcript files | Add a shared typed MIME/source manifest and reuse in follow-ups; continuous audio/video playback remains missing. Task-owned path checks prevent arbitrary file reads. | P1 |
 | Context, long-term memory and unified retrieval | Partial | Thread store and `companion/memory.py` file/vector stores | Separate chat context from authorized indexed files; expose scope/deletion and citations; avoid leaking one thread's attachments to another. | P1 |
 | Local model routing by task and hardware | Partial | Device/cache/loader registry; separate chat and image settings | Select available local chat/OCR/detection/embedding/speech models by capability, memory and latency; unload idle models; no fallback to remote inference. | P0/P2 |
 | Low idle cost, lazy load, CPU/GPU, workers, parallelism, streaming/cache | Partial | Workers, timeouts, lazy imports and model cache infrastructure | Measure idle CPU/RAM; stream meaningful events; enforce model memory budgets; cache by input hash/version; bound parallelism and cancellation of child work. | P0/P1 |
@@ -218,8 +242,8 @@ The intended shared contract remains:
 
 | Requirement family | Status | Existing module/evidence | Concrete completion work | Priority |
 |---|---|---|---|---|
-| Video metadata and keyframes | Partial | `OpenCVEngine.get_video_info` and `extract_frames` | Add exact-file grants, timestamped frame artifacts, seek/time/frame limits and missing-codec errors; inspect inside the dock. | P1 |
-| Scene/action/motion/object/OCR/entity/transcript analysis | Partial building blocks | Video frames plus image/OCR and optional speech models | Start with timestamped scene/keyframe observations; run installed local adapters; show limitations instead of claiming comprehensive action recognition. | P2 |
+| Video metadata and sampled frames | Implemented, bounded; new release validation pending | `media.py`, `media_tasks.py`, native contact-sheet and artifact cards; exact-file grants, 200 MB/30 minute bounds, up to eight samples and actual presentation timestamps | Verify packaged codecs and artifacts. Missing times stay unknown; samples do not prove events between frames. | P1 |
+| Scene/action/motion/object/OCR/entity/transcript analysis | Partial | `media.analyze` applies local image understanding to sampled stills; `audio.transcribe` separately recognizes the first audio track | Validate packaged local outputs; continuous motion, tracking, scene segmentation and exhaustive multimodal analysis remain missing. | P2 |
 | Interactive video timeline with clickable occurrences | Missing | No native timeline component | Build timestamped keyframe/track/transcript rows and local playback seek; each occurrence opens source frame and evidence. | P2 |
 | Tracking within frames/clips and across many videos/images | Missing as product workflow | Detection/embedding primitives, no integrated tracker | Adapt a tracker, then local embedding candidate retrieval and reranking with human confirmation; distinguish a track from proven object identity. | P2 |
 | “Find this motorcycle in these 50 files” / object locator | Missing | File and model primitives are disconnected | Reference-object selection + folder grant + resumable bounded indexing + occurrence timeline; evaluate misses and lookalike false positives. | P2 |
@@ -243,8 +267,8 @@ The intended shared contract remains:
 
 | Requirement family | Status | Existing module/evidence | Concrete completion work | Priority |
 |---|---|---|---|---|
-| Local speech-to-text from attached audio | Partial | Vosk/Whisper/faster-whisper adapters | Accept installed local assets only; add file grants, supported-format conversion, budgets and timestamped transcript artifacts. | P1/P2 |
-| Timestamps/language/speaker segments/searchable transcript/keywords | Partial building blocks | Whisper/Vosk optional models; diarization model registry | Preserve segment/word timestamps instead of dropping them; label speakers anonymously; local transcript search and waveform-linked excerpts. | P2 |
+| Local speech-to-text from attached audio | Implemented, bounded; new release validation pending | `speech.py`, `media_setup.py`, `media_tasks.py`; explicit English-model setup, local decoding, five-minute first-track transcription, TXT/SRT/JSON artifacts | Verify packaged recognition and setup failure/retry. No inference-time downloads, cloud fallback or live microphone. | P1/P2 |
+| Timestamps/language/speaker segments/searchable transcript/keywords | Partial | New English transcript rows and word/segment timing artifacts; local recording questions use first 5,000 recognized characters | Add other languages, transcript search, anonymous speaker segmentation and waveform-linked excerpts. Timing discontinuities are disclosed; current output does not separate or identify speakers. | P2 |
 | Compare authorized recordings for likely same speaker | Missing as desktop workflow | Optional audio representations/diarization loader | Treat comparison as consent-based probabilistic analysis, report sections and uncertainty; no identity inference or lookup from voice. | P2 |
 | Shortcut -> microphone -> streaming transcription -> intent/action | Missing | Desktop shortcut exists; no streaming microphone workflow | Explicit recording state, local VAD/STT, partial/final transcript, correction and cancellation; return to the same chat. | P2 |
 | Low latency, punctuation, corrections, context and interruption | Missing | No complete voice session controller | Add session state machine, measure time-to-first-text, retain user edits, and cancel current generation/action proposal when interrupted. | P2 |
@@ -258,7 +282,7 @@ Adding a new page or demo for each capability would violate the product directio
 | Requested component | Present state | Required integration |
 |---|---|---|
 | `SearchProgress`, `SourceCard` | Activity rows and source-card work | Actual query/source lifecycle, counts, source status and evidence excerpts. |
-| `MediaViewer` | Granted image thumbnail | Zoom, orientation, local playback and source-artifact links. |
+| `MediaViewer` | Granted image thumbnail and new sampled-video contact sheet with frame artifacts | Zoom, orientation and continuous local playback. |
 | `DetectionOverlay`, `ObjectInspector` | Missing | Boxes/masks/OCR coordinates, selected crop and contextual actions. |
 | `PersonInspector` | Missing | Non-identifying visible attributes/source context; supplied-name research separate from face data. |
 | `TrackingTimeline` | Missing | Video frames, object tracks and transcript segments sharing timestamps. |
@@ -266,8 +290,8 @@ Adding a new page or demo for each capability would violate the product directio
 | `MapExplorer`, `SatelliteViewer` | Missing | Source/date/precision-aware map and georeferenced comparison. |
 | `DatasetViewer` | Preview/profile card work | Scrollable schema/table/profile plus explicit transform preview and output. |
 | `TaskGraph` | FIFO task activity only | Parent/child dependency status, cancel/retry and preserved partial results. |
-| `FileArtifact` | Named data/report artifact cards, task-owned paths, inert preview, Save a copy | Typed MIME/source manifest and follow-up attachment; audio/video preview remains missing. |
-| `AudioWaveform`, `TranscriptViewer` | Missing | Local playback, timestamped transcript and anonymous speaker sections. |
+| `FileArtifact` | Named data/report/frame/transcript artifact cards, task-owned paths, inert preview, Save a copy | Shared typed MIME/source manifest and follow-up attachment; continuous audio/video playback remains missing. |
+| `AudioWaveform`, `TranscriptViewer` | Timestamped transcript rows and TXT/SRT/JSON previews connected; waveform missing | Local playback and seek, transcript search, anonymous speaker sections. |
 | `ComparisonViewer`, `ImageMatchGrid` | Missing | Side-by-side evidence, match region, retrieval method and uncertainty. |
 | `ProfileMatchGrid` | Missing | Public URL/name/handle evidence and contradictions, with no fabricated accounts. |
 | `OwlState` | Original vector owl, task-driven semantic states and accessible descriptions | Full requested expression set depends on connected voice/observation workflows; richer restrained animation remains unfinished. |
@@ -291,15 +315,16 @@ adapter. Performance must be measured on the target machine before calling it re
 | SAM/SAM 2 | Segmentation | Code/model license and current maintenance review missing | Model dependent CPU/GPU/RAM | Add only after detection result contracts and overlays exist. |
 | Ultralytics YOLO | Object detection | Registry declares AGPL-3.0 for selected model integration; packaging review needed | Selected checkpoint dependent | Existing loader is reusable after installed-only asset checks and distribution decision. |
 | ByteTrack/other trackers and re-identification | Tracking/non-person object matching | No integrated implementation or current review | Detector/video throughput dependent | Compare on known object clips and false positives before adoption. |
-| OpenCV | Image processing/video frames | Existing adapter; registry declares Apache-2.0 | CPU; optional acceleration | Immediate reuse for bounded video metadata/keyframes. |
+| OpenCV | Image processing/video frames | Existing adapter; registry declares Apache-2.0 | CPU; optional acceleration | Keep legacy modules separate; new desktop sampling uses PyAV to preserve decoded presentation timestamps. |
 | PaddleOCR | OCR regions/languages | Candidate, no completed adoption review | Model/language dependent | Compare with working native OCR; add when it improves region/language coverage. |
 | FAISS, Qdrant | Vector/similarity search | FAISS optional dependency; Qdrant tool/memory adapters and earlier audit | Index size dependent CPU/RAM/storage | Start with one local index behind common search contract; avoid two mandatory services. |
-| FFmpeg | Audio/video normalization and metadata | No bundled-build license review; codecs affect distribution | CPU/storage | Bounded argument-list subprocess adapter; validate exact binary and codec build. |
+| PyAV / linked FFmpeg libraries | Audio/video decoding and metadata | PyAV 19.0.1 source declares BSD-3-Clause; installed Windows wheel's `avcodec_license()` reports LGPL version 3 or later | CPU/storage | New desktop adapter bundles PyAV, with no external FFmpeg executable or system Python required. Retain exact build notices and review linked-library obligations; this is not blanket distribution clearance. |
 | yt-dlp | Authorized media acquisition | No adopted desktop adapter/current review | Network/storage | Optional explicit download tasks; no private-content/access-control bypass. |
 | ExifTool | Broader media metadata | No adopted desktop adapter/current review | CPU | Compare to current curated Pillow metadata; use bounded output/process and trusted binary. |
 | MapLibre, OpenStreetMap, Nominatim | Maps/geocoding | Code/data/service terms differ; no complete adoption review | Tile/data dependent | Native-hosted map only; select permitted tile/geocoder source and rate policy. |
 | eo-learn, Sentinel/Landsat/NASA providers | Earth observation | No complete adapter/license/quota review | Raster volume dependent | One dated, georeferenced before/after workflow before adding provider breadth. |
 | Whisper, faster-whisper, VAD | Local transcription/voice | Existing audio adapters; local-only loading not yet guaranteed | Model dependent CPU/GPU/RAM | Adapt explicit installed paths and timestamped output; no first-use network downloads. |
+| Vosk and small English model | Attached-recording transcription | Vosk 0.3.45 and `vosk-model-small-en-us-0.15` declare Apache-2.0; setup pins the publisher archive checksum | CPU; about 40 MB setup download | Bundle the runtime; provision the fixed model separately after explicit setup approval. Recognition never downloads an asset. |
 | Local TTS | Spoken responses | No selected adapter/voice license review | Voice dependent | Choose by measured latency and voice license; cloud TTS does not meet current requirement. |
 | pandas, SQLite | Data profiles/transforms/persistence | Existing dependencies/stdlib and working modules | Dataset dependent CPU/RAM | Reuse first; bounded local data adapter avoids importing heavy stacks for simple operations. |
 | Polars, DuckDB, Arrow | Larger data/Parquet/SQL workloads | Candidates; DuckDB included in earlier audit, not a desktop integration | Dataset dependent CPU/RAM/disk | Introduce when a measured workload needs them, under the same safe data/artifact contracts. |
@@ -314,8 +339,8 @@ adapter. Performance must be measured on the target machine before calling it re
 | Image analysis | Attached pixels/metadata | Pillow/native OCR/local vision | Installed detection/segmentation/embedding assets | Local | Model license, memory and pixel limits; observations are not verified identities/locations. |
 | Image similarity/origin | Reference image, hashes/candidates/page dates | Local model/vector and legacy search primitives | Local index; reviewed public reverse-search providers | Local plus explicit remote research | External image transfer must be separately disclosed; dates/creator claims need sources. |
 | Public web/profile research | User query/name/handle/URL or approved visual clue | Existing search and safe HTTP | Public indexed pages/APIs and authorized sessions | Remote retrieval, local reasoning | Actual accessible pages only; rate limits/keys/blocked sources; no fabricated profiles. |
-| Video understanding | Authorized video files | OpenCV frame/metadata adapter | Local detector/OCR/STT/tracker | Local | Frame/time/decode budgets, timestamps, anonymous tracks and candidate confidence. |
-| Audio/voice | Authorized file or explicitly activated microphone | Existing offline STT adapters | Installed-only STT/VAD/TTS/segmentation | Local | Recording state, consent, timestamps and no biometric identity claims. |
+| Video understanding | Authorized video files | New bounded PyAV sample/metadata adapter and local contact-sheet description | Local detector/OCR/tracker and composed source investigation | Local | 200 MB/30 minute inspection bounds, at most eight still samples, actual timestamps; no continuous tracking or audio in visual descriptions. |
+| Audio/voice | Authorized audio file or video audio track | New installed-only English transcription with explicit model setup | Explicit microphone sessions, VAD/TTS and anonymous segmentation | Local after explicit asset download | First five minutes of first audio track, timing/scope disclosures; no speaker identification. |
 | Maps/geolocation | Coordinates/clues and map data | Embedded GPS only | Licensed tiles/geocoder/geographic files | Local computation plus requested remote data | Precision, source, query disclosure, cache terms and historical/current distinction. |
 | Earth observation | Region, dates, georeferenced rasters | No desktop source | Reviewed Sentinel/Landsat/NASA/licensed source | Download plus local analysis | Acquisition date, band/resolution/cloud metadata, license and quota. |
 | Computer/browser actions | Authorized windows/session and observations | Deterministic launcher, optional browser module | Local OS/browser observation/action adapter | Local control, websites as requested | No assumed click success; exact target/action/verification; consequential submission review. |
@@ -332,9 +357,9 @@ adapter. Performance must be measured on the target machine before calling it re
 | “Research the public presence associated with this image.” | Non-biometric image clues can be inspected; search is separate | Object/logo/text/source research connected to citations; no face-to-private-person/account matching. |
 | “Find this person across the public web where appropriate.” | Text search from supplied name/handle is possible | Public profile URLs and supporting/contradictory non-biometric evidence; no fabricated match. |
 | “Find this object in these 50 videos.” | No end-to-end workflow | Bounded/resumable local indexing, reference-object matches, timestamps and confirmation of lookalikes. |
-| “Find where this video originated.” | No end-to-end workflow | Timestamped keyframe/audio clues, actual matching uploads and separate origin/creator claims. |
-| “Find where this video was filmed.” | No end-to-end workflow | Scene-specific candidate places with local observations, public corroboration and uncertainty. |
-| “Compare these recordings.” | Optional STT adapters only | Local waveform/transcript comparison and cited segments. |
+| “Find where this video originated.” | Local sampled-frame inspection and separate transcription are available; no origin workflow | Timestamped frame/audio clues, actual matching uploads and separate origin/creator claims. |
+| “Find where this video was filmed.” | Local sampled-frame descriptions are unverified clues; no complete workflow | Scene-specific candidate places with local observations, public corroboration and uncertainty. |
+| “Compare these recordings.” | One recording can be transcribed locally; comparison remains missing | Local waveform/transcript comparison and cited segments. |
 | “Find whether the same authorized speaker occurs.” | No end-to-end workflow | Consent-based probabilistic comparison with uncertainty and supporting sections, no identity claim. |
 | “Search my computer for this object.” | Filename/file inspection is narrower | Granted local-media/document index and ranked occurrence evidence. |
 | “Search the web for this object.” | Text web search available; image-to-query not composed | Reviewable visual clue query, source cards and actual object relevance checks. |
@@ -365,9 +390,11 @@ observe/action loop). They are not separate product modes.
    `cognition.EvidenceGraph`; persist sources/claims/relations under the task and
    present source cards plus report export. Add supplied-name/handle public-profile
    queries without biometric matching. Prove partial-source failure preserves work.
-4. **Local video and audio inspection (P1/P2).** Wrap real OpenCV frame/metadata
-   methods and installed-only transcription in existing workers. Present keyframes
-   and timestamped transcript before adding tracking or live microphone complexity.
+4. **Local video and audio inspection (P1/P2), current source slice.** Validate the
+   bounded PyAV/Vosk adapter through the replacement installer: explicit English
+   model setup, sampled frames with actual timestamps, local sampled-frame
+   descriptions and timestamped transcripts. Playback, tracking, comparisons and
+   live microphone are subsequent integrations.
 5. **Image/object investigation (P2).** Add local detection/embeddings, overlays,
    similarity candidates and cross-file occurrence search. Compose explicit public
    clue/reverse-search requests and source timelines through the same evidence flow.
@@ -394,21 +421,34 @@ changes have additional integration coverage. On 2026-10-10 the final dock,
 presentation, routing, queue and task run passed 116 checks with one platform skip;
 the completed-response restoration check added afterward also passed. Visual
 inspection covered the default 720 × 620 native dock and Settings. This does not
-verify every DPI or multi-monitor arrangement. The packaged smoke test remains
-required after building the intended committed sources.
+verify every DPI or multi-monitor arrangement. The 2026-10-10 release `f42371654`
+subsequently passed nine packaged checks covering calculator, data transformation,
+TXT/PDF/DOCX reading, OCR, streamed local chat, local image analysis and research.
+Native installer/launch and upgrade checks verified all 2,782 installed application
+files and preservation of 26 personal files. The media adapters subsequently
+passed real synthetic WAV transcription, MP4 frame sampling and transcription of
+that video's AAC track. The native dock displayed transcript rows, artifacts and
+speech readiness. Source media/dock checks passed 208 tests with two platform
+skips; task/provider/security regressions passed 248 tests with one skip.
+The independent media release gate checks the frozen runtime outside the
+repository against those same fixtures, plus local sampled-frame description,
+native launch, payload integrity and preservation of personal files on upgrade.
 
 Specific reuse hazards discovered in actual source:
 
 - `sweep_core/integrations/audio.py` describes offline transcription but its quick
   and accelerated model helpers may download on first use; adapt explicit local
-  paths before desktop exposure. The Vosk helper currently discards word timing.
+  paths before desktop exposure. The legacy Vosk helper discards word timing.
+  The new desktop `speech.py` avoids those helpers and retains word timing in its
+  JSON artifact; only `media_setup.py` performs the explicit model download.
 - `sweep_core/integrations/vision.py::_download` uses an unverified TLS context.
   Do not connect this downloader or its face-research path to the desktop unchanged.
 - `companion/tools/data.py::run_data_analysis` profiles, optionally groups and
   charts; it does not implement the cleaning promised by its docstring.
 - `OpenCVEngine.extract_frames` returns image arrays without timestamps and reads
-  through video frames. A desktop wrapper needs bounded seeking/work and timestamp
-  artifacts before large-video use.
+  through video frames. The new desktop `media.py` instead uses bounded PyAV
+  seeking/decoding and records actual presentation timestamps. This does not make
+  the separate legacy extraction path safe for unbounded desktop use.
 - `sweep_cognitive/perception/document.py` is representation/structure processing;
   it is not proof of native PDF/DOCX extraction readiness.
 - The `app` research store is in memory, while desktop task JSON is persistent.

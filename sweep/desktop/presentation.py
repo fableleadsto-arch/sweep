@@ -90,6 +90,7 @@ class ChatTranscript(QScrollArea):
         self._plain_text = ""
         self._signature = None
         self._following = True
+        self._expanded_artifacts: set[tuple[str, ...]] = set()
         self.verticalScrollBar().rangeChanged.connect(self._range_changed)
         self.content = QWidget()
         self.content.setObjectName("chatContent")
@@ -121,6 +122,65 @@ class ChatTranscript(QScrollArea):
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(lambda: self.anchorClicked.emit(QUrl(url)))
         parent.addWidget(button)
+
+    def _artifact(self, artifact: dict) -> QFrame:
+        frame = QFrame()
+        frame.setObjectName("artifactCard")
+        line = QHBoxLayout(frame)
+        line.setContentsMargins(13, 11, 13, 11)
+        description = QVBoxLayout()
+        name = QLabel(str(artifact.get("name", "Created file")))
+        name.setTextFormat(Qt.TextFormat.PlainText)
+        name.setWordWrap(True)
+        description.addWidget(name)
+        caption = QLabel(str(artifact.get("type", "File")).upper() + " · Created on this device")
+        caption.setObjectName("attachmentCaption")
+        caption.setTextFormat(Qt.TextFormat.PlainText)
+        description.addWidget(caption)
+        line.addLayout(description, 1)
+        self._action("View file ↗", str(artifact["url"]), line)
+        return frame
+
+    def _artifacts(self, artifacts: list[dict], body: QVBoxLayout):
+        if len(artifacts) <= 3:
+            for artifact in artifacts:
+                body.addWidget(self._artifact(artifact))
+            return
+
+        for artifact in artifacts[:2]:
+            body.addWidget(self._artifact(artifact))
+        key = tuple(str(artifact["url"]) for artifact in artifacts)
+        count = len(artifacts) - 2
+        expanded = key in self._expanded_artifacts
+        toggle = QPushButton()
+        toggle.setObjectName("cardAction")
+        toggle.setProperty("artifactToggle", True)
+        toggle.setCheckable(True)
+        toggle.setChecked(expanded)
+        toggle.setCursor(Qt.CursorShape.PointingHandCursor)
+        toggle.setAccessibleDescription("Show or hide additional files generated for this response.")
+        body.addWidget(toggle, alignment=Qt.AlignmentFlag.AlignLeft)
+        extra = QWidget()
+        extra.setObjectName("extraArtifacts")
+        extra_layout = QVBoxLayout(extra)
+        extra_layout.setContentsMargins(0, 0, 0, 0)
+        extra_layout.setSpacing(body.spacing())
+        for artifact in artifacts[2:]:
+            extra_layout.addWidget(self._artifact(artifact))
+        body.addWidget(extra)
+
+        def show_files(checked: bool):
+            if checked:
+                self._expanded_artifacts.add(key)
+            else:
+                self._expanded_artifacts.discard(key)
+            title = f"Hide {count} extra files" if checked else f"Show {count} more files"
+            toggle.setText(title)
+            toggle.setAccessibleName(title)
+            extra.setVisible(checked)
+
+        toggle.toggled.connect(show_files)
+        show_files(expanded)
 
     def _welcome(self):
         frame = QFrame()
@@ -241,23 +301,7 @@ class ChatTranscript(QScrollArea):
                 table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
             table.setFixedHeight(min(220, table.horizontalHeader().height() + sum(table.rowHeight(row) for row in range(len(rows))) + 4))
             body.addWidget(table)
-        for artifact in message.get("artifacts", []):
-            frame = QFrame()
-            frame.setObjectName("artifactCard")
-            line = QHBoxLayout(frame)
-            line.setContentsMargins(13, 11, 13, 11)
-            description = QVBoxLayout()
-            name = QLabel(str(artifact.get("name", "Created file")))
-            name.setTextFormat(Qt.TextFormat.PlainText)
-            name.setWordWrap(True)
-            description.addWidget(name)
-            caption = QLabel(str(artifact.get("type", "File")).upper() + " · Created on this device")
-            caption.setObjectName("attachmentCaption")
-            caption.setTextFormat(Qt.TextFormat.PlainText)
-            description.addWidget(caption)
-            line.addLayout(description, 1)
-            self._action("View file ↗", str(artifact["url"]), line)
-            body.addWidget(frame)
+        self._artifacts(message.get("artifacts", []), body)
         actions = message.get("actions", [])
         if actions or (value and not user and message.get("state") not in {"running", "queued"}):
             buttons = QHBoxLayout()
@@ -289,6 +333,10 @@ class ChatTranscript(QScrollArea):
             if scroll_to_latest:
                 bar.setValue(bar.maximum())
             return
+        self._expanded_artifacts.intersection_update(
+            tuple(str(artifact["url"]) for artifact in message.get("artifacts", []))
+            for message in messages if len(message.get("artifacts", [])) > 3
+        )
         self._signature = signature
         while self.layout.count():
             item = self.layout.takeAt(0)

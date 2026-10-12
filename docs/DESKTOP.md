@@ -38,7 +38,8 @@ upgrading or uninstalling.
   question about its text, objects or location clues. Use `inspect locally` or
   `metadata only` for metadata and local OCR without a visual-model request.
   Documents and datasets receive readable previews, profiles and output-file
-  cards in the conversation. See the file examples below.
+  cards in the conversation. Recordings can produce local transcripts; videos can
+  produce sampled-frame previews and descriptions. See the file examples below.
 - **History** searches and reopens saved conversations and earlier task results. The plus
   button starts a new chat. Each chat keeps its own recent model context, including
   completed tool results. Context is captured when a message is submitted.
@@ -57,8 +58,9 @@ upgrading or uninstalling.
 **Ctrl+K** focuses its input. If another app owns the global shortcut, use the tray
 icon. Closing the dock collapses it; **Quit Sweep** in the tray exits the app.
 Notifications and optional launch-at-sign-in are controlled in Settings.
-Workers have a 120-second runtime budget for tools, 240 seconds for conversation and documents
-and 300 seconds for image analysis, plus a five-second watchdog grace period.
+Workers have a 120-second runtime budget for ordinary tools, 240 seconds for
+conversation, documents and speech setup, and 300 seconds for image analysis,
+sampled-video descriptions and transcription, plus a five-second watchdog grace period.
 Local model answers can take longer on a CPU, especially when loading a model.
 
 ## Local processing and permissions
@@ -177,6 +179,58 @@ text. UTF-8 and BOM-marked UTF-16 text are supported. Unsupported requests such
 as joins, sorting, imputation, Excel/Parquet conversion or compound filters return
 an explanation instead of claiming a partial transformation completed everything.
 
+## Recordings and video in the same chat
+
+Use **Settings → Set up speech** before the first transcription. Sweep asks before
+downloading its fixed English speech model, about 40 MB, from `alphacephei.com`.
+The setup task shows progress and checks a pinned archive checksum. The model is
+stored separately under `%LOCALAPPDATA%/Sweep/models/speech`; recordings are never
+uploaded. Transcription and readiness checks do not download models. If setup is
+missing, the result offers **Set up speech**; after setup, use **Try again** on the
+original recording task. This build has one English model, not a language or model
+picker.
+
+Attach a local audio or video file, then send a request in the usual chat:
+
+| Attached file | Request | Result |
+|---|---|---|
+| Video | `Inspect this video` or `Show keyframes` | Media details, up to eight sampled frames, a contact sheet and a JSON frame manifest |
+| Video | `Describe this video` | The same samples plus a local visual description of their visible content |
+| Audio or video | `Transcribe this recording` or `Create subtitles` | English transcript, timestamped segments and TXT, SRT and JSON artifacts |
+| Audio recording | `Summarize this recording` or `What was said about the deadline?` | Local transcription followed by a local answer using the first 5,000 recognized characters |
+| Audio | `Inspect metadata` | Audio format and stream details without transcription |
+
+The dock shows the video contact sheet or the first 15 transcript segments. Open
+artifact cards to preview the saved frames, manifest, transcript or subtitles and
+**Save a copy**. Full recognized text and word timings are retained in the JSON
+artifact within the transcription limits; the chat may show only an excerpt.
+Input files remain unchanged and source/output hashes are recorded.
+
+Supported audio extensions are WAV, MP3, FLAC, OGG/OGA, M4A, AAC, Opus and WMA;
+video extensions are MP4/M4V, MOV, MKV, WebM, AVI, WMV and MPEG/MPG. Actual decoding
+depends on the file's codec and validity. Inputs are limited to 200 MB. Media
+inspection accepts a reported duration up to 30 minutes, bounds frame decoding
+and samples at most eight frames within a 45-second decoding budget. Decoded
+frames must not exceed 8,294,400 pixels (the area of a 3840 × 2160 frame). Frames use their actual decoded presentation
+timestamps; missing times remain unknown. Video descriptions analyze those
+sampled stills only. They do not inspect continuous motion, track objects or hear
+the audio. Request transcription separately for spoken content in a video.
+
+Transcription processes at most the first five minutes of the first audio track,
+with a four-minute processing budget, further output limits and explicit partial-result labels. Recognition
+can mishear words, names and numbers; review it against the recording. Speakers
+are not identified or separated. If source timing is missing or discontinuous,
+timestamps are relative to concatenated decoded audio and may not align with
+video playback; the result and JSON record that limitation. SRT includes only
+segments with valid word timings. If a subsequent local answer fails, the
+transcript remains available.
+
+The installer bundles the Python media decoder and speech runtime. No system
+Python or separate FFmpeg executable is required. The speech model is a separate,
+explicit setup download; local chat and image models retain their own setup above.
+Microphone capture, live voice conversation, spoken replies, in-dock media
+playback, object tracking and cross-recording comparison are not implemented.
+
 ## Reproduce the Windows build
 
 ```powershell
@@ -200,12 +254,22 @@ releases are available from https://code.qt.io/pyside/pyside-setup.git/ and
 https://code.qt.io/qt/ . Preserve notices and review release obligations before
 public distribution. No signing certificate is configured in this repository.
 
+The media build uses PyAV 19.0.1 and Vosk 0.3.45. PyAV's source license is BSD-3-Clause;
+Vosk and the fixed small English model declare Apache-2.0. The Windows media wheel
+also bundles native codec libraries, including x264 and x265. Its FFmpeg build has
+modified license classification, so its reported LGPL string is not a reliable
+license summary for the bundled libraries. Curated notices and source references
+are included under `licenses/media`. This private local build does not establish
+public redistribution compliance; corresponding-source and linked-library
+obligations require review before distributing it publicly.
+
 ## Scope
 
 The native dock connects desktop skills, public-web search, scraping, bounded
 research, selected-file inspection, document extraction, bounded data transformations,
-local OCR, conversation and approved local image analysis. It does not claim completed video tracking, maps/satellite, biometric
-identification, voice control, or a general autonomous computer agent. Those
+local OCR, conversation, approved local image analysis, sampled-video inspection
+and English recording transcription. It does not claim completed video tracking,
+maps/satellite, biometric identification, live voice control, or a general autonomous computer agent. Those
 research modules remain separate until integrated and validated through the same
 capability/task/permission/event contracts. macOS/Linux can run the Qt source
 shell; installers, global shortcuts and startup integration are Windows-only in

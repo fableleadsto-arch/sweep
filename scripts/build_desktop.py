@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECORDED_DISTRIBUTIONS = (
     "PySide6-Essentials", "shiboken6", "pyinstaller", "httpx", "httpcore", "h11",
     "certifi", "anyio", "pydantic", "pydantic-settings", "python-dotenv",
-    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow", "pypdf",
+    "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow", "pypdf", "av", "vosk", "cffi",
 )
 
 
@@ -110,8 +110,9 @@ def main(argv=None):
                "--name", "Sweep", "--icon", str(build / "sweep.ico"),
                "--distpath", str(ROOT / "dist"), "--workpath", str(build / "pyinstaller"),
                "--specpath", str(build), "--paths", str(ROOT),
+               "--additional-hooks-dir", str(ROOT / "scripts" / "pyinstaller_hooks"),
                "--collect-data", "trafilatura", "--collect-data", "courlan", "--collect-data", "tld",
-               "--collect-data", "justext"]
+               "--collect-data", "justext", "--collect-all", "av", "--collect-all", "vosk"]
     for module in ("torch", "tensorflow", "transformers", "sentence_transformers", "companion.vendor",
                    "sweep_neural_mesh", "sweep_cognitive", "pandas", "scipy", "sklearn",
                    "numpy", "matplotlib", "IPython", "pytest", "PySide6.QtQml", "PySide6.QtQuick"):
@@ -122,6 +123,7 @@ def main(argv=None):
     shutil.copy2(ROOT / "docs" / "DESKTOP.md", destination / "README.txt")
     licenses = destination / "licenses"
     licenses.mkdir(exist_ok=True)
+    shutil.copytree(ROOT / "resources" / "licenses" / "media", licenses / "media", dirs_exist_ok=True)
     for distribution in metadata.distributions():
         name = distribution.metadata.get("Name", "unknown")
         for entry in distribution.files or []:

@@ -117,6 +117,9 @@ def fake_build(tmp_path, monkeypatch):
     ))
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/DESKTOP.md").write_text("Desktop instructions")
+    notices = tmp_path / "resources/licenses/media"
+    notices.mkdir(parents=True)
+    (notices / "LICENSE.txt").write_text("Required media notices")
     (tmp_path / "pyproject.toml").write_text('[project]\nversion = "2.0.0"\n')
     (tmp_path / "dist").mkdir()
     (tmp_path / "dist/SHA256SUMS.txt").write_text("stale checksums")
@@ -133,6 +136,7 @@ def fake_build(tmp_path, monkeypatch):
         else:
             with ZipFile(tmp_path / "build/desktop/payload.zip") as archive:
                 assert json.loads(archive.read("build-info.json"))["source"]["dirty"] is True
+                assert archive.read("licenses/media/LICENSE.txt") == b"Required media notices"
             (tmp_path / "dist/Sweep-Setup.exe").write_bytes(b"current setup")
 
     monkeypatch.setattr(build_desktop.subprocess, "run", run)
@@ -144,6 +148,7 @@ def test_build_writes_metadata_before_packaging_and_checksums_only_current_outpu
     root, calls = fake_build
     assert build_desktop.main(["--app-only"] if app_only else []) == 0
     assert len(calls) == (1 if app_only else 2)
+    assert "--additional-hooks-dir" in calls[0]
     checksums = (root / "dist/SHA256SUMS.txt").read_text()
     assert "Sweep/Sweep.exe" in checksums
     assert "Sweep/build-info.json" in checksums

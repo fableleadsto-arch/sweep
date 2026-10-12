@@ -19,7 +19,18 @@ def understand(text: str, attachments: list[str] | None = None) -> tuple[str, st
         raise ValueError("Write a message or attach a file first.")
     if attachments:
         from .data_tools import DATA_SUFFIXES, DOCUMENT_SUFFIXES, parse_data_request
+        from .media import AUDIO_SUFFIXES, VIDEO_SUFFIXES
         suffix = Path(attachments[0]).suffix.lower()
+        if suffix in AUDIO_SUFFIXES | VIDEO_SUFFIXES:
+            if re.search(r"\b(?:transcrib\w*|transcript|subtitles?|captions?|speech|said|saying|spoken)\b|what.*hear", core, re.I):
+                return "audio.transcribe", original
+            metadata_only = re.search(r"\b(?:inspect|metadata|duration|format|keyframes?|storyboard)\b|\b(?:show|extract|sample)\b.*\bframes?\b", core, re.I)
+            if suffix in AUDIO_SUFFIXES:
+                return ("media.inspect" if metadata_only else "audio.transcribe"), original
+            if re.search(r"\bmetadata only\b|\bonly (?:the )?metadata\b", core, re.I):
+                return "media.inspect", original
+            describe = re.search(r"\b(?:describ\w*|explain\w*|summari[sz]\w*|summary|happen\w*|see|visible|objects?|identify)\b", core, re.I)
+            return ("media.inspect" if metadata_only and not describe else "media.analyze"), original
         if suffix in DATA_SUFFIXES:
             try:
                 operation = parse_data_request(original)["operation"]
@@ -30,6 +41,8 @@ def understand(text: str, attachments: list[str] | None = None) -> tuple[str, st
             return "documents.inspect", original
         return ("images.inspect" if suffix in {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
                 else "files.inspect"), original
+    if re.search(r"\b(?:this|that|attached) (?:audio|video|clip|recording|voice memo)\b", core, re.I):
+        return "chat.clarify", "Attach the recording or video here. I can inspect local media, sample video frames, or transcribe English speech with timestamps."
     if re.search(r"\b(?:this|that|attached) (?:document|pdf|csv|dataset|spreadsheet|data file)\b", core, re.I):
         return "chat.clarify", "Attach the document or data file here. I can read PDF, DOCX and text, or inspect, clean, filter and convert supported data files locally."
     if re.search(r"\b(?:this|that) (?:image|photo|picture|screenshot)\b", core, re.I):
