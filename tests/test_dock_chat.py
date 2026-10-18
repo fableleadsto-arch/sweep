@@ -230,3 +230,57 @@ def test_chat_cleans_data_in_worker_and_previews_created_artifact(dock, tmp_path
     monkeypatch.setattr(QDialog, "exec", inspect)
     window.chat_link(QUrl(f"sweep:artifact/{task['id']}/0"))
     assert seen
+
+
+def test_queued_data_followup_uses_previous_output_in_real_worker(dock, tmp_path, monkeypatch):
+    app, window = dock
+    selected = tmp_path / "orders.csv"
+    selected.write_text("item,quantity\nbolt,2\nbolt,2\nnut,3\n", encoding="utf-8")
+    monkeypatch.setattr(QMessageBox, "exec", lambda dialog: QMessageBox.StandardButton.Yes)
+    window.set_attachment(selected)
+    window.prompt.setPlainText("Remove duplicate rows")
+    window.submit()
+    source_id = window.last_enqueued_id
+    # Submit while extraction is still running; the references must survive the queue.
+    window.prompt.setPlainText("Now convert it to JSON")
+    window.submit()
+    followup_id = window.last_enqueued_id
+    assert followup_id != source_id
+    finish(app, window)
+    task = window.task_store.get(followup_id)
+    assert task["state"] == "completed" and task["source_output"] is True
+    assert task["source_tasks"] == [source_id] and task["thread_id"] == window.thread_id
+    result = json.loads((window.task_store.directory(followup_id) / "result.json").read_text(encoding="utf-8"))
+    assert result["input_rows"] == 2 and result["output_rows"] == 2
+
+
+def test_multiple_documents_queue_real_extractions_and_scoped_answer(dock, tmp_path, monkeypatch):
+    app, window = dock
+    paths = [tmp_path / "invoice.txt", tmp_path / "packing.txt"]
+    for path, text in zip(paths, ["Quantity: 12", "Quantity: 10"]):
+        path.write_text(text, encoding="utf-8")
+    monkeypatch.setattr(window, "approve_task", lambda capability, *args, **kwargs: capability != "context.answer")
+    window.set_attachments(paths)
+    window.prompt.setPlainText("Compare the quantities in these documents")
+    window.submit()
+    answer_id = window.last_enqueued_id
+    finish(app, window)
+    answer = window.task_store.get(answer_id)
+    assert answer["capability"] == "context.answer" and answer["state"] == "cancelled"
+    assert len(answer["source_tasks"]) == 2
+    results = []
+    for source_id in answer["source_tasks"]:
+        source = window.task_store.get(source_id)
+        assert source["state"] == "completed" and source["thread_id"] == window.thread_id
+        results.append(json.loads((window.task_store.directory(source_id) / "result.json").read_text(encoding="utf-8"))["text"])
+    assert results == ["Quantity: 12", "Quantity: 10"]
+
+
+def test_mixed_multiple_attachments_are_kept_for_correction(dock, tmp_path):
+    app, window = dock
+    window.set_attachments([tmp_path / "invoice.txt", tmp_path / "photo.jpg"])
+    window.prompt.setPlainText("Compare these")
+    window.submit()
+    assert len(window.attachments) == 2
+    assert not window.task_store.list()
+    assert "one file" in window.transcript.toPlainText()

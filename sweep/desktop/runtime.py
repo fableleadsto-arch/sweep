@@ -42,12 +42,13 @@ CAPABILITIES = {item.id: item for item in (
     Capability("providers.check", "Check local processing", "NONE", "local", "Check local intelligence and downloaded models."),
     Capability("providers.start", "Start local processing", "COMPUTER_CONTROL", "local", "Start the installed local engine without downloading models."),
     Capability("conversation", "Conversation", "READ", "local", "Talk with Sweep using local intelligence."),
+    Capability("context.answer", "Answer from earlier results", "READ", "local", "Answer or compare saved observations from this conversation."),
 )}
 
 
 def task_timeout(capability: str) -> int:
     """CPU inference needs more time than ordinary desktop and network tools."""
-    return {"conversation": 240, "images.analyze": 300, "documents.inspect": 240,
+    return {"conversation": 240, "context.answer": 240, "images.analyze": 300, "documents.inspect": 240,
             "media.analyze": 300, "audio.transcribe": 300, "speech.setup": 240}.get(capability, 120)
 
 
@@ -125,6 +126,22 @@ async def execute(request: dict, emit: Callable[[dict], None]) -> dict:
         emit({"kind": "progress", "message": message, **extra})
 
     progress(CAPABILITIES[capability].title, execution=CAPABILITIES[capability].execution)
+    if capability == "context.answer":
+        from .context import execute_context
+        return await execute_context(request, progress, on_preview=lambda value: emit({"kind": "response.preview", "text": value}))
+    if request.get("source_tasks"):
+        from .context import load_sources
+        from .platform import data_directory
+        progress("Checking the earlier results for this follow-up")
+        sources = await asyncio.to_thread(load_sources, data_directory(), request.get("thread_id"), request["source_tasks"])
+        if request.get("source_output"):
+            if capability not in {"data.inspect", "data.transform"} or len(sources) != 1:
+                raise ValueError("A data follow-up needs exactly one earlier output.")
+            from .followups import data_output
+            selected = await asyncio.to_thread(data_output, data_directory(), sources[0])
+            request = {**request, "granted_paths": [selected]}
+    elif request.get("source_output"):
+        raise ValueError("Choose an earlier data output before continuing it.")
     if capability in {"media.inspect", "media.analyze", "audio.transcribe", "speech.setup"}:
         from .media_tasks import execute_media
         return await execute_media(request, progress)
@@ -258,7 +275,11 @@ async def execute(request: dict, emit: Callable[[dict], None]) -> dict:
                 for item in history if item.get("role") in {"user", "assistant"}]
     try:
         result = await generate_chat(data_directory(),
-            system=("You are Sweep, a helpful desktop companion. Talk naturally and answer the user. "
+            system=("You are Sweep, the user's local desktop companion. Talk naturally, warmly and directly. "
+                "Use the conversation's supplied names, preferences and task context; do not ask for them again. "
+                "For ordinary conversation, give a helpful answer or a concrete next step before asking questions. "
+                "Keep simple replies to one to three sentences, and give more detail when the user asks for it. "
+                "Do not mention the underlying model or engine unless asked. Do not invent memories or abilities. "
                 "Return JSON with a message string. If the latest user message asks you to perform a task, "
                 "you may also return proposal:{capability,text}. Allowed capabilities: computer.command "
                 "(open a website or installed app, calculate, time/date, notes, system info), web.search, "

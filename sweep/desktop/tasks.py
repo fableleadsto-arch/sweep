@@ -40,6 +40,28 @@ def _check_id(task_id: str) -> str:
     return task_id
 
 
+def _validate_references(task: dict, task_id: str) -> None:
+    """Validate context IDs without granting access to their contents or files."""
+    thread_id = task.get("thread_id")
+    if thread_id is not None:
+        if not isinstance(thread_id, str) or not _TASK_ID.fullmatch(thread_id):
+            raise ValueError("Invalid task conversation ID.")
+    sources = task.get("source_tasks", [])
+    if not isinstance(sources, list) or len(sources) > 4:
+        raise ValueError("Task sources must be a list of up to four task IDs.")
+    for source in sources:
+        _check_id(source)
+    if len(set(sources)) != len(sources) or task_id in sources:
+        raise ValueError("Task source IDs must be unique and cannot reference this task.")
+    if sources and thread_id is None:
+        raise ValueError("Task sources require a conversation ID.")
+    source_output = task.get("source_output", False)
+    if not isinstance(source_output, bool):
+        raise ValueError("Invalid task source output selection.")
+    if source_output and (len(sources) != 1 or task.get("capability") not in {"data.inspect", "data.transform"}):
+        raise ValueError("A data task must reference exactly one source task to use its output.")
+
+
 def _redirected(path: Path) -> bool:
     return path.is_symlink() or path.is_junction()
 
@@ -98,6 +120,7 @@ class TaskStore:
             raise ValueError("Invalid task error.")
         if task.get("retry_of") is not None:
             _check_id(task["retry_of"])
+        _validate_references(task, task_id)
         approved = task.setdefault("approved", False)
         if not isinstance(approved, bool):
             raise ValueError("Invalid task approval.")
@@ -159,6 +182,9 @@ class TaskStore:
         granted_paths: list[str] | None = None,
         history: list[dict] | None = None,
         retry_of: str | None = None,
+        thread_id: str | None = None,
+        source_tasks: list[str] | None = None,
+        source_output: bool = False,
     ) -> dict:
         """Queue a new request. Execution approval must be obtained at dispatch."""
         if retry_of is not None:
@@ -169,12 +195,17 @@ class TaskStore:
             "text": text,
             "granted_paths": [] if granted_paths is None else granted_paths,
             "history": [] if history is None else history,
+            "source_tasks": [] if source_tasks is None else source_tasks,
+            "source_output": source_output,
             "state": "queued",
             "approved": False,
             "created": _now(),
         }
         if retry_of is not None:
             task["retry_of"] = retry_of
+        if thread_id is not None:
+            task["thread_id"] = thread_id
+        _validate_references(task, task["id"])
         return self._save(task)
 
     def update(self, task_id: str, **changes: Any) -> dict:

@@ -363,7 +363,8 @@ class SweepWindow(QMainWindow):
         return self.approve_task(task["capability"], task["text"], selected_file)
 
     def start_task(self, capability, text, selected_file=False, *, retry_of=None,
-                   granted_paths=None, history=None):
+                   granted_paths=None, history=None, thread_id=None, source_tasks=None,
+                   source_output=False):
         if self.closing:
             return False
         if capability not in CAPABILITIES or not isinstance(text, str) or not text.strip():
@@ -379,7 +380,8 @@ class SweepWindow(QMainWindow):
             task = self.task_store.create(capability, text,
                 granted_paths=[str(Path(text).resolve())] if selected_file else granted_paths,
                 history=(self.conversation[-12:] if capability == "conversation" else []) if history is None else history,
-                retry_of=retry_of)
+                retry_of=retry_of, thread_id=thread_id, source_tasks=source_tasks,
+                source_output=source_output)
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, "Could not save task", str(exc))
             return False
@@ -699,7 +701,9 @@ class SweepWindow(QMainWindow):
             if task["state"] not in {"completed", "failed", "cancelled", "interrupted"}:
                 return
             self.start_task(task["capability"], task["text"], retry_of=task["id"],
-                granted_paths=task.get("granted_paths", []), history=task.get("history", []))
+                granted_paths=task.get("granted_paths", []), history=task.get("history", []),
+                thread_id=task.get("thread_id"), source_tasks=task.get("source_tasks", []),
+                source_output=task.get("source_output", False))
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, "Could not retry task", str(exc))
 

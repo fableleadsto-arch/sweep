@@ -27,6 +27,155 @@ def test_created_task_survives_reopening_without_shared_mutable_values(tmp_path)
     assert saved["history"] == [{"role": "user", "content": "Earlier question"}]
 
 
+def test_source_references_are_snapshots_and_do_not_inherit_authority(tmp_path):
+    store = TaskStore(tmp_path)
+    thread_id = "a" * 32
+    source = store.create("files.inspect", "Read the selected document",
+                          granted_paths=[str(tmp_path / "private.txt")], thread_id=thread_id)
+    store.update(source["id"], state="running", approved=True)
+    sources = [source["id"]]
+    grants = [str(tmp_path / "new-selection.txt")]
+    history = [{"role": "user", "content": "Summarize the result"}]
+    task = store.create("conversation", "Summarize the result", thread_id=thread_id,
+                        source_tasks=sources, granted_paths=grants, history=history)
+    sources.append("b" * 32)
+    grants.append(str(tmp_path / "extra.txt"))
+    history[0]["content"] = "Changed after enqueue"
+    task["source_tasks"].clear()
+    saved = TaskStore(tmp_path).get(task["id"])
+    assert saved["thread_id"] == thread_id
+    assert saved["source_tasks"] == [source["id"]]
+    assert saved["granted_paths"] == grants[:1]
+    assert source["granted_paths"][0] not in saved["granted_paths"]
+    assert saved["history"] == [{"role": "user", "content": "Summarize the result"}]
+    assert saved["state"] == "queued" and saved["approved"] is False
+    assert store.get(source["id"])["approved"] is True
+    for changes in ({"source_tasks": []}, {"thread_id": "b" * 32}, {"source_output": True}):
+        with pytest.raises(ValueError, match="immutable"):
+            store.update(task["id"], **changes)
+        assert store.get(task["id"]) == saved
+
+
+@pytest.mark.parametrize("thread_id", ["", "A" * 32, "a" * 31, "a" * 33, "../outside", 1, False, []])
+def test_invalid_conversation_id_is_rejected_before_writing(tmp_path, thread_id):
+    with pytest.raises(ValueError, match="conversation ID"):
+        TaskStore(tmp_path).create("conversation", "Question", thread_id=thread_id)
+    assert not (tmp_path / "tasks").exists()
+
+
+@pytest.mark.parametrize("sources", ["a" * 32, ("a" * 32,), {}, [None], [[]], [False],
+                                    ["../outside"], ["A" * 32], ["a" * 32] * 2,
+                                    [f"{index:032x}" for index in range(5)]])
+def test_invalid_source_references_are_rejected_before_writing(tmp_path, sources):
+    with pytest.raises(ValueError):
+        TaskStore(tmp_path).create("conversation", "Question", thread_id="f" * 32,
+                                   source_tasks=sources)
+    assert not (tmp_path / "tasks").exists()
+
+
+def test_source_references_need_a_thread_and_cannot_reference_self(tmp_path, monkeypatch):
+    store = TaskStore(tmp_path)
+    with pytest.raises(ValueError, match="require a conversation"):
+        store.create("conversation", "Question", source_tasks=["a" * 32])
+    monkeypatch.setattr(tasks.uuid, "uuid4", lambda: SimpleNamespace(hex="a" * 32))
+    with pytest.raises(ValueError, match="cannot reference this task"):
+        store.create("conversation", "Question", thread_id="b" * 32, source_tasks=["a" * 32])
+    assert not (tmp_path / "tasks").exists()
+
+
+@pytest.mark.parametrize("invalid", [{"thread_id": False}, {"thread_id": "../outside"},
+                                    {"source_tasks": None}, {"source_tasks": "a" * 32},
+                                    {"source_tasks": ["a" * 32]},
+                                    {"thread_id": "a" * 32, "source_tasks": ["b" * 32] * 2}])
+def test_invalid_saved_references_are_not_read_or_recovered(tmp_path, invalid):
+    store = TaskStore(tmp_path)
+    task = store.create("conversation", "Question")
+    task.update(invalid)
+    path = store.directory(task["id"]) / "task.json"
+    path.write_text(json.dumps(task), encoding="utf-8")
+    before = path.read_bytes()
+    with pytest.raises(ValueError):
+        store.get(task["id"])
+    assert store.list() == []
+    assert store.recover_interrupted() == 0
+    assert path.read_bytes() == before
+
+
+def test_thread_without_sources_and_legacy_records_remain_readable(tmp_path):
+    store = TaskStore(tmp_path)
+    task = store.create("conversation", "Question", thread_id="a" * 32)
+    assert task["source_tasks"] == []
+    assert task["source_output"] is False
+    path = store.directory(task["id"]) / "task.json"
+    del task["source_tasks"]
+    path.write_text(json.dumps(task), encoding="utf-8")
+    assert store.get(task["id"])["thread_id"] == "a" * 32
+    del task["thread_id"]
+    del task["source_output"]
+    path.write_text(json.dumps(task), encoding="utf-8")
+    assert store.get(task["id"]) == task
+
+
+@pytest.mark.parametrize("capability", ["data.inspect", "data.transform"])
+def test_data_output_reference_survives_recovery_without_becoming_a_file_grant(tmp_path, capability):
+    store = TaskStore(tmp_path)
+    task = store.create(capability, "Convert it to JSON", thread_id="a" * 32,
+                        source_tasks=["b" * 32], source_output=True)
+    assert task["granted_paths"] == [] and task["source_output"] is True
+    store.update(task["id"], state="running", approved=True)
+    assert TaskStore(tmp_path).recover_interrupted() == 1
+    saved = store.get(task["id"])
+    assert saved["source_output"] is True and saved["source_tasks"] == ["b" * 32]
+    assert saved["granted_paths"] == [] and saved["approved"] is False
+    with pytest.raises(ValueError, match="immutable"):
+        store.update(task["id"], source_output=False)
+
+
+@pytest.mark.parametrize("source_output", [None, 0, 1, "true", [], {}])
+def test_source_output_requires_boolean_on_create_and_read(tmp_path, source_output):
+    store = TaskStore(tmp_path)
+    with pytest.raises(ValueError, match="source output"):
+        store.create("data.transform", "Convert it to JSON", thread_id="a" * 32,
+                     source_tasks=["b" * 32], source_output=source_output)
+    task = store.create("data.transform", "Convert it to JSON", thread_id="a" * 32,
+                        source_tasks=["b" * 32])
+    task["source_output"] = source_output
+    (store.directory(task["id"]) / "task.json").write_text(json.dumps(task), encoding="utf-8")
+    with pytest.raises(ValueError, match="source output"):
+        store.get(task["id"])
+
+
+@pytest.mark.parametrize("capability,sources", [("conversation", ["b" * 32]),
+                                               ("files.inspect", ["b" * 32]),
+                                               ("data.inspect", []),
+                                               ("data.transform", ["b" * 32, "c" * 32])])
+def test_source_output_only_selects_one_data_task_source(tmp_path, capability, sources):
+    with pytest.raises(ValueError, match="exactly one"):
+        TaskStore(tmp_path).create(capability, "Use the previous output", thread_id="a" * 32,
+                                   source_tasks=sources, source_output=True)
+    assert not (tmp_path / "tasks").exists()
+
+
+def test_recovery_and_retry_keep_references_but_require_fresh_approval(tmp_path):
+    store = TaskStore(tmp_path)
+    thread_id = "a" * 32
+    sources = [f"{index:032x}" for index in range(4)]
+    original = store.create("conversation", "Compare these results", thread_id=thread_id,
+                            source_tasks=sources, granted_paths=[str(tmp_path / "selected.txt")])
+    store.update(original["id"], state="running", approved=True)
+    assert TaskStore(tmp_path).recover_interrupted() == 1
+    recovered = store.get(original["id"])
+    assert recovered["thread_id"] == thread_id and recovered["source_tasks"] == sources
+    assert recovered["approved"] is False and recovered["state"] == "interrupted"
+    retry = store.create(recovered["capability"], recovered["text"], retry_of=recovered["id"],
+                         thread_id=recovered["thread_id"], source_tasks=recovered["source_tasks"],
+                         granted_paths=recovered["granted_paths"])
+    assert retry["thread_id"] == thread_id and retry["source_tasks"] == sources
+    assert retry["approved"] is False and retry["state"] == "queued"
+    assert retry["retry_of"] == recovered["id"]
+    assert store.get(original["id"]) == recovered
+
+
 def test_history_sorts_by_creation_then_id_and_obeys_limit(tmp_path, monkeypatch):
     ids = iter(["1" * 32, "3" * 32, "2" * 32])
     times = iter(["2026-01-01T00:00:00+00:00", "2026-01-01T00:00:00+00:00",

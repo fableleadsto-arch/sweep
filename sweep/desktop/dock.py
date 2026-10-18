@@ -355,31 +355,40 @@ class DockWindow(SweepWindow):
         self.clear_attachment_button.hide()
 
     def set_attachment(self, path):
-        selected = str(Path(path).resolve())
-        self.attachments = [selected]
+        self.set_attachments([path])
+
+    def set_attachments(self, paths):
+        selected = list(dict.fromkeys(str(Path(path).resolve()) for path in paths))
+        if len(selected) > 4:
+            QMessageBox.information(self, "Too many files", "Choose up to four documents to compare, or one image, recording or data file.")
+            return
+        if not selected:
+            return
+        self.attachments = selected
         self.clear_attachment_button.show()
         self.attachment_label.setTextFormat(Qt.TextFormat.PlainText)
-        self.attachment_label.setText(Path(selected).name + " · ready for local processing")
+        self.attachment_label.setText(" · ".join(Path(path).name for path in selected) + " · ready for local processing")
+        self.attachment_label.setWordWrap(True)
         self.attachment_label.show()
-        preview = granted_thumbnail(selected, self.attachments, 420, 145)
+        preview = granted_thumbnail(selected[0], self.attachments, 420, 145) if len(selected) == 1 else None
         self.attachment_preview.setVisible(preview is not None)
         if preview is not None:
             self.attachment_preview.setPixmap(preview)
 
     def choose_file(self):
         self.reveal()
-        path, _ = QFileDialog.getOpenFileName(self, "Attach an image or file")
-        if path:
-            self.set_attachment(path)
+        paths, _ = QFileDialog.getOpenFileNames(self, "Attach files (up to four documents, or one other file)")
+        if paths:
+            self.set_attachments(paths)
             self.prompt.setFocus()
 
     def dropEvent(self, event):
-        for url in event.mimeData().urls():
-            if url.isLocalFile() and Path(url.toLocalFile()).is_file():
-                self.set_attachment(url.toLocalFile())
-                self.reveal()
-                event.acceptProposedAction()
-                break
+        paths = [url.toLocalFile() for url in event.mimeData().urls()
+                 if url.isLocalFile() and Path(url.toLocalFile()).is_file()]
+        if paths:
+            self.set_attachments(paths)
+            self.reveal()
+            event.acceptProposedAction()
 
     def context_messages(self):
         messages = []
@@ -405,6 +414,8 @@ class DockWindow(SweepWindow):
             text = ("Transcribe this recording" if suffix in AUDIO_SUFFIXES else
                     "Inspect this video" if suffix in VIDEO_SUFFIXES else
                     "Inspect this image" if suffix in {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"} else "Inspect this file")
+            if len(self.attachments) > 1:
+                text = "Summarize these documents"
         if not text:
             return
         if len(text) > 60_000:
@@ -414,13 +425,41 @@ class DockWindow(SweepWindow):
         self._scroll_to_latest = True
         context = self.context_messages()
         attachments = list(self.attachments)
+        from .data_tools import DOCUMENT_SUFFIXES
+        if len(attachments) > 1 and not all(Path(path).suffix.lower() in DOCUMENT_SUFFIXES for path in attachments):
+            self.chat_store.append(self.thread_id, {"role": "assistant", "text": "I can compare up to four text documents, PDFs or DOCX files together. For images, recordings and data, choose one file for now. Your selections remain attached."})
+            self.refresh_chat()
+            return
         capability, request = understand(text, attachments)
+        source_tasks = []
+        source_output = False
+        if not attachments:
+            from .followups import followup_request, recent_sources
+            continuation = followup_request(text, recent_sources(self.chat_store.get(self.thread_id), self.task_store))
+            if continuation:
+                capability, request = continuation["capability"], continuation["text"]
+                attachments = continuation.get("granted_paths", [])
+                source_tasks = continuation.get("source_tasks", [])
+                source_output = continuation.get("source_output", False)
         if capability == "chat.new":
             self.new_workspace()
             return
         self.chat_store.append(self.thread_id, {"role": "user", "text": text, "attachments": [Path(path).name for path in attachments]})
         self.prompt.clear()
         self.clear_attachment()
+        if len(attachments) > 1:
+            extracted = []
+            for path in attachments:
+                if not self.start_task("documents.inspect", "Extract the document text", granted_paths=[path], history=[]):
+                    self.chat_store.append(self.thread_id, {"role": "assistant", "text": "The document comparison could not be queued. Any completed extractions remain available."})
+                    self.refresh_chat()
+                    return
+                extracted.append(self.last_enqueued_id)
+                self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
+            if self.start_task("context.answer", text, source_tasks=extracted, history=[]):
+                self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
+            self.refresh_chat()
+            return
         if capability == "chat.clarify":
             self.chat_store.append(self.thread_id, {"role": "assistant", "text": request})
             self.refresh_chat()
@@ -438,7 +477,8 @@ class DockWindow(SweepWindow):
                 capability = "images.analyze"
         if capability == "files.inspect":
             request = attachments[0]
-        if self.start_task(capability, request, granted_paths=attachments, history=context):
+        if self.start_task(capability, request, granted_paths=attachments, history=context, source_tasks=source_tasks,
+                           source_output=source_output):
             self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
         else:
             self.chat_store.append(self.thread_id, {"role": "assistant", "text": "Task cancelled or not started. No new action was performed."})
@@ -446,6 +486,7 @@ class DockWindow(SweepWindow):
 
     def start_task(self, *args, **kwargs):
         origin = self.thread_id
+        kwargs.setdefault("thread_id", origin)
         started = super().start_task(*args, **kwargs)
         if started:
             self._task_threads[self.last_enqueued_id] = origin
@@ -475,7 +516,7 @@ class DockWindow(SweepWindow):
             dialog.setTextFormat(Qt.TextFormat.PlainText)
             dialog.setDefaultButton(QMessageBox.StandardButton.No)
             return dialog.exec() == QMessageBox.StandardButton.Yes
-        if capability == "conversation":
+        if capability in {"conversation", "context.answer"}:
             config = load_config(self.root)
             signature = json.dumps({key: config[key] for key in ("provider", "model", "ollama_base_url")}, sort_keys=True)
             origin = self.thread_id if thread_id is None else thread_id
@@ -557,7 +598,7 @@ class DockWindow(SweepWindow):
                 state = "analyzing"
             elif capability in {"images.inspect", "documents.inspect", "files.inspect", "media.inspect"}:
                 state = "reading"
-            elif capability == "conversation":
+            elif capability in {"conversation", "context.answer"}:
                 state = "thinking"
             else:
                 state = "working"
@@ -630,6 +671,8 @@ class DockWindow(SweepWindow):
             value["actions"].append(("Read extracted text", f"sweep:text/{task_id}", False))
         if result.get("proposal"):
             value["actions"].append(("Review proposed task", f"sweep:propose/{task_id}", True))
+        if result.get("context_sources"):
+            value["actions"].append(("Sources used", f"sweep:context/{task_id}", False))
         value["actions"].extend([("Export result", f"sweep:export/{task_id}", False),
                                   ("Try again", f"sweep:retry/{task_id}", False)])
         artifacts = result.get("artifacts", [])
@@ -653,7 +696,7 @@ class DockWindow(SweepWindow):
                   "web.research": "Following the evidence", "images.analyze": "Looking at the image",
                   "images.inspect": "Reading image details", "documents.inspect": "Reading your document",
                   "data.inspect": "Exploring your data", "data.transform": "Preparing your file",
-                  "files.inspect": "Reading your file", "conversation": "Thinking",
+                  "files.inspect": "Reading your file", "conversation": "Thinking", "context.answer": "Reading earlier results",
                   "media.inspect": "Sampling your media", "media.analyze": "Describing sampled frames",
                   "audio.transcribe": "Recognizing speech locally", "speech.setup": "Setting up local speech",
                   "computer.command": "Taking care of your request", "providers.check": "Checking local processing",
@@ -672,7 +715,8 @@ class DockWindow(SweepWindow):
                     else:
                         value.update(state=state, state_label=state.capitalize(), task_title=titles.get(task["capability"], "Working on your request"))
                         if state == "queued":
-                            value["text"] = "Ready to begin when the current task finishes."
+                            value["text"] = ("Waiting to use the earlier results in this conversation." if task.get("source_tasks") else
+                                             "Ready to begin when the current task finishes.")
                             value["actions"] = [("Remove from queue", f"sweep:cancel/{task_id}", False)]
                         elif state == "running":
                             value["text"] = self._response_previews.get(task_id) or (self.activity_summary.text() if self.task and self.task["id"] == task_id else "Working on your request…")
@@ -709,11 +753,16 @@ class DockWindow(SweepWindow):
                 self.load_history()
             elif action == "retry" and task["state"] in {"completed", "failed", "cancelled", "interrupted"}:
                 if self.start_task(task["capability"], task["text"], retry_of=task_id,
-                                   granted_paths=task.get("granted_paths", []), history=task.get("history", [])):
+                                   granted_paths=task.get("granted_paths", []), history=task.get("history", []),
+                                   source_tasks=task.get("source_tasks", []), source_output=task.get("source_output", False)):
                     self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
-            elif action in {"export", "propose", "artifact", "text"}:
+            elif action in {"export", "propose", "artifact", "text", "context"}:
                 result = json.loads((self.task_store.directory(task_id) / "result.json").read_text(encoding="utf-8"))
-                if action == "export":
+                if action == "context":
+                    parts = [f"{item['label']} {item['filename']}\n{item['scope']}\n\n{item['excerpt']}"
+                             for item in result.get("context_sources", [])[:4]]
+                    self.show_extracted_text({"title": "Sources used for this answer", "text": "\n\n".join(parts)})
+                elif action == "export":
                     self.last_result = result
                     self.export_result()
                 elif action == "propose":

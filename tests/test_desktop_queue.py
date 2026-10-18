@@ -64,6 +64,63 @@ def test_fifo_queue_executes_without_overlap_and_persists_results(desktop, monke
     assert "7" in window.last_result["message"]
 
 
+def test_queued_source_references_reach_worker_request_as_a_snapshot(desktop, monkeypatch):
+    app, window = desktop
+    thread_id = "a" * 32
+    source = window.task_store.create("files.inspect", "Read the source",
+        granted_paths=[str(window.root / "source.txt")], thread_id=thread_id)
+    window.task_store.update(source["id"], state="running", approved=True)
+    sources = [source["id"]]
+    grants = [str(window.root / "selected.txt")]
+    approved = []
+    requests = []
+
+    def approve(task, selected_file=False):
+        approved.append(task)
+        return True
+
+    def worker_command(*args):
+        from pathlib import Path
+
+        requests.append(json.loads(Path(args[1]).read_text(encoding="utf-8")))
+        return [sys.executable, "-c", "import time; time.sleep(30)"]
+
+    monkeypatch.setattr(window, "approve_queued_task", approve)
+    monkeypatch.setattr(module, "launch_command", worker_command)
+    window.dispatching = True  # Exercise enqueue before any worker can start.
+    assert window.start_task("data.transform", "Convert it to JSON", thread_id=thread_id,
+                             source_tasks=sources, granted_paths=grants, source_output=True)
+    queued_id = window.last_enqueued_id
+    sources.clear()
+    grants.append(str(window.root / "unselected.txt"))
+    assert approved == [] and requests == []
+    assert window.task_store.get(queued_id)["approved"] is False
+    window.dispatching = False
+    window.run_next()
+    assert len(approved) == 1 and approved[0]["approved"] is False
+    assert len(requests) == 1
+    request = requests[0]
+    assert request["id"] == queued_id and request["state"] == "running"
+    assert request["approved"] is True
+    assert request["thread_id"] == thread_id and request["source_tasks"] == [source["id"]]
+    assert request["source_output"] is True
+    assert request["granted_paths"] == grants[:1]
+    assert source["granted_paths"][0] not in request["granted_paths"]
+    assert window.process.waitForStarted(5000)
+    window.cancel_task()
+    finish(app, window)
+    assert window.task_store.get(queued_id)["approved"] is False
+    select(window, queued_id)
+    monkeypatch.setattr(window, "approve_task", lambda *args, **kwargs: True)
+    window.retry_selected()
+    assert len(requests) == 2 and requests[1]["source_output"] is True
+    assert requests[1]["source_tasks"] == [source["id"]] and requests[1]["thread_id"] == thread_id
+    assert requests[1]["retry_of"] == queued_id
+    assert window.process.waitForStarted(5000)
+    window.cancel_task()
+    finish(app, window)
+
+
 def test_cancel_is_durable_and_late_result_cannot_complete_it(desktop, monkeypatch):
     app, window = desktop
     monkeypatch.setattr(module, "launch_command", lambda *args: [sys.executable, "-c", "import time; time.sleep(30)"])
