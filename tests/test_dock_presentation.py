@@ -42,6 +42,32 @@ def test_message_markup_never_loads_source_html():
     assert "<b>summary</b>" in rendered
 
 
+def test_streaming_preserves_completed_cards_and_text_selection(dock):
+    app, window = dock
+    transcript = ChatTranscript()
+    completed = {"role": "assistant", "text": "Keep this selected passage.",
+                 "columns": ["item"], "rows": [["bolt"]]}
+    transcript.render([completed, {"role": "assistant", "state": "running", "text": "Starting"}])
+    original = transcript.layout.itemAt(0).layout()
+    table = transcript.findChild(QTableWidget)
+    label = next(item for item in transcript.findChildren(QLabel) if "Keep this" in item.text())
+    label.setSelection(0, 4)
+    for index in range(25):
+        transcript.render([completed, {"role": "assistant", "state": "running", "text": f"Answer {index}"}])
+        app.processEvents()
+    assert transcript.layout.itemAt(0).layout() is original
+    assert transcript.findChild(QTableWidget) is table
+    assert label.selectedText() == "Keep"
+    assert transcript.toPlainText().endswith("Answer 24")
+    # A new conversation must remove all previous cards, even after streaming.
+    transcript.render([])
+    app.processEvents()
+    assert "Keep this" not in transcript.toPlainText() and "Answer 24" not in transcript.toPlainText()
+    transcript.render([{"role": "user", "text": "New chat"}])
+    assert transcript.layout.count() == 2
+    transcript.deleteLater()
+
+
 @pytest.mark.parametrize("url", ["https://[invalid", "file:///private", "https://user:password@example.com", "https:///missing-host"])
 def test_source_cards_reject_malformed_and_credential_links(url):
     assert public_source(url) is None

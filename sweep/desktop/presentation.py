@@ -89,6 +89,7 @@ class ChatTranscript(QScrollArea):
         self.setAccessibleName("Sweep conversation")
         self._plain_text = ""
         self._signature = None
+        self._row_signatures = []
         self._following = True
         self._expanded_artifacts: set[tuple[str, ...]] = set()
         self.verticalScrollBar().rangeChanged.connect(self._range_changed)
@@ -324,7 +325,9 @@ class ChatTranscript(QScrollArea):
     def render(self, messages: list[dict], *, scroll_to_latest=False):
         # Progress can arrive frequently. Keep native cards and text selection
         # stable unless visible content has actually changed.
-        signature = repr([{key: value.cacheKey() if key == "preview" and value is not None else value for key, value in message.items()} for message in messages])
+        rows = [repr({key: value.cacheKey() if key == "preview" and value is not None else value
+                      for key, value in message.items()}) for message in messages]
+        signature = tuple(rows)
         bar = self.verticalScrollBar()
         at_bottom = bool(messages) and (scroll_to_latest or bar.value() >= bar.maximum() - 24)
         self._following = at_bottom
@@ -338,8 +341,17 @@ class ChatTranscript(QScrollArea):
             for message in messages if len(message.get("artifacts", [])) > 3
         )
         self._signature = signature
-        while self.layout.count():
-            item = self.layout.takeAt(0)
+        # Streaming usually changes only the last card. Keep the unchanged
+        # prefix (including selections, tables and expanded artifacts) alive
+        # instead of allocating the whole conversation on every token preview.
+        prefix = 0
+        for previous, current in zip(self._row_signatures, rows):
+            if previous != current:
+                break
+            prefix += 1
+        self._row_signatures = rows
+        while self.layout.count() > prefix:
+            item = self.layout.takeAt(prefix)
             if item.widget():
                 item.widget().hide()
                 item.widget().deleteLater()
@@ -353,7 +365,7 @@ class ChatTranscript(QScrollArea):
         self._plain_text = "\n\n".join(str(message.get("text", "")) for message in messages)
         if not messages:
             self._welcome()
-        for message in messages:
+        for message in messages[prefix:]:
             self._card(message)
         self.layout.addStretch(1)
         self.content.adjustSize()
