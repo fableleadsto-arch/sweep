@@ -19,6 +19,12 @@ def store(tmp_path: Path) -> ControllerStore:
     return ControllerStore(base_dir=tmp_path / "controller")
 
 
+@pytest.fixture(autouse=True)
+def no_real_apps(monkeypatch):
+    monkeypatch.setattr(skills_mod, "_app_ready", lambda *_args: None)
+    monkeypatch.setattr(skills_mod, "start_app", lambda *_args: pytest.fail("Unexpected native launch"))
+
+
 def _run(coro):
     return asyncio.run(coro)
 
@@ -170,24 +176,25 @@ def test_execute_open_youtube(tmp_path: Path, monkeypatch) -> None:
     assert controller.intent_stats().get("open", 0) == 1
 
 
-def test_execute_open_unknown_target_searches(tmp_path: Path, monkeypatch) -> None:
+def test_execute_open_unknown_target_reports_missing_app(tmp_path: Path, monkeypatch) -> None:
     opened: list[str] = []
     monkeypatch.setattr(skills_mod, "open_url", lambda url: opened.append(url))
+    monkeypatch.setattr(skills_mod, "_app_ready", lambda *_args: None)
     controller = Controller(store=ControllerStore(base_dir=tmp_path / "c"))
     result = _run(controller.execute("open skywarp the dragon", ctx=SkillContext(yes=True)))
-    assert result.status == "info"
-    assert opened and "duckduckgo" in opened[0]
+    assert result.status == "error"
+    assert "couldn't find" in result.message
+    assert opened == []
 
 
 def test_open_installed_app_launches_natively(tmp_path: Path, monkeypatch) -> None:
     launched: list[str] = []
     monkeypatch.setattr(skills_mod, "start_app", lambda cmd: (launched.append(cmd) or True))
-    monkeypatch.setattr(skills_mod, "_lookup_menu_entry", lambda _name: None)
-    monkeypatch.setattr(skills_mod.shutil, "which", lambda cmd: "C:/fake/" + cmd)
+    monkeypatch.setattr(skills_mod, "_app_ready", lambda *_args: "C:/fake/calc.exe")
     controller = Controller(store=ControllerStore(base_dir=tmp_path / "c"))
     result = _run(controller.execute("open calculator", ctx=SkillContext(yes=True)))
     assert result.status == "ok"
-    assert "Launched" in result.message
+    assert "launch request" in result.message
     assert launched == ["C:/fake/calc.exe"]
 
 
@@ -195,8 +202,7 @@ def test_open_not_installed_app_falls_back_to_website(tmp_path: Path, monkeypatc
     opened: list[str] = []
     monkeypatch.setattr(skills_mod, "open_url", lambda url: opened.append(url))
     monkeypatch.setattr(skills_mod, "start_app", lambda _cmd: True)
-    monkeypatch.setattr(skills_mod, "_lookup_menu_entry", lambda _name: None)
-    monkeypatch.setattr(skills_mod.shutil, "which", lambda _cmd: None)
+    monkeypatch.setattr(skills_mod, "_app_ready", lambda *_args: None)
     controller = Controller(store=ControllerStore(base_dir=tmp_path / "c"))
     result = _run(controller.execute("open spotify", ctx=SkillContext(yes=True)))
     assert result.status == "ok"

@@ -215,7 +215,7 @@ def _open_command(text: str) -> Optional[ParsedCommand]:
         return ParsedCommand("open", {"target": browser_first[2].strip(),
                                       "browser": BROWSER_ALIASES[browser_first[1].lower()]}, text)
     match = re.fullmatch(
-        r"(?:open|launch|start|show(?:\s+me)?|go\s+to|take\s+me\s+to|navigate\s+to|visit|goto)\s+(.+)",
+        r"(?:open|launch|start|bring\s+up|show(?:\s+me)?|go\s+to|take\s+me\s+to|navigate\s+to|visit|goto)\s+(.+)",
         text, re.IGNORECASE,
     )
     if not match:
@@ -225,9 +225,17 @@ def _open_command(text: str) -> Optional[ParsedCommand]:
         rf"(.+?)\s+(?:in|using|with|on)\s+(?:(?:the|my)\s+)?({_BROWSER_NAMES})(?:\s+browser)?",
         target, re.IGNORECASE,
     )
-    params = {"target": target.strip()}
+    params: dict[str, Any] = {"target": target.strip()}
     if browser:
         params = {"target": browser[1].strip(), "browser": BROWSER_ALIASES[browser[2].lower()]}
+    elif "://" not in target and not re.match(r"^[a-zA-Z]:[\\/]", target):
+        # Keep the app name separate from conversational qualifiers. This also
+        # prevents an explicit desktop request from quietly becoming a website.
+        app_name = re.sub(r"^(?:(?:installed|desktop)\s+)?(?:app|application|software|program)\s+(?:called\s+)?", "", target, flags=re.I)
+        app_name = re.sub(r"\s+(?:on|in)\s+(?:my|this|the)\s+(?:computer|pc|device|desktop)$", "", app_name, flags=re.I)
+        app_name = re.sub(r"\s+(?:(?:desktop|installed)\s+)?(?:app|application|software|program)$", "", app_name, flags=re.I)
+        if app_name != target:
+            params = {"target": app_name.strip(), "desktop": True}
     return ParsedCommand("open", params, text) if params["target"] else None
 
 
@@ -392,6 +400,12 @@ def parse_rules(text: str) -> Optional[ParsedCommand]:
         return ParsedCommand("system", {}, t, "rule")
 
     # run / shell
+    run_target = re.sub(r"^(?:the|my)\s+", "", " ".join(words[1:]), flags=re.I)
+    if first == "run" and (run_target.lower() in APPS
+                            or run_target.lower() in {value.lower() for value in APPS.values()}
+                            or re.match(r"^(?:(?:installed|desktop)\s+)?(?:app|application|program|software)\s+", run_target, re.I)
+                            or re.search(r"\s+(?:app|application|program|software)$", run_target, re.I)):
+        return _open_command("open " + run_target)
     if first in {"run", "execute", "shell"} or whole.startswith("run command") or whole.startswith("run the command"):
         command = " ".join(words[1:])
         if command.startswith("command "):

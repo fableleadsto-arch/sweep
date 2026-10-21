@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Optional
 from urllib.parse import urlsplit
 
+from .applications import AmbiguousApplication, LaunchReceipt, launch_windows, matching_entry, windows_start_apps
 from .store import ControllerStore
 
 HOME = Path.home()
@@ -169,9 +170,10 @@ APPS: dict[str, str] = {
     "teams": "ms-teams:",
     "meet": "https://meet.google.com",
     "zoom": "zoommtg:",
-    "code": "code",
-    "vs code": "code",
-    "vscode": "code",
+    "code": "Code.exe",
+    "vs code": "Code.exe",
+    "vscode": "Code.exe",
+    "visual studio code": "Code.exe",
     "visual studio": "devenv.exe",
     "pycharm": "pycharm64.exe",
     "sublime": "subl",
@@ -205,6 +207,18 @@ APPS: dict[str, str] = {
     "gimp": "gimp.exe",
     "photoshop": "Photoshop.exe",
     "office": "winword.exe",
+}
+
+# Display names differ from executable names, especially for Store and Electron
+# apps. These are exact product aliases, not fuzzy guesses about user intent.
+_APP_DISPLAY_NAMES = {
+    "code.exe": ("Visual Studio Code",),
+    "obs64.exe": ("OBS Studio",),
+    "subl": ("Sublime Text",),
+    "idea64.exe": ("IntelliJ IDEA",),
+    "mspaint.exe": ("Paint",),
+    "calc.exe": ("Calculator",),
+    "wt.exe": ("Windows Terminal", "Terminal"),
 }
 
 # ── Windows well-known folders ────────────────────────────────────────
@@ -373,8 +387,8 @@ def _launch_browser(browser: str, url: Optional[str] = None) -> ActionResult:
     return ActionResult("ok", f"Opened {url} in {label}." if url else f"Launched {label}.")
 
 
-def start_app(command: str) -> bool:
-    """Launch a desktop app; returns True on success."""
+def start_app(command: str) -> bool | LaunchReceipt:
+    """Launch one resolved desktop target and retain native verification details."""
     if os.name != "nt":
         try:
             opener = "open" if sys.platform == "darwin" else "xdg-open"
@@ -382,18 +396,19 @@ def start_app(command: str) -> bool:
             return True
         except OSError:
             return False
-    try:
-        return os.startfile(command) is None  # type: ignore[attr-defined]
-    except (OSError, AttributeError):
-        try:
-            subprocess.Popen(
-                [command],
-                creationflags=CREATE_NO_WINDOW,
-                shell=False,
-            )
-            return True
-        except OSError:
-            return False
+    return launch_windows(command)
+
+
+def _launch_app_result(target: str, resolved: str) -> ActionResult:
+    receipt = start_app(resolved)
+    if not receipt:
+        detail = f" {receipt.error}" if isinstance(receipt, LaunchReceipt) and receipt.error else ""
+        return ActionResult("error", f"Couldn't launch {target}.{detail}")
+    if isinstance(receipt, LaunchReceipt):
+        if receipt.window_visible:
+            return ActionResult("ok", f"Opened {target}; its application window is visible.")
+        return ActionResult("info", f"Sent the launch request for {target}. Windows accepted it, but I couldn't verify its window yet.")
+    return ActionResult("ok", f"Sent the launch request for {target}.")
 
 
 def open_folder(path: str) -> None:
@@ -448,7 +463,9 @@ def _browser_target(target: str, ctx: SkillContext) -> Optional[str]:
 
 
 def _app_target(target: str) -> Optional[str]:
-    return APPS.get(target.lower().strip())
+    name = target.lower().strip()
+    known = APPS.get(name) or next((value for value in APPS.values() if value.lower() == name), None)
+    return known or (target if re.fullmatch(r"[\w .-]+\.exe", target, re.I) else None)
 
 
 _BROWSER_HINTS = (
@@ -468,7 +485,7 @@ def _strip_browser_hint(target: str) -> tuple[bool, str]:
 
 @lru_cache(maxsize=1)
 def _menu_shortcuts() -> tuple[tuple[str, str], ...]:
-    """Index of Start Menu .lnk/.url shortcuts → (stem, full path)."""
+    """Bounded index of native Start Menu shortcuts (not arbitrary web links)."""
     roots: list[str] = []
     appdata = os.environ.get("APPDATA")
     progdata = os.environ.get("PROGRAMDATA")
@@ -484,32 +501,25 @@ def _menu_shortcuts() -> tuple[tuple[str, str], ...]:
         try:
             walks = os.walk(root)
             for dirpath, _dirs, files in walks:
+                _dirs[:] = [name for name in _dirs if not Path(dirpath, name).is_symlink()
+                            and not Path(dirpath, name).is_junction()]
                 for fn in files:
-                    if fn.lower().endswith((".lnk", ".url")):
+                    if fn.lower().endswith(".lnk"):
                         stem = os.path.splitext(fn)[0]
-                        key = stem.lower()
+                        key = os.path.normcase(os.path.join(dirpath, fn))
                         if key not in seen:
                             seen.add(key)
                             entries.append((stem, os.path.join(dirpath, fn)))
+                            if len(entries) >= 5000:
+                                return tuple(entries)
         except OSError:
             continue
     return tuple(entries)
 
 
 def _lookup_menu_entry(name: str) -> Optional[str]:
-    """Find a Start Menu shortcut that plausibly matches the app name."""
-    name = name.strip().lower()
-    if not name:
-        return None
-    ntoks = set(name.split())
-    for stem, path in _menu_shortcuts():
-        low = stem.lower()
-        if low == name or low.startswith(name):
-            return path
-        stoks = set(low.split())
-        if ntoks and ntoks <= stoks:
-            return path
-    return None
+    """Find one exact or unambiguous installed app; never select the first guess."""
+    return matching_entry(name, _menu_shortcuts())
 
 
 def _app_ready(cmd: str, names: list[str]) -> Optional[str]:
@@ -517,18 +527,38 @@ def _app_ready(cmd: str, names: list[str]) -> Optional[str]:
 
     Settings-style URIs like ``ms-settings:`` are always treated as available.
     """
-    if not cmd:
-        return None
-    if cmd.endswith(":") or cmd.endswith("://"):
-        return cmd
+    if cmd:
+        # These protocols come from the fixed catalogue, never user commands.
+        if cmd in APPS.values() and ":" in cmd and not Path(cmd).is_absolute():
+            return cmd
+        if os.name == "nt" and cmd.lower().endswith(".exe"):
+            registered = _registered_browser(cmd)
+            if registered:
+                return registered
+        # Ignore relative PATH entries and Windows' implicit current directory.
+        safe_path = os.pathsep.join(directory for directory in os.get_exec_path()
+                                    if directory and Path(directory).is_absolute())
+        executable = shutil.which(cmd, path=safe_path)
+        directories = {Path(directory).resolve() for directory in safe_path.split(os.pathsep) if directory}
+        if (executable and Path(executable).is_absolute()
+                and Path(executable).resolve().parent in directories
+                and not executable.lower().endswith((".cmd", ".bat"))):
+            return executable
+        if Path(cmd).is_absolute() and Path(cmd).is_file():
+            return cmd
+    elif os.name == "nt" and names and re.fullmatch(r"[\w .-]+", names[0]):
+        registered = _registered_browser(names[0] + ".exe")
+        if registered:
+            return registered
+    names = list(dict.fromkeys([*_APP_DISPLAY_NAMES.get(cmd.lower(), ()), *names]))
     for name in names:
         entry = _lookup_menu_entry(name)
         if entry:
             return entry
-    if shutil.which(cmd):
-        return shutil.which(cmd)
-    if Path(cmd).exists():
-        return cmd
+    for name in names:
+        entry = matching_entry(name, windows_start_apps())
+        if entry:
+            return entry
     return None
 
 
@@ -563,6 +593,9 @@ def skill_open(params: dict[str, Any], ctx: SkillContext) -> ActionResult:
     if not target:
         return ActionResult("error", "What should I open? Say something like \"open youtube\".")
 
+    desktop_only = bool(params.get("desktop"))
+    if len(target) >= 2 and target[0] == target[-1] and target[0] in {'"', "'"}:
+        target = target[1:-1]
     browser_url = _browser_target(target, ctx)
     requested_browser = str(params.get("browser") or "").strip()
     if requested_browser:
@@ -573,46 +606,49 @@ def skill_open(params: dict[str, Any], ctx: SkillContext) -> ActionResult:
         return _launch_browser(target)
     if target.lower().lstrip('"\'').startswith(("http://", "https://")) and not browser_url:
         return ActionResult("error", "That web address is invalid. Provide a valid HTTP or HTTPS URL.")
-    app_cmd = _app_target(target)
-    app_names = [target]
-    if app_cmd:
-        app_names.append(os.path.splitext(os.path.basename(app_cmd))[0])
-    ready_app = _app_ready(app_cmd, app_names) if app_cmd else None
-
     if forced_browser:
         if browser_url:
             open_url(browser_url)
             return ActionResult("ok", f"Opened {target} in your browser.")
-        if ready_app:
-            start_app(ready_app)
-            return ActionResult("info", f"No website for {target!r}, so I launched the app.")
         open_url(search_url(target))
         return ActionResult("info", f"Opened a search for {target!r} in your browser.")
 
-    # App first: if it's installed, launch it instead of the website.
-    if ready_app:
-        start_app(ready_app)
-        return ActionResult("ok", f"Launched {target}.")
-    if browser_url:
+    app_cmd = _app_target(target)
+    # Known websites without a desktop alias remain websites, even if a browser
+    # installed a same-named PWA shortcut. Explicit desktop requests opt in.
+    if browser_url and not desktop_only and not app_cmd:
         open_url(browser_url)
         return ActionResult("ok", f"Opened {target} in your browser.")
-    if app_cmd:
-        if start_app(app_cmd):
-            return ActionResult("ok", f"Launched {target}.")
-        return ActionResult("error", f"Couldn't launch {target} — is it installed? (tried {app_cmd!r}).")
-
-    path = _path_target(target)
+    path = _path_target(target) if not app_cmd and (
+        Path(target).suffix.lower() not in {".exe", ".lnk"} or Path(target).is_absolute()
+    ) else None
     if path:
         if Path(path).is_dir():
             open_folder(path)
-        else:
-            open_url(f"file:///{Path(path).as_posix()}")
-        return ActionResult("ok", f"Opened {target}.")
-    # Unknown → search instead of failing silently.
-    open_url(search_url(target))
+            return ActionResult("ok", f"Opened {target}.")
+        if Path(path).suffix.lower() in {".cmd", ".bat", ".ps1", ".vbs", ".js"}:
+            return ActionResult("error", "That is a script, not an application. Use an explicit shell task to run scripts.")
+        return _launch_app_result(target, str(Path(path).resolve()))
+    app_names = [target]
+    if app_cmd:
+        app_names.append(os.path.splitext(os.path.basename(app_cmd))[0])
+    try:
+        ready_app = _app_ready(app_cmd or "", app_names)
+    except AmbiguousApplication as exc:
+        return ActionResult("error", str(exc))
+
+    # App first: if it's installed, launch it instead of the website.
+    if ready_app:
+        return _launch_app_result(target, ready_app)
+    if browser_url and not desktop_only:
+        open_url(browser_url)
+        return ActionResult("ok", f"Opened {target} in your browser.")
+    if app_cmd or desktop_only:
+        return ActionResult("error", f"I couldn't find {target!r} among installed apps. Use its full Start Menu name or provide the executable's full path.")
+
     return ActionResult(
-        "info",
-        f"I didn't recognize {target!r} as a site, app or folder — searched for it in your browser.",
+        "error",
+        f"I couldn't find {target!r} as an installed app, website or local path. Use its full Start Menu name, a full executable path, or ask me to search the web.",
     )
 
 
