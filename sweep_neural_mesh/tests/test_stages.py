@@ -228,7 +228,8 @@ class TestNeuralMesh:
         result = mesh.analyze(data="hello", task="echo")
         assert result.success
         assert result.output == "hello"
-        assert result.confidence > 0
+        # Executing successfully does not supply a model confidence score.
+        assert result.confidence == 0
         assert len(result.nodes_used) > 0
 
     def test_analyze_no_matching_node(self):

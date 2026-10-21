@@ -2,17 +2,19 @@
 ExecutionEngine — topologically sorts and runs a MeshGraph.
 
 The engine walks the graph in dependency order, executing each node
-and threading NeuralPackets through edges. It handles failures with
-fallback selection and records telemetry for every step.
+and threading NeuralPackets through edges. It records failures and skips
+dependent nodes rather than passing incomplete inputs to them.
 """
 from __future__ import annotations
 
 import logging
+import math
 import time
+from collections import deque
 from typing import Any
 
 from .graph import MeshGraph
-from .node import NodeResult, NodeStatus
+from .node import NodeResult
 from .packet import NeuralPacket
 
 logger = logging.getLogger(__name__)
@@ -29,6 +31,7 @@ class ExecutionResult:
         self.total_latency_ms: float = 0.0
         self.total_nodes_executed: int = 0
         self.total_nodes_failed: int = 0
+        self.total_nodes_skipped: int = 0
         self.warnings: list[str] = []
         self.metadata: dict[str, Any] = {}
 
@@ -39,6 +42,7 @@ class ExecutionResult:
             "total_latency_ms": self.total_latency_ms,
             "nodes_executed": self.total_nodes_executed,
             "nodes_failed": self.total_nodes_failed,
+            "nodes_skipped": self.total_nodes_skipped,
             "output_packets": len(self.output_packets),
             "warnings": self.warnings,
         }
@@ -53,8 +57,10 @@ class ExecutionEngine:
     its successors.
     """
 
-    def __init__(self) -> None:
-        self._execution_history: list[ExecutionResult] = []
+    def __init__(self, history_limit: int = 64) -> None:
+        if type(history_limit) is not int or history_limit < 0:
+            raise ValueError("history_limit must be a nonnegative integer")
+        self._execution_history: deque[ExecutionResult] = deque(maxlen=history_limit)
 
     def execute(
         self,
@@ -74,7 +80,10 @@ class ExecutionEngine:
         t0 = time.perf_counter()
         result = ExecutionResult(graph_id=graph.graph_id)
         initial_inputs = initial_inputs or {}
-        packet_map: dict[str, NeuralPacket] = dict(initial_inputs)
+        # Inputs are not outputs: a failed root must never return its input as
+        # if it had successfully processed it.
+        packet_map: dict[str, NeuralPacket] = {}
+        nodes = {node.node_id: node for node in graph.nodes}
 
         try:
             order = graph.execution_order
@@ -86,14 +95,18 @@ class ExecutionEngine:
             return result
 
         for node_id in order:
-            node = graph.nodes[0]  # placeholder
-            for n in graph.nodes:
-                if n.node_id == node_id:
-                    node = n
-                    break
+            node = nodes[node_id]
 
             # Gather input packets from predecessors
             predecessors = graph.predecessors(node_id)
+            missing = [p.name for p in predecessors if p.node_id not in packet_map]
+            if missing:
+                failure = NodeResult(success=False, error="Dependencies failed: " + ", ".join(missing))
+                graph.store_result(node_id, failure)
+                result.node_results[node_id] = failure
+                result.total_nodes_skipped += 1
+                result.warnings.append(f"Node {node.name} skipped: {failure.error}")
+                continue
             if predecessors:
                 input_packets = [
                     packet_map[p.node_id]
@@ -102,31 +115,41 @@ class ExecutionEngine:
                 ]
             else:
                 input_packets = [
-                    packet_map[node_id]
-                ] if node_id in packet_map else []
+                    initial_inputs[node_id]
+                ] if node_id in initial_inputs else []
 
-            # Execute the node
-            if input_packets:
-                # Pass first packet's data as primary input
-                primary = input_packets[0]
-                node_result = node.execute(
-                    primary.data,
-                    packets=input_packets,
-                    metadata=primary.metadata,
-                )
-            else:
-                node_result = node.execute()
+            # Custom nodes can override execute(), so contain failures here as
+            # well as in the base node wrapper.
+            try:
+                if input_packets:
+                    primary = input_packets[0]
+                    node_result = node.execute(
+                        primary.data,
+                        packets=input_packets,
+                        metadata=primary.metadata,
+                    )
+                else:
+                    node_result = node.execute()
+                if not isinstance(node_result, NodeResult):
+                    raise TypeError("Node execution must return a NodeResult")
+                if node_result.success and (
+                    not math.isfinite(node_result.confidence)
+                    or not 0 <= node_result.confidence <= 1
+                ):
+                    raise ValueError("Node confidence must be finite and between 0 and 1")
+            except Exception as exc:
+                node_result = NodeResult(success=False, error=str(exc))
 
             graph.store_result(node_id, node_result)
             result.node_results[node_id] = node_result
             result.total_nodes_executed += 1
 
             if node_result.success:
-                # Create output packet — default confidence to 1.0 for successful nodes
-                confidence = node_result.confidence if node_result.confidence > 0 else 1.0
+                # Successful execution does not establish certainty about the
+                # result; preserve the node's actual (possibly zero) confidence.
                 out_packet = NeuralPacket(
                     data=node_result.output,
-                    confidence=confidence,
+                    confidence=node_result.confidence,
                     source_node_id=node_id,
                     source_node_name=node.name,
                     metadata={
@@ -149,7 +172,7 @@ class ExecutionEngine:
             if leaf.node_id in packet_map:
                 result.output_packets.append(packet_map[leaf.node_id])
 
-        result.success = result.total_nodes_failed == 0
+        result.success = result.total_nodes_failed == 0 and result.total_nodes_skipped == 0
         result.total_latency_ms = (time.perf_counter() - t0) * 1000
         self._execution_history.append(result)
         return result
@@ -160,6 +183,7 @@ class ExecutionEngine:
 
     @property
     def stats(self) -> dict[str, Any]:
+        """Statistics over the retained recent execution window."""
         if not self._execution_history:
             return {"executions": 0}
         total = len(self._execution_history)

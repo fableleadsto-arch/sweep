@@ -10,10 +10,11 @@ router ranks candidate nodes and selects the optimal execution strategy.
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..core.node import Framework, NodeStatus, NeuralNode
+from ..core.node import Framework, NeuralNode, NodeStatus
 from ..registry import ModelRegistry
 
 logger = logging.getLogger(__name__)
@@ -76,14 +77,26 @@ class ModelRouter:
         if not candidates:
             return RoutingResult(reason="no candidates provided")
 
+        budgets = (context.memory_budget_mb, context.latency_budget_ms)
+        if any(not math.isfinite(value) or value <= 0 for value in budgets):
+            return RoutingResult(reason="memory and latency budgets must be finite and positive")
+
         # Filter by status
         viable = [
             n for n in candidates
             if n.status not in (NodeStatus.FAILED, NodeStatus.UNLOADED)
             and n.node_id not in context.exclude_node_ids
+            and (not context.required_capability or context.required_capability in n.capabilities)
         ]
         if not viable:
             return RoutingResult(reason="all candidates filtered out")
+
+        # Budgets are admission limits, not preferences. In particular, the
+        # least over-budget candidate must not win when none can fit. These
+        # estimates do not replace OS worker limits on actual resource use.
+        viable = [node for node in viable if self._fits_budgets(node, context)]
+        if not viable:
+            return RoutingResult(reason="no candidates fit the memory, latency or GPU requirements")
 
         # Score each candidate
         scores: dict[str, float] = {}
@@ -114,6 +127,20 @@ class ModelRouter:
         if top_k > 1 and result.selected_node:
             result.alternatives = result.alternatives[: top_k - 1]
         return result
+
+    @staticmethod
+    def _fits_budgets(node: NeuralNode, context: RoutingContext) -> bool:
+        cost = node.cost
+        estimates = (cost.memory_mb, cost.min_ram_mb, cost.avg_latency_ms,
+                     cost.p95_latency_ms, cost.startup_time_ms)
+        if any(not math.isfinite(value) or value < 0 for value in estimates):
+            return False
+        latency = max(cost.avg_latency_ms, cost.p95_latency_ms)
+        if node.status == NodeStatus.IDLE:
+            latency += cost.startup_time_ms
+        return (max(cost.memory_mb, cost.min_ram_mb) <= context.memory_budget_mb
+                and latency <= context.latency_budget_ms
+                and (not context.require_gpu or cost.gpu_required))
 
     def _score_node(self, node: NeuralNode, ctx: RoutingContext) -> float:
         """Compute a weighted score for a node."""

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import time
 import uuid
+from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable
@@ -120,6 +121,7 @@ class NeuralNode:
         validate_fn: Callable[..., bool] | None = None,
         capabilities: list[str] | None = None,
         tags: dict[str, str] | None = None,
+        history_limit: int = 64,
     ):
         self.node_id = node_id or str(uuid.uuid4())[:12]
         self.name = name
@@ -133,7 +135,9 @@ class NeuralNode:
         self._execute_fn = execute_fn
         self._validate_fn = validate_fn
         self._model: Any = None
-        self._history: list[NodeResult] = []
+        if type(history_limit) is not int or history_limit < 0:
+            raise ValueError("history_limit must be a nonnegative integer")
+        self._history: deque[NodeResult] = deque(maxlen=history_limit)
 
     # -- Execution --
 
@@ -194,6 +198,7 @@ class NeuralNode:
 
     @property
     def history(self) -> list[NodeResult]:
+        """Recent executions only; set history_limit=0 to retain no results."""
         return list(self._history)
 
     @property
