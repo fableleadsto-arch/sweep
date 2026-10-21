@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 import httpx
 
 from companion.config import BrainSettings
-from companion.providers import ProviderChain, ProviderResult
+from companion.providers import ProviderResult
 
 PROVIDERS = ("auto", "ollama", "openai", "gemini", "anthropic")  # legacy preference migration
 CLOUD_PROVIDERS = ("openai", "gemini", "anthropic")
@@ -230,10 +230,15 @@ async def start_local_server(root: Path) -> dict:
     hostname = parsed.hostname if parsed.hostname != "localhost" else "127.0.0.1"
     environment["OLLAMA_HOST"] = f"{'[' + hostname + ']' if ':' in hostname else hostname}:{parsed.port or 11434}"
     environment["OLLAMA_NO_CLOUD"] = "1"
-    environment["OLLAMA_KEEP_ALIVE"] = "1m"
-    subprocess.Popen([str(executable), "serve"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                     stderr=subprocess.DEVNULL, env=environment,
-                     creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), start_new_session=os.name != "nt")
+    from .local_stream import CHAT_KEEP_ALIVE
+    environment["OLLAMA_KEEP_ALIVE"] = CHAT_KEEP_ALIVE
+    # This desktop owns a serial task queue. Loading several model copies or
+    # parallel contexts spends RAM without making that queue finish sooner.
+    environment["OLLAMA_MAX_LOADED_MODELS"] = "1"
+    environment["OLLAMA_NUM_PARALLEL"] = "1"
+    await asyncio.to_thread(subprocess.Popen, [str(executable), "serve"], stdin=subprocess.DEVNULL,
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=environment,
+                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), start_new_session=os.name != "nt")
     for _ in range(10):
         await asyncio.sleep(.5)
         current = await _ollama_models(url)
@@ -276,14 +281,11 @@ async def generate_chat(root: Path, *, system: str, messages: list[dict], json_m
     timeout = 180
     try:
         async with asyncio.timeout(timeout):
-            if on_preview is not None:
-                from .local_stream import stream_chat
-                return await stream_chat(settings, system=system, messages=list(reversed(bounded)),
-                                         json_mode=json_mode, on_preview=on_preview)
-            return await ProviderChain(settings).generate(
-                system=system, messages=list(reversed(bounded)), json_mode=json_mode, max_tokens=600,
-                preferred="ollama",
-            )
+            from .local_stream import stream_chat
+            # Summaries and regular chat share the same native chat template,
+            # bounded wire parser and local-only transport, even without UI.
+            return await stream_chat(settings, system=system, messages=list(reversed(bounded)),
+                                     json_mode=json_mode, on_preview=on_preview or (lambda _: None))
     except TimeoutError:
         raise RuntimeError("Local processing took too long. Try a shorter request or a smaller installed model in advanced settings.") from None
     except Exception:

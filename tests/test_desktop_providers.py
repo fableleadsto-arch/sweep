@@ -5,7 +5,7 @@ import json
 import httpx
 import pytest
 
-from sweep.desktop import providers
+from sweep.desktop import local_stream, providers
 
 
 @pytest.fixture(autouse=True)
@@ -104,17 +104,14 @@ def test_installed_model_replaces_missing_legacy_default(tmp_path, monkeypatch):
 
     seen = []
 
-    class FakeChain:
-        def __init__(self, settings):
-            seen.append(settings)
-
-        async def generate(self, **kwargs):
-            assert verified == ["local-small:3b"]
-            return providers.ProviderResult(text="hello", model="local-small:3b", provider="ollama")
+    async def stream(settings, **kwargs):
+        seen.append(settings)
+        assert verified == ["local-small:3b"]
+        return providers.ProviderResult(text="hello", model="local-small:3b", provider="ollama")
 
     monkeypatch.setattr(providers, "_ollama_models", models)
     monkeypatch.setattr(providers, "require_local_model", verify)
-    monkeypatch.setattr(providers, "ProviderChain", FakeChain)
+    monkeypatch.setattr(local_stream, "stream_chat", stream)
     result = asyncio.run(providers.generate_chat(tmp_path, system="hello", messages=[]))
     assert result.text == "hello"
     assert seen[0].ollama_model == "local-small:3b"
@@ -128,7 +125,7 @@ def test_explicit_missing_model_does_not_silently_use_another(tmp_path, monkeypa
         return {"models": ["installed:3b"], "message": "Ready"}
 
     monkeypatch.setattr(providers, "_ollama_models", models)
-    monkeypatch.setattr(providers, "ProviderChain", lambda *_: pytest.fail("Missing model reached inference"))
+    monkeypatch.setattr(local_stream, "stream_chat", lambda *_: pytest.fail("Missing model reached inference"))
     with pytest.raises(RuntimeError, match="not installed"):
         asyncio.run(providers.generate_chat(tmp_path, system="test", messages=[]))
 
@@ -189,7 +186,9 @@ def test_start_server_uses_installed_executable_with_cloud_disabled(tmp_path, mo
     assert calls[0][0] == [str(executable), "serve"]
     assert calls[0][1]["env"]["OLLAMA_HOST"] == "127.0.0.1:11434"
     assert calls[0][1]["env"]["OLLAMA_NO_CLOUD"] == "1"
-    assert calls[0][1]["env"]["OLLAMA_KEEP_ALIVE"] == "1m"
+    assert calls[0][1]["env"]["OLLAMA_KEEP_ALIVE"] == "2m"
+    assert calls[0][1]["env"]["OLLAMA_MAX_LOADED_MODELS"] == "1"
+    assert calls[0][1]["env"]["OLLAMA_NUM_PARALLEL"] == "1"
     assert calls[0][1]["stdout"] == providers.subprocess.DEVNULL
 
 
@@ -270,8 +269,8 @@ def test_local_chat_verifies_model_then_generates_without_cloud_fallback(tmp_pat
             return httpx.Response(200, json={"models": [{"name": "installed:3b"}]})
         if request.url.path == "/api/show":
             return httpx.Response(200, json={"model_info": {"general.architecture": "qwen"}})
-        assert request.url.path == "/api/generate"
-        assert [request.url.path for request in sent] == ["/api/tags", "/api/show", "/api/generate"]
+        assert request.url.path == "/api/chat"
+        assert [request.url.path for request in sent] == ["/api/tags", "/api/show", "/api/chat"]
         return httpx.Response(500, text="server failure with private detail")
 
     calls = local_http(respond)
@@ -279,6 +278,39 @@ def test_local_chat_verifies_model_then_generates_without_cloud_fallback(tmp_pat
         asyncio.run(providers.generate_chat(tmp_path, system="test", messages=[{"role": "user", "content": "hello"}]))
     assert len(sent) == 3
     assert all(call["trust_env"] is False and call["follow_redirects"] is False for call in calls)
+
+
+@pytest.mark.parametrize("with_preview", [False, True])
+def test_local_chat_preserves_conversation_roles_and_finishes_with_or_without_preview(
+        tmp_path, local_http, with_preview):
+    providers.save_config(tmp_path, {"model": "installed:3b"})
+    paths, previews = [], []
+    messages = [{"role": "user", "content": "My project is Lumen."},
+                {"role": "assistant", "content": "I can help with Lumen."},
+                {"role": "user", "content": "What is my project called?"}]
+
+    def respond(request):
+        paths.append(request.url.path)
+        assert request.url.host == "127.0.0.1"
+        assert "authorization" not in request.headers
+        if request.url.path == "/api/tags":
+            return httpx.Response(200, json={"models": [{"name": "installed:3b"}]})
+        if request.url.path == "/api/show":
+            return httpx.Response(200, json={"model_info": {"general.architecture": "qwen"}})
+        assert request.url.path == "/api/chat"
+        payload = json.loads(request.content)
+        assert payload["messages"] == [{"role": "system", "content": "You are Sweep."}, *messages]
+        body = json.dumps({"message": {"content": '{"message":"Your project is Lumen."}'},
+                           "done": True, "eval_count": 9}) + "\n"
+        return httpx.Response(200, content=body)
+
+    local_http(respond)
+    result = asyncio.run(providers.generate_chat(tmp_path, system="You are Sweep.", messages=messages,
+                         json_mode=True, on_preview=previews.append if with_preview else None))
+    assert paths == ["/api/tags", "/api/show", "/api/chat"]
+    assert result.parsed == {"message": "Your project is Lumen."}
+    assert result.completion_tokens == 9
+    assert previews == (["Your project is Lumen."] if with_preview else [])
 
 
 def test_local_chat_bounds_context_and_allows_cpu_inference_time(tmp_path, monkeypatch):
@@ -291,21 +323,18 @@ def test_local_chat_bounds_context_and_allows_cpu_inference_time(tmp_path, monke
     async def verify(url, model):
         pass
 
-    class FakeChain:
-        def __init__(self, settings):
-            seen["timeout"] = settings.request_timeout_seconds
-
-        async def generate(self, **kwargs):
-            seen.update(kwargs)
-            return providers.ProviderResult(text="Hello", model="installed:3b", provider="ollama")
+    async def stream(settings, **kwargs):
+        seen["timeout"] = settings.request_timeout_seconds
+        seen.update(kwargs)
+        return providers.ProviderResult(text="Hello", model="installed:3b", provider="ollama")
 
     monkeypatch.setattr(providers, "_ollama_models", models)
     monkeypatch.setattr(providers, "require_local_model", verify)
-    monkeypatch.setattr(providers, "ProviderChain", FakeChain)
+    monkeypatch.setattr(local_stream, "stream_chat", stream)
     messages = [{"role": "assistant", "content": "long source " * 4000} for _ in range(12)]
     messages.append({"role": "user", "content": "My latest question"})
     asyncio.run(providers.generate_chat(tmp_path, system="test", messages=messages))
     assert sum(len(item["content"]) for item in seen["messages"]) <= 10000
     assert seen["messages"][-1] == messages[-1]
     assert seen["timeout"] == 180
-    assert seen["max_tokens"] == 600
+    assert callable(seen["on_preview"])

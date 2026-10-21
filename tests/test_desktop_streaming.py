@@ -34,6 +34,7 @@ def run_stream(monkeypatch, chunks, headers=None):
     sent, previews = [], []
     real_client = httpx.AsyncClient
     def reply(request):
+        assert request.url.path == '/api/chat'
         sent.append(json.loads(request.content))
         return httpx.Response(200, stream=Chunks(chunks), headers=headers)
     def client(**kwargs):
@@ -48,8 +49,8 @@ def run_stream(monkeypatch, chunks, headers=None):
 
 
 def test_split_stream_produces_previews_then_complete_answer(monkeypatch):
-    chunks = [json.dumps({'response': '{"message":"Hel', 'done': False}).encode() + b'\n',
-              json.dumps({'response': 'lo"}', 'done': True, 'eval_count': 4}).encode() + b'\n']
+    chunks = [json.dumps({'message': {'content': '{"message":"Hel'}, 'done': False}).encode() + b'\n',
+              json.dumps({'message': {'content': 'lo"}'}, 'done': True, 'eval_count': 4}).encode() + b'\n']
     wire = b''.join(chunks)
     answer, previews, sent = run_stream(monkeypatch, [wire[:9], wire[9:20], wire[20:]])
     assert answer.parsed == {'message': 'Hello'}
@@ -57,14 +58,19 @@ def test_split_stream_produces_previews_then_complete_answer(monkeypatch):
     assert answer.completion_tokens == 4
     assert sent[0]['think'] is False and sent[0]['stream'] is True
     assert sent[0]['options']['num_predict'] == 600
+    assert sent[0]['options']['num_ctx'] == 4096
+    assert sent[0]['keep_alive'] == '2m'
+    assert sent[0]['messages'] == [{'role': 'system', 'content': 'system'}, {'role': 'user', 'content': 'hello'}]
+    assert 'prompt' not in sent[0]
 
 
 @pytest.mark.parametrize('body', [
-    b'{"response":"partial","done":false}\n',
+    b'{"message":{"content":"partial"},"done":false}\n',
     b'{"error":"engine stopped"}\n',
     b'[]\n',
-    b'{"response":123,"done":true}\n',
-    b'{"response":"","done":true}\n',
+    b'{"message":{"content":123},"done":true}\n',
+    b'{"message":{"content":""},"done":true}\n',
+    b'{"message":"wrong type","done":true}\n',
 ])
 def test_incomplete_or_invalid_stream_never_claims_success(monkeypatch, body):
     with pytest.raises(ValueError):
@@ -78,10 +84,39 @@ def test_stream_response_has_a_byte_limit(monkeypatch):
 
 
 def test_truncated_response_keeps_answer_but_discards_proposals(monkeypatch):
-    body = json.dumps({'response': '{"message":"A partial answer", "proposal":',
+    body = json.dumps({'message': {'content': '{"message":"A partial answer", "proposal":'},
                        'done': True, 'done_reason': 'length'}).encode() + b'\n'
     answer, previews, _ = run_stream(monkeypatch, [body])
     assert answer.parsed['incomplete'] is True
     assert 'A partial answer' in answer.parsed['message']
     assert 'proposal' not in answer.parsed
     assert previews[-1] == 'A partial answer'
+
+
+def test_first_small_packet_is_visible_before_server_sends_next_token(monkeypatch):
+    """A 1 KB transport buffer used to hold several valid token packets."""
+    previews = []
+    class LiveTokens(httpx.AsyncByteStream):
+        async def __aiter__(self):
+            yield b'{"message":{"content":"First"},"done":false}\n'
+            assert previews == ['First'], 'The first token was buffered by the client'
+            yield b'{"message":{"content":" answer"},"done":true}\n'
+    real_client = httpx.AsyncClient
+    def client(**kwargs):
+        return real_client(**kwargs, transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, stream=LiveTokens())))
+    monkeypatch.setattr(local_stream.httpx, 'AsyncClient', client)
+    settings = SimpleNamespace(ollama_model='downloaded:latest', ollama_base_url='http://127.0.0.1:11434',
+                               request_timeout_seconds=30)
+    answer = asyncio.run(local_stream.stream_chat(settings, system='system', messages=[],
+        json_mode=False, on_preview=previews.append))
+    assert answer.text == 'First answer'
+    assert previews[-1] == 'First answer'
+
+
+def test_hidden_reasoning_is_not_a_visible_answer(monkeypatch):
+    chunks = [b'{"message":{"thinking":"internal reasoning","content":""},"done":false}\n',
+              b'{"message":{"content":"{\\"message\\":\\"Hello\\"}"},"done":true}\n']
+    answer, previews, _ = run_stream(monkeypatch, chunks)
+    assert answer.parsed == {'message': 'Hello'}
+    assert previews == ['Hello']

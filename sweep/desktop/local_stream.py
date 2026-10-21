@@ -12,6 +12,9 @@ from companion.providers import ProviderResult
 
 MAX_RESPONSE_BYTES = 512_000
 MAX_TEXT = 40_000
+CHAT_CONTEXT_TOKENS = 4096
+CHAT_REPLY_TOKENS = 600
+CHAT_KEEP_ALIVE = "2m"
 
 
 def preview_text(text: str, json_mode: bool) -> str:
@@ -31,10 +34,14 @@ def preview_text(text: str, json_mode: bool) -> str:
 async def stream_chat(settings, *, system: str, messages: list[dict], json_mode: bool,
                       on_preview: Callable[[str], None]) -> ProviderResult:
     """Caller verifies loopback endpoint and downloaded-model metadata first."""
-    prompt = [f"<system>\n{system}\n</system>"]
-    prompt.extend(f"<{item['role']}>\n{item['content']}\n</{item['role']}>" for item in messages)
-    payload = {"model": settings.ollama_model, "prompt": "\n".join(prompt), "stream": True,
-               "think": False, "keep_alive": "1m", "options": {"temperature": .5, "num_predict": 600}}
+    # Let the installed model apply its own trained conversation template. XML
+    # role labels inside /generate's user prompt are not actual system/history
+    # messages, and small local models readily confuse those roles.
+    payload = {"model": settings.ollama_model,
+               "messages": [{"role": "system", "content": system}, *messages], "stream": True,
+               "think": False, "keep_alive": CHAT_KEEP_ALIVE,
+               "options": {"temperature": .5, "num_predict": CHAT_REPLY_TOKENS,
+                           "num_ctx": CHAT_CONTEXT_TOKENS}}
     if json_mode:
         payload["format"] = "json"
     text = ""
@@ -46,12 +53,14 @@ async def stream_chat(settings, *, system: str, messages: list[dict], json_mode:
     final = {}
     async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, trust_env=False,
                                  follow_redirects=False) as client:
-        async with client.stream("POST", settings.ollama_base_url.rstrip("/") + "/api/generate",
+        async with client.stream("POST", settings.ollama_base_url.rstrip("/") + "/api/chat",
                                  json=payload, headers={"Accept-Encoding": "identity"}) as response:
             response.raise_for_status()
             if response.headers.get("content-encoding", "identity").lower() != "identity":
                 raise ValueError("Unexpected compressed local response")
-            async for chunk in response.aiter_bytes(chunk_size=1024):
+            # A fixed chunk_size makes httpx wait for a whole block before
+            # yielding. Local token packets are often less than 200 bytes.
+            async for chunk in response.aiter_bytes():
                 total += len(chunk)
                 if total > MAX_RESPONSE_BYTES:
                     raise ValueError("Local response exceeded its size limit")
@@ -64,7 +73,10 @@ async def stream_chat(settings, *, system: str, messages: list[dict], json_mode:
                     item = json.loads(line)
                     if not isinstance(item, dict) or item.get("error"):
                         raise ValueError("The local engine stopped the response")
-                    delta = item.get("response", "")
+                    message = item.get("message", {})
+                    if not isinstance(message, dict):
+                        raise ValueError("Invalid local response message")
+                    delta = message.get("content", "")
                     if not isinstance(delta, str) or len(text) + len(delta) > MAX_TEXT:
                         raise ValueError("Invalid local response text")
                     text += delta
