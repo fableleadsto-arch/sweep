@@ -184,6 +184,14 @@ def test_multiple_sources_preserve_distinct_page_provenance_and_budget(saved, mo
     assert [source["label"] for source in result["context_sources"]] == ["[1]", "[2]", "[3]", "[4]"]
 
 
+def test_source_labels_are_visible_when_model_omits_inline_citations(saved, monkeypatch):
+    source = saved.create({"title": "invoice.txt", "text": "Quantity: 12"})
+    capture_answer(monkeypatch, "The quantity is 12.")
+    result = asyncio.run(execute_context(request(saved, [source], "What quantity is listed?"), lambda *a: None))
+    assert "Source excerpts supplied:\n[1] invoice.txt" in result["message"]
+    assert "The quantity is 12. [1]" not in result["message"]  # Never fabricate a model citation.
+
+
 def test_transcript_question_preserves_timestamp_and_reference_uncertainty(saved, monkeypatch):
     source = saved.create({"title": "meeting.wav", "segments": [
         {"start": 0.0, "end": 2.5, "text": "Welcome to the meeting."},

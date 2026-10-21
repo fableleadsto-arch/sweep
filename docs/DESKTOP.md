@@ -43,6 +43,15 @@ upgrading or uninstalling.
 - **History** searches and reopens saved conversations and earlier task results. The plus
   button starts a new chat. Each chat keeps its own recent model context, including
   completed tool results. Context is captured when a message is submitted.
+- Follow up on an earlier file or result: `What does this document say about cancellation?`
+  or `Compare these sources`. Answers use selected saved excerpts and include a
+  **Sources used** action. Original extraction limits still apply. Attach up to four
+  PDF, DOCX or text documents together to compare them; other attachment types
+  currently accept one file per request.
+- After a data transformation, `Now convert it to JSON` or another supported data
+  operation uses the earlier output, including when queued before that task
+  finishes. A failed source stops its follow-up; it never silently reuses the
+  original file or another conversation's result.
 - Continue sending while a task runs to add requests to the queue. Up to 50 tasks
   can wait; one worker runs at a time. Waiting actions receive permission checks
   when dispatched. Use the inline **Remove from queue** link or **Stop** for the
@@ -62,6 +71,11 @@ Workers have a 120-second runtime budget for ordinary tools, 240 seconds for
 conversation, documents and speech setup, and 300 seconds for image analysis,
 sampled-video descriptions and transcription, plus a five-second watchdog grace period.
 Local model answers can take longer on a CPU, especially when loading a model.
+Streaming keeps completed cards and text selections intact while the current
+answer changes. Local chat uses a bounded 4,096-token context and allows the
+model to unload two minutes after its last request. An engine started by Sweep
+loads at most one model and one inference context at a time; settings of an
+already-running external engine are left unchanged.
 
 ## Local processing and permissions
 

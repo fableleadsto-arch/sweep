@@ -1,11 +1,26 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-12. Previous installed release: `f42371654` (2026-10-10), with
-the current media/audio changes identified below. This document maps the **entire original Sweep
+Audit date: 2026-10-18. Last verified installed release: `8072f3c39` (media/audio).
+Current priorities and continuation instructions are in [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md).
+This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
 product backlog and release checklist, not a claim that every listed feature ships.
 
 ## Current delivery slice
+
+The current repair slice adds explicit references to saved results in the same
+chat, up to four-document comparison, and data follow-ups that consume a prior
+transformation's output. This is bounded excerpt retrieval, not a general
+autonomous workflow engine. It also corrects local chat roles/stream buffering,
+keeps completed native cards intact while streaming, and repairs installed-app
+resolution and launch receipts. See the continuation state for validation and
+whether these changes have reached the installed release.
+
+The legacy compute catalog contains 42 broad entries; this does not establish
+42 working OSINT tools. The desktop exposes 18 capability routes with the current
+context adapter, including three public-web routes. The neural mesh is a separate
+library and is not loaded by the desktop installer. Its integrity repairs do not
+establish desktop integration, distributed execution or a 120-tool OSINT suite.
 
 The current changes enforce loopback-only, installed-model inference for the
 desktop, remove cloud selection from its Settings, and reject cloud-backed local

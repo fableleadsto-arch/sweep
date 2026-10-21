@@ -301,5 +301,9 @@ async def execute_context(request: dict, progress, on_preview=None) -> dict:
         raise RuntimeError("Local processing returned no answer. The original results remain available; try this question again.")
     scope = (f"Based on selected excerpts from {len(references)} saved result{'s' if len(references) != 1 else ''} "
              "in this chat. Original files were not reread; extraction and preview limits still apply.")
-    return {"kind": "context_answer", "message": answer.text.strip() + "\n\n" + scope,
+    # Model-generated inline citations are not guaranteed. Always expose the
+    # actual supplied source labels without inventing claim-to-source links.
+    source_list = "Source excerpts supplied:\n" + "\n".join(
+        f"{reference['label']} {reference['filename']}" for reference in references)
+    return {"kind": "context_answer", "message": answer.text.strip() + "\n\n" + source_list + "\n\n" + scope,
             "summary_scope": scope, "context_sources": references, "execution": "local"}
