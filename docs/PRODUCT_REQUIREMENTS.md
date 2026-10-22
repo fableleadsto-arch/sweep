@@ -1,6 +1,6 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-18. Last verified installed release: `8072f3c39` (media/audio).
+Audit date: 2026-10-22. Last verified installed release: `4d42bba69` (companion repairs).
 Current priorities and continuation instructions are in [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md).
 This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
@@ -13,8 +13,10 @@ chat, up to four-document comparison, and data follow-ups that consume a prior
 transformation's output. This is bounded excerpt retrieval, not a general
 autonomous workflow engine. It also corrects local chat roles/stream buffering,
 keeps completed native cards intact while streaming, and repairs installed-app
-resolution and launch receipts. See the continuation state for validation and
-whether these changes have reached the installed release.
+resolution and launch receipts. These changes have reached the installed release:
+933 regression checks passed (six Windows symlink-fixture skips), and all 3,110
+installed payload files were verified. The upgrade preserved 44 personal files.
+See the continuation state for actual timings and remaining limitations.
 
 The legacy compute catalog contains 42 broad entries; this does not establish
 42 working OSINT tools. The desktop exposes 18 capability routes with the current

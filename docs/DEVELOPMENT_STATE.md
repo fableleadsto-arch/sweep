@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-10-21. Read this file when the user says **continue**. Keep one
+Updated: 2026-10-22. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -20,17 +20,17 @@ The user reports minute-long replies, unreliable application launching, weak
 companion behavior, missing OSINT tools, excessive resource use and incomplete
 neural-mesh integration. Fix those failures before expanding the product.
 
-1. **Chat latency and companion behavior — source validated; packaging pending.**
+1. **Chat latency and companion behavior — installed release validated.**
    Native chat roles replace flattened prompts; small response packets display
    immediately, with bounded 4K context, two-minute residency and one model/context
    when Sweep starts the engine. CPU thread trials did not justify hardcoding a
    thread count. Cold loading remains slow; further quality/latency work is needed.
-2. **Device actions — source validated; packaging pending.** Installed apps resolve
+2. **Device actions — installed release validated.** Installed apps resolve
    through aliases, App Paths, executable paths, Start Menu and registered Store
    entries. Missing/ambiguous apps do not silently become web searches. Native
    receipts distinguish accepted requests from observed windows. Browser intent
    such as “open YouTube in Brave” remains supported.
-3. **Conversation continuity — source validated; packaging pending.** Saved results
+3. **Conversation continuity — installed release validated.** Saved results
    stay scoped to the same chat; up to four documents can be compared. Queued data
    follow-ups consume the earlier transformed output. Failures stop dependent
    work; source labels remain visible even if the model omits inline citations.
@@ -74,14 +74,25 @@ neural-mesh integration. Fix those failures before expanding the product.
 
 ## Current verified release
 
-Installed/source release: `8072f3c39` (media and local speech). Installer:
-`dist/Sweep-Setup.exe`. Native install/launch/exit, real local transcription,
-sampled video, OCR, documents, data and chat were exercised. Installed payload
-CRC checks covered 3,110 files; upgrade preserved 26 personal files.
+Installed code release: `4d42bba69` (companion repairs), committed and pushed.
+Installer: `dist/Sweep-Setup.exe`, 126,022,215 bytes. Native installer and installed
+dock launch/exit passed. Oct22 verification checked SHA256SUMS, 27 native library
+hashes, 28 license notice hashes and all 3,110 installed payload CRCs. The upgrade
+preserved 44 personal files hash-for-hash. Unrelated user work remains unstaged;
+the build metadata correctly records a dirty source tree.
 
-Known performance: packaged local greeting took 14.6 seconds in one run; sampled
-video vision took 111.63 seconds. Those observations do **not** establish normal
-or worst-case response time. Chat/app-launch/resource fixes are not yet shipped.
+Packaged workers ran outside the repository: calculator, data, text, PDF, DOCX,
+OCR and local chat passed; greeting took 11.48 seconds with five preview events.
+The native dock driving packaged workers compared invoice quantity 12 with packing
+quantity 10 (28.98 seconds under build load), then completed queued CSV cleanup
+and JSON conversion (2.53 seconds), preserving the original file. Its expanded
+conversation and source controls were visually inspected.
+
+Installed Character Map launching opened an independently observed window in
+3.90 seconds. The product's shorter verification window reported only that
+Windows accepted the request, correctly avoiding a false verified-success claim.
+Cold chat still takes seconds; sampled video took 111.63 seconds in the previous
+media release. These observations are not normal/worst-case time guarantees.
 
 ## Source prompts
 
@@ -113,12 +124,19 @@ or worst-case response time. Chat/app-launch/resource fixes are not yet shipped.
 - Focused checks: 302 passed across providers/streaming/apps/controller/mesh;
   118 mesh checks passed after adding retention bounds; 58 context/follow-up checks
   passed with one Windows symlink-fixture skip. Earlier desktop integration set:
-  242 passed, two symlink skips. A broader release regression run is pending.
+  242 passed, two symlink skips. Broad release regression: **933 passed, six
+  skipped** (Windows symlink fixture privileges), 153.15 seconds.
 - Known gap: source labels and reviewable excerpts are deterministic; model-written
   inline citations and factual interpretations still require checking. This is
   not the complete TradeOps reconciliation workflow.
 
-## Next release gate
+## Next action and release gate
+
+Implement and test bounded owner-scoped fair scheduling around the existing
+subprocess compute worker. It currently spawns every job immediately. This is a
+hosting foundation only: authenticated pairing, transport, desktop routing,
+tenant workspaces and realistic multi-device load validation remain required.
+Keep this separate from the already verified desktop release above.
 
 Complete targeted code fixes and meaningful tests; record actual latency/app
 launch measurements; run relevant regression checks; commit only owned changes;
