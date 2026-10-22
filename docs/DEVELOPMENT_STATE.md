@@ -34,7 +34,7 @@ neural-mesh integration. Fix those failures before expanding the product.
    stay scoped to the same chat; up to four documents can be compared. Queued data
    follow-ups consume the earlier transformed output. Failures stop dependent
    work; source labels remain visible even if the model omits inline citations.
-4. **Resource use and fair multi-user scheduling — host pool source validated.** Bound local
+4. **Resource use and fair multi-user scheduling — experimental text host validated.** Bound local
    inference, queues, context and idle memory. The user clarified on 2026-10-18:
    start with a locally hosted installation; as more users join, share the heavy
    processing on a host while additional devices stay lightweight. Preserve a
@@ -45,7 +45,10 @@ neural-mesh integration. Fix those failures before expanding the product.
    share their files. Pairing, consent and routing need an explicit product flow.
    `FairComputePool` now supplies bounded owner-scoped dispatch over the existing
    real subprocess worker, with round-robin queues, cancellation and timeouts.
-   It is not a deployed service and is not connected to the desktop. See
+   A separate opt-in text host now adds persistent organization/user/device
+   identities, single-use invitations, revocable credentials and a strict local
+   inference contract. A temporary loopback host completed two actual-model jobs.
+   It is not connected to the desktop or installed as a persistent service. See
    [SHARED_COMPUTE.md](SHARED_COMPUTE.md) for limits and remaining host requirements.
 5. **OSINT and neural mesh — audit active.** Count actual executable tools and
    desktop routes, identify unavailable dependencies and placeholder results.
@@ -136,12 +139,18 @@ media release. These observations are not normal/worst-case time guarantees.
 
 ## Next action and release gate
 
-Next: implement authenticated host identities/pairing and a narrow supported
-inference contract around the pool. Derive owners from credentials, never from
-client fields. Keep arbitrary worker specs and legacy execution/training routes
-off the shared service. Then add tenant workspaces/result retention, desktop
-host selection and real multi-device load validation. The legacy global bearer
-token and `RemoteWorker` example are not sufficient for multi-user hosting.
+Next: implement native desktop pairing/host settings and a lightweight client
+with explicit certificate trust and OS-protected credentials. Route only text
+conversation to a paired host after consent; leave local file grants and approved
+desktop actions on the client. Standalone mode remains the default, and paired
+mode must not require downloading a model on the second device. Use the new
+`companion.hosting` endpoints, not the legacy global token/`RemoteWorker` example.
+
+Then validate real multi-device TLS/load behavior, timed result retention and
+crash recovery. Broader remote files/tasks need tenant workspaces and OS isolation
+before exposure. Cold local reply latency is still a priority: the latest real
+host run took 32.55 seconds for its first reply; shared queuing does not fix cold
+model loading. Do not describe the companion as responsive in all conditions.
 
 The legacy capability regression also exposed unavailable symbolic math, charts,
 graphs, vision and NLP dependencies in the development environment; include them
@@ -180,3 +189,34 @@ the complete master prompt is implemented.
 - Pool state is in memory; persisted worker files have no retention/restart
   recovery policy yet. This source-only host milestone does not replace installed
   desktop code release `4d42bba69` or claim a working network-hosting product.
+
+## Authenticated text host evidence (2026-10-22)
+
+- Source milestone only: `companion.hosting` CLI creates organizations/users and
+  ten-minute single-use invitations locally. Device credentials expire after
+  30 days; only high-entropy secret digests are stored in SQLite. Every API call
+  rechecks credentials; multiple devices share their user's queue quota.
+- Separate native-client API supports pairing, own identity/revocation, text jobs,
+  bounded status previews/results and cancellation. No legacy execution routes,
+  model selection, client-provided identity, file access or computer-action routes.
+- Loopback-only HTTP; non-loopback CLI binding requires TLS and explicit host
+  names. Forwarded headers are not trusted. Browser-origin requests, query tokens,
+  oversized bodies and extra execution fields are rejected; validation errors
+  do not echo credentials. No network service was left running during this work.
+- Text inference reuses downloaded-model validation and local streaming in real
+  child processes. Normal terminal/shutdown paths delete host-owned temporary
+  prompt/status files; personal configuration and history remain untouched.
+- **154 tests passed** (37.20 s): identity/API/worker/CLI, existing pool/compute/API.
+  Includes concurrent invite redemption, expiry, revocation, user boundaries,
+  quotas, transport/body limits, controlled-engine subprocesses, cancellation and
+  cloud-alias rejection. One upstream test-client deprecation warning remains.
+  Ruff checks passed. Earlier optional capability dependency gaps remain open.
+- Actual local TCP host + installed model, two synthetic users: first preview
+  31.59 s, first completion 32.55 s; second completion 35.31 s including waiting.
+  Second job was observed queued. Foreign read/cancel denied, revoked credential
+  rejected, all job files/processes cleaned and personal settings hash preserved.
+- Remaining: native client pairing/trust/protected token storage; multi-machine
+  TLS/load tests; idle result expiry and crash residue cleanup/recovery. Revocation
+  blocks new API requests but does not cancel already admitted work. Host operator
+  can access host-side data; owner checks are not OS isolation. Installer still
+  identifies desktop code `4d42bba69`; no desktop behavior changed this milestone.

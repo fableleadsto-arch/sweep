@@ -119,7 +119,22 @@ class LocalSubprocessWorker(ComputeWorker):
         status_path = self._status_path(job.id)
         with status_path.open("x", encoding="utf-8") as stream:
             stream.write(json.dumps(WorkerStatus(job_id=job.id, state="queued").to_dict()))
-        command = [
+        command = self._command(job, spec, status_path)
+        try:
+            proc = subprocess.Popen(
+                command,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            )
+        except OSError as exc:
+            self._write_status(job.id, "failed", error=f"failed to spawn worker: {exc}")
+            raise
+        self._procs[job.id] = proc
+        return job.id
+
+    def _command(self, job: WorkerJob, spec: Path, status_path: Path) -> list[str]:
+        return [
             sys.executable,
             "-m",
             "companion.compute.worker",
@@ -134,18 +149,6 @@ class LocalSubprocessWorker(ComputeWorker):
             "--status",
             str(status_path),
         ]
-        try:
-            proc = subprocess.Popen(
-                command,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-            )
-        except OSError as exc:
-            self._write_status(job.id, "failed", error=f"failed to spawn worker: {exc}")
-            raise
-        self._procs[job.id] = proc
-        return job.id
 
     def status(self, job_id: str) -> WorkerStatus:
         path = self._status_path(job_id)

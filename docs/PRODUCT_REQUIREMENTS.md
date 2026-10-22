@@ -24,9 +24,12 @@ context adapter, including three public-web routes. The neural mesh is a separat
 library and is not loaded by the desktop installer. Its integrity repairs do not
 establish desktop integration, distributed execution or a 120-tool OSINT suite.
 
-The optional host now has a source-tested, owner-scoped fair subprocess pool;
-83 compute/API checks passed. Pairing, authentication, tenant workspaces and
-desktop host routing remain unimplemented. See [SHARED_COMPUTE.md](SHARED_COMPUTE.md).
+The optional source host now adds device authentication, single-use invitations
+and a strict text-only local inference API around the fair pool; 154 relevant
+tests passed. A temporary TCP host handled two synthetic users with the actual
+local model, including queueing, user-boundary and revocation checks. Native
+desktop pairing/host routing, multi-device TLS/load testing, tenant workspaces
+and crash recovery remain unfinished. See [SHARED_COMPUTE.md](SHARED_COMPUTE.md).
 Five legacy capability tests currently fail because optional math/chart/graph/
 vision/NLP libraries are absent; those catalog entries are not verified features.
 
