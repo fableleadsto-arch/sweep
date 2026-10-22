@@ -7,6 +7,7 @@ Public entry points:
     ModelManager            framework-independent model resolution
     detect()                structured host capability detection
     diagnose()              full diagnostics report (CLI + API)
+    FairComputePool         bounded owner-scoped subprocess dispatch
 
 Nothing here imports a heavy framework at import time.
 """
@@ -26,6 +27,7 @@ from .base import (
 from .capability_detector import ComputeEnvironment, detect
 from .diagnostics import diagnose
 from .model_manager import ModelManager, ModelSpec
+from .pool import FairComputePool, QueueFullError
 from .scheduler import ScheduleDecision, schedule
 
 __all__ = [
@@ -38,8 +40,10 @@ __all__ = [
     "ComputeTask",
     "ComputeTaskKind",
     "DeviceInfo",
+    "FairComputePool",
     "ModelManager",
     "ModelSpec",
+    "QueueFullError",
     "ScheduleDecision",
     "detect",
     "diagnose",

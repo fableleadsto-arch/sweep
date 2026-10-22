@@ -25,11 +25,23 @@ from .workers import WorkerStatus
 
 
 def _write(path: Path, status: WorkerStatus) -> None:
-    path.write_text(json.dumps(status.to_dict(), default=str), encoding="utf-8")
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(status.to_dict(), default=str), encoding="utf-8")
+    for attempt in range(6):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            # Windows readers/indexers can briefly hold the destination open.
+            # Keep the old complete record instead of exposing a partial write.
+            if attempt == 5:
+                raise
+            time.sleep(0.01 * (2 ** attempt))
 
 
 def _run_worker(job_id: str, backend_id: str, kind: str, spec: Path, status_path: Path) -> int:
     status_path = Path(status_path)
+    started_at = time.time()
     manager = BackendManager()
     backend = manager.get(backend_id or "")
     if backend is None:
@@ -44,15 +56,11 @@ def _run_worker(job_id: str, backend_id: str, kind: str, spec: Path, status_path
 
     _write(
         status_path,
-        WorkerStatus(job_id=job_id, state="running", progress=0.05, message=f"backend '{backend_id}' loaded", started_at=time.time()),
+        WorkerStatus(job_id=job_id, state="running", progress=0.05, message=f"backend '{backend_id}' loaded", started_at=started_at),
     )
 
     task = ComputeTask(
-        kind=(
-            ComputeTaskKind(kind)
-            if kind in ComputeTaskKind.__members__
-            else ComputeTaskKind.CAPABILITY
-        ),
+        kind=ComputeTaskKind(kind),
         capability=str(spec_data.get("capability") or spec_data.get("task") or ""),
         payload=spec_data,
         framework_hint=backend_id,
@@ -79,7 +87,7 @@ def _run_worker(job_id: str, backend_id: str, kind: str, spec: Path, status_path
             progress=1.0,
             message=result.summary,
             result=result.result,
-            started_at=time.time(),
+            started_at=started_at,
             finished_at=time.time(),
         ),
     )

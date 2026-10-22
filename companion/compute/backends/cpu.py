@@ -1,12 +1,10 @@
-"""CPU backend — the always-available core executor.
+"""CPU backend — the core numerical executor.
 
 Runs capability tasks through the light NumPy/SciPy/sklearn tool chain and
-executes smoke tests natively. No framework is required to exist.
+executes smoke tests natively. NumPy loads only when executing numerical work.
 """
 
 from __future__ import annotations
-
-import numpy as np
 
 from ..base import BackendKind, ComputeBackend, ComputeJobResult, ComputeTask, ComputeTaskKind
 from ..capability_detector import detect
@@ -23,15 +21,12 @@ class CPUBackend(ComputeBackend):
 
     @property
     def available(self) -> bool:
-        return True  # numpy is a core dependency; CPU execution always works
+        return not self.missing_libraries
 
     def supports(self, task: ComputeTask) -> bool:
         if task.kind == ComputeTaskKind.CAPABILITY:
             return task.capability in self.runner_capabilities
-        return True  # smoke / inference / training / transform fall back to CPU safely
-
-    def version(self) -> str:
-        return np.__version__ if np else ""
+        return task.kind == ComputeTaskKind.SMOKE
 
     def devices(self):
         from ..base import DeviceInfo
@@ -49,6 +44,8 @@ class CPUBackend(ComputeBackend):
         ]
 
     def run_smoke(self, task: ComputeTask) -> ComputeJobResult:
+        import numpy as np
+
         a = np.arange(12.0).reshape(3, 4)
         b = (a @ a.T).sum().item()
         return ComputeJobResult(

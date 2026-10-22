@@ -24,6 +24,12 @@ context adapter, including three public-web routes. The neural mesh is a separat
 library and is not loaded by the desktop installer. Its integrity repairs do not
 establish desktop integration, distributed execution or a 120-tool OSINT suite.
 
+The optional host now has a source-tested, owner-scoped fair subprocess pool;
+83 compute/API checks passed. Pairing, authentication, tenant workspaces and
+desktop host routing remain unimplemented. See [SHARED_COMPUTE.md](SHARED_COMPUTE.md).
+Five legacy capability tests currently fail because optional math/chart/graph/
+vision/NLP libraries are absent; those catalog entries are not verified features.
+
 The current changes enforce loopback-only, installed-model inference for the
 desktop, remove cloud selection from its Settings, and reject cloud-backed local
 engine aliases before sending user content. Conversation, image analysis and

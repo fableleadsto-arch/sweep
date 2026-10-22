@@ -34,7 +34,7 @@ neural-mesh integration. Fix those failures before expanding the product.
    stay scoped to the same chat; up to four documents can be compared. Queued data
    follow-ups consume the earlier transformed output. Failures stop dependent
    work; source labels remain visible even if the model omits inline citations.
-4. **Resource use and fair multi-user scheduling — audit active.** Bound local
+4. **Resource use and fair multi-user scheduling — host pool source validated.** Bound local
    inference, queues, context and idle memory. The user clarified on 2026-10-18:
    start with a locally hosted installation; as more users join, share the heavy
    processing on a host while additional devices stay lightweight. Preserve a
@@ -43,6 +43,10 @@ neural-mesh integration. Fix those failures before expanding the product.
    cancellation and load validation. Desktop actions stay on the requesting
    device. Do not silently turn other users' computers into compute workers or
    share their files. Pairing, consent and routing need an explicit product flow.
+   `FairComputePool` now supplies bounded owner-scoped dispatch over the existing
+   real subprocess worker, with round-robin queues, cancellation and timeouts.
+   It is not a deployed service and is not connected to the desktop. See
+   [SHARED_COMPUTE.md](SHARED_COMPUTE.md) for limits and remaining host requirements.
 5. **OSINT and neural mesh — audit active.** Count actual executable tools and
    desktop routes, identify unavailable dependencies and placeholder results.
    Connect useful public-source research through existing permissions, evidence
@@ -132,14 +136,47 @@ media release. These observations are not normal/worst-case time guarantees.
 
 ## Next action and release gate
 
-Implement and test bounded owner-scoped fair scheduling around the existing
-subprocess compute worker. It currently spawns every job immediately. This is a
-hosting foundation only: authenticated pairing, transport, desktop routing,
-tenant workspaces and realistic multi-device load validation remain required.
-Keep this separate from the already verified desktop release above.
+Next: implement authenticated host identities/pairing and a narrow supported
+inference contract around the pool. Derive owners from credentials, never from
+client fields. Keep arbitrary worker specs and legacy execution/training routes
+off the shared service. Then add tenant workspaces/result retention, desktop
+host selection and real multi-device load validation. The legacy global bearer
+token and `RemoteWorker` example are not sufficient for multi-user hosting.
+
+The legacy capability regression also exposed unavailable symbolic math, charts,
+graphs, vision and NLP dependencies in the development environment; include them
+in the operational-tool audit, not the count of working OSINT features.
 
 Complete targeted code fixes and meaningful tests; record actual latency/app
 launch measurements; run relevant regression checks; commit only owned changes;
 push; rebuild the native installer; exercise the packaged paths outside the repo;
 upgrade and verify preservation. Record remaining failures rather than claiming
 the complete master prompt is implemented.
+
+## Shared compute foundation evidence (2026-10-22)
+
+- New host pool defaults: one running process, 32 outstanding jobs globally,
+  eight per owner, 64 KiB JSON job specifications, 64 completed statuses in memory,
+  and a five-minute timeout. Queue limits include running work. Dispatch is fair
+  by job, not by equal CPU time; it does not balance multiple machines.
+- Status and cancellation are owner-scoped; IDs are host-generated. The trusted
+  caller must supply authenticated identity. This is not authentication or an OS
+  sandbox; worker processes still run under the host account.
+- Cancellation waits for actual process exit before slot reuse. Crashes without
+  valid results fail honestly; unsafe IDs, duplicate overwrites and invented
+  cancellation records are rejected. Child status writes use atomic replacement
+  and bounded Windows file-lock retries. Task kinds no longer silently fall back.
+- Removed eager NumPy import; CPU version/probes and pool import require no
+  numerical/model frameworks. CPU availability/support now reflect dependencies
+  and operations it actually implements. Idle pool threads exit automatically.
+- **83 passed** across pool, existing compute and API checks (19.81 seconds),
+  including two real owner-scoped CPU jobs, actual process crash/cancel tests,
+  concurrent admission and an isolated import check. One upstream test-client
+  deprecation warning remains. Ruff and owned-file whitespace checks passed.
+- Wider legacy capability run: 94 passed, five failed and three skipped. The five
+  failures are missing optional dependencies (`sympy`, `matplotlib`, `networkx`,
+  `cv2`, `spacy`/`nltk`), independently confirmed absent. This is not an all-suite
+  pass. No optional packages were added to the lightweight desktop build.
+- Pool state is in memory; persisted worker files have no retention/restart
+  recovery policy yet. This source-only host milestone does not replace installed
+  desktop code release `4d42bba69` or claim a working network-hosting product.

@@ -13,6 +13,7 @@ only needs to translate submit/status/cancel onto its wire protocol.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 import time
@@ -93,19 +94,31 @@ class LocalSubprocessWorker(ComputeWorker):
         self._procs: dict[str, subprocess.Popen] = {}
 
     def _status_path(self, job_id: str) -> Path:
+        self._validate_id(job_id)
         return self.workdir / f"{job_id}.status.json"
 
     def _spec_path(self, job_id: str) -> Path:
+        self._validate_id(job_id)
         return self.workdir / f"{job_id}.spec.json"
+
+    @staticmethod
+    def _validate_id(job_id: str) -> None:
+        if not isinstance(job_id, str) or not re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", job_id):
+            raise ValueError("invalid worker job id")
+        if job_id.split(".")[0].upper() in {
+            "CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(10)),
+            *(f"LPT{i}" for i in range(10)),
+        }:
+            raise ValueError("reserved worker job id")
 
     def submit(self, job: WorkerJob) -> str:
         spec = self._spec_path(job.id)
-        spec.write_text(json.dumps(job.spec, default=str), encoding="utf-8")
+        # Exclusive creation prevents resubmission from replacing an active job.
+        with spec.open("x", encoding="utf-8") as stream:
+            stream.write(json.dumps(job.spec, allow_nan=False))
         status_path = self._status_path(job.id)
-        status_path.write_text(
-            json.dumps(WorkerStatus(job_id=job.id, state="queued").to_dict()),
-            encoding="utf-8",
-        )
+        with status_path.open("x", encoding="utf-8") as stream:
+            stream.write(json.dumps(WorkerStatus(job_id=job.id, state="queued").to_dict()))
         command = [
             sys.executable,
             "-m",
@@ -126,6 +139,7 @@ class LocalSubprocessWorker(ComputeWorker):
                 command,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             )
         except OSError as exc:
             self._write_status(job.id, "failed", error=f"failed to spawn worker: {exc}")
@@ -135,26 +149,60 @@ class LocalSubprocessWorker(ComputeWorker):
 
     def status(self, job_id: str) -> WorkerStatus:
         path = self._status_path(job_id)
+        proc = self._procs.get(job_id)
+        running = proc is not None and proc.poll() is None
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-            return WorkerStatus(**data)
-        except (OSError, ValueError):
-            return WorkerStatus(job_id=job_id, state="unknown", error="no status record found")
+            with path.open("rb") as stream:
+                raw = stream.read(1024 * 1024 + 1)
+            if len(raw) > 1024 * 1024:
+                raise ValueError("oversized status record")
+            current = WorkerStatus(**json.loads(raw))
+            if current.job_id != job_id or current.state not in {
+                "queued", "running", "done", "failed", "cancelled",
+            }:
+                raise ValueError("invalid status record")
+        except (OSError, ValueError, TypeError):
+            current = WorkerStatus(job_id=job_id, state="unknown", error="no valid status record found")
+        if running:
+            # A child may write 'done' before exiting. Do not release its slot yet.
+            current.state = "running"
+            current.result = None
+        elif proc is not None:
+            if proc.returncode != 0 or current.state not in {"done", "failed", "cancelled"}:
+                current.state = "failed"
+                current.result = None
+                current.error = current.error or f"worker exited without a valid result (code {proc.returncode})"
+                current.finished_at = time.time()
+                try:
+                    path.write_text(json.dumps(current.to_dict()), encoding="utf-8")
+                except OSError:
+                    # The supervising pool must still learn that the process exited.
+                    pass
+            self._procs.pop(job_id, None)
+        return current
 
     def cancel(self, job_id: str) -> bool:
+        self._validate_id(job_id)
         proc = self._procs.get(job_id)
         if proc is not None and proc.poll() is None:
             proc.terminate()
-            self._write_status(job_id, "cancelled", message="cancelled by caller")
+            try:
+                proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=2)
+            status = WorkerStatus(
+                job_id, "cancelled", message="cancelled by caller", finished_at=time.time(),
+            )
+            self._status_path(job_id).write_text(json.dumps(status.to_dict()), encoding="utf-8")
+            self._procs.pop(job_id, None)
             return True
-        self._write_status(job_id, "cancelled", message="cancelled before start")
-        return True
+        return False
 
     def shutdown(self) -> None:
-        for job_id, proc in self._procs.items():
-            if proc.poll() is None:
-                proc.terminate()
-        self._procs.clear()
+        for job_id in list(self._procs):
+            self.cancel(job_id)
+            self.status(job_id)
 
     # ── internal ──────────────────────────────────────────────────────
 
@@ -172,6 +220,8 @@ class LocalSubprocessWorker(ComputeWorker):
         current.progress = progress
         current.message = message or current.message
         current.error = error or current.error
+        if state in ("failed", "cancelled"):
+            current.result = None
         if state in ("done", "failed", "cancelled"):
             current.finished_at = time.time()
         path = self._status_path(job_id)
