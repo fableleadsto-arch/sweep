@@ -81,25 +81,27 @@ neural-mesh integration. Fix those failures before expanding the product.
 
 ## Current verified release
 
-Installed code release: `4d42bba69` (companion repairs), committed and pushed.
-Installer: `dist/Sweep-Setup.exe`, 126,022,215 bytes. Native installer and installed
-dock launch/exit passed. Oct22 verification checked SHA256SUMS, 27 native library
-hashes, 28 license notice hashes and all 3,110 installed payload CRCs. The upgrade
+Installed code release: `d7c5e0ffe` (shared desktop evidence and recovery),
+committed and pushed. Installer: `dist/Sweep-Setup.exe`, 126,031,223 bytes. Native
+installer, packaged dock and installed dock launch/exit passed. Both dock startup
+checks included three deliberately damaged synthetic results. The normal upgrade
 preserved 44 personal files hash-for-hash. Unrelated user work remains unstaged;
 the build metadata correctly records a dirty source tree.
+Oct23 verification passed installer/app checksums, all 3,110 installed payload
+CRCs, 27 native-library hashes and 28 license-notice hashes.
 
-Packaged workers ran outside the repository: calculator, data, text, PDF, DOCX,
-OCR and local chat passed; greeting took 11.48 seconds with five preview events.
-The native dock driving packaged workers compared invoice quantity 12 with packing
-quantity 10 (28.98 seconds under build load), then completed queued CSV cleanup
-and JSON conversion (2.53 seconds), preserving the original file. Its expanded
-conversation and source controls were visually inspected.
+Seven packaged workers ran outside the repository: calculator, data, text, PDF,
+DOCX, OCR and local chat passed, and every output passed the shared result
+contract. The greeting took 15.60 seconds with five preview events. A native dock
+driving packaged workers compared invoice quantity 12 with packing quantity 10
+in 20.10 seconds, then completed queued CSV cleanup and JSON conversion in 1.23
+seconds, preserving the original file. Source and packaged timings varied; this
+release repairs evidence handling, not cold model latency.
 
-Installed Character Map launching opened an independently observed window in
-3.90 seconds. The product's shorter verification window reported only that
-Windows accepted the request, correctly avoiding a false verified-success claim.
-Cold chat still takes seconds; sampled video took 111.63 seconds in the previous
-media release. These observations are not normal/worst-case time guarantees.
+Previous installed-release app launch evidence (Oct22): Character Map opened an
+independently observed window in 3.90 seconds. Its shorter product verification
+window reported only accepted execution. Sampled video previously took 111.63
+seconds. Those paths were not re-benchmarked in this evidence-storage release.
 
 ## Source prompts
 
@@ -165,7 +167,7 @@ media release. These observations are not normal/worst-case time guarantees.
   Windows symlink-fixture privileges. Includes actual worker queue failure/retry,
   corrupted/missing/oversized result recovery, cross-chat action denial, interrupted
   persistence and transcript destruction. Ruff and owned-file whitespace checks
-  passed. Native installer rebuild/upgrade is the remaining gate for this slice.
+  passed. Native packaging and upgrade completed; see the current release above.
 - Still missing: explicit dependency retry/resume, project workspaces, complete
   TradeOps extraction/reconciliation, broad operational OSINT coverage and mesh
   integration. Cold inference startup remains slow. Do not mark the main prompt

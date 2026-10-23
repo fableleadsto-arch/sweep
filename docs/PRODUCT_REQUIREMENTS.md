@@ -1,6 +1,6 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-23. Last verified installed release: `4d42bba69` (companion repairs).
+Audit date: 2026-10-23. Last verified installed release: `d7c5e0ffe` (shared evidence/recovery).
 Current priorities and continuation instructions are in [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md).
 This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
@@ -14,7 +14,8 @@ history, exports and follow-ups. Invalid or missing evidence gets a recovery
 card; it cannot become successful chat context. Results are saved before the
 task is marked complete, and chat actions check conversation membership. This
 does not yet add dependency retry plans, project workspaces or TradeOps field
-reconciliation. Release evidence and next actions live in the continuation file.
+reconciliation. The desktop regression passed 645 checks (six fixture skips);
+the rebuilt installer was upgraded with 44 personal files preserved. Release evidence and next actions live in the continuation file.
 
 The current repair slice adds explicit references to saved results in the same
 chat, up to four-document comparison, and data follow-ups that consume a prior
