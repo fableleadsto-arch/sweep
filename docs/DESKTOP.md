@@ -62,6 +62,10 @@ upgrading or uninstalling.
   file cards to preview or save a copy. These records do not verify every source claim.
   Retrying creates a new task and preserves the original record. Previous running
   or waiting tasks become **interrupted** after a restart and never resume automatically.
+- Missing or damaged saved results show **Result unavailable** with **Try again**.
+  They cannot be exported or reused as conversation evidence. A task is marked
+  complete only after its result passes validation and is saved. Result records
+  are limited to 2 MB; larger outputs belong in separate generated files.
 
 **Ctrl+Alt+Space** opens and focuses the dock from other apps on Windows;
 **Ctrl+K** focuses its input. If another app owns the global shortcut, use the tray

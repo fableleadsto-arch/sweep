@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-10-22. Read this file when the user says **continue**. Keep one
+Updated: 2026-10-23. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -109,9 +109,10 @@ media release. These observations are not normal/worst-case time guarantees.
   `619db2be-9d61-471a-a329-3aec00989c0d/Pasted text.txt`.
 - Latest explicit user corrections take precedence: a usable local companion,
   reduced resource use, reliable device actions and remembered continuation work.
-- The user will provide a revised main prompt later. Keep the current industry
-  order recorded, but prioritize the companion repairs and hosting foundation
-  while that later specification is pending.
+- Both supplied prompts were reread on 2026-10-23. The latest direction is to
+  improve the already-built infrastructure. Prioritize reliable companion tasks,
+  recovery and evidence, then the first TradeOps workflow. The optional text host
+  is useful existing work, but does not satisfy those desktop requirements.
 
 ## Repair evidence (2026-10-21)
 
@@ -137,16 +138,61 @@ media release. These observations are not normal/worst-case time guarantees.
   inline citations and factual interpretations still require checking. This is
   not the complete TradeOps reconciliation workflow.
 
+## Shared desktop evidence milestone (2026-10-23)
+
+- Reused the existing task store and context result checks in one lightweight
+  `desktop.results` contract. Completion, native chat/history, result actions,
+  exports and follow-up sources all use it. Reads reject redirected/nonregular,
+  changed, oversized or damaged files; finite JSON, unique keys, bounded nesting
+  and the fields used by native views are validated. Result bytes are capped at
+  2 MB, nesting at 64 levels and structure at 100,000 values. These are application
+  bounds, not OS isolation, tamper-proof evidence or total process-memory limits.
+- Completion saves validated UTF-8 evidence atomically before updating status.
+  Disk/validation failures fail the active task and allow the queue to continue.
+  A crash between evidence and metadata writes remains interrupted on recovery.
+  Earlier records/results are retained; retry creates a fresh task and approval.
+- Damaged/missing results show a native recovery card and are excluded from chat
+  context and export. Actions reject another conversation's task, including an
+  inconsistent chat record. Existing seven completed personal results all passed
+  the new reader without modification. The recovery card was visually inspected.
+- A delayed transcript scroll callback now has its Qt owner as context, so closing
+  the transcript cancels the callback instead of accessing a destroyed widget.
+- Native source dock with real local workers/model: synthetic invoice quantity
+  12 vs packing quantity 10 comparison completed in 36.28 s (31 preview events);
+  queued deduplication-to-JSON finished in 1.95 s and preserved the source CSV.
+  This run overlapped regression work and does not establish improved latency.
+- Full desktop/dock regression: **645 passed, six skipped**, 94.30 s. Skips are
+  Windows symlink-fixture privileges. Includes actual worker queue failure/retry,
+  corrupted/missing/oversized result recovery, cross-chat action denial, interrupted
+  persistence and transcript destruction. Ruff and owned-file whitespace checks
+  passed. Native installer rebuild/upgrade is the remaining gate for this slice.
+- Still missing: explicit dependency retry/resume, project workspaces, complete
+  TradeOps extraction/reconciliation, broad operational OSINT coverage and mesh
+  integration. Cold inference startup remains slow. Do not mark the main prompt
+  complete based on this infrastructure repair.
+
 ## Next action and release gate
 
-Next: implement native desktop pairing/host settings and a lightweight client
-with explicit certificate trust and OS-protected credentials. Route only text
-conversation to a paired host after consent; leave local file grants and approved
-desktop actions on the client. Standalone mode remains the default, and paired
-mode must not require downloading a model on the second device. Use the new
-`companion.hosting` endpoints, not the legacy global token/`RemoteWorker` example.
+Next: repair explicit dependency recovery in the existing desktop queue. Current
+follow-ups retain immutable source IDs: retrying a failed extraction produces a
+new task, but retrying its dependent task still points at the failed original.
+Provide a deliberate, reviewable retry plan that preserves successful evidence,
+rebinds only selected dependencies in the same chat, and obtains fresh approvals.
+Never silently replay computer actions or substitute another result. Test failure,
+cancellation and restart through the native chat before claiming resumable work.
 
-Then validate real multi-device TLS/load behavior, timed result retention and
+Then build the narrow TradeOps shipment comparison on the existing document,
+data, task and evidence adapters: field extraction, discrepancies/missing fields,
+page references and a saved review package in the same chat. Generic document
+comparison is not yet this workflow. Continue cold-start latency and tool audits.
+
+Hosting backlog remains: native pairing/host settings and a lightweight client
+with explicit certificate trust and OS-protected credentials. Route only text
+after consent; keep desktop actions and local file grants on the client. Local
+standalone remains the default; a paired second device must not need a model.
+Use `companion.hosting`, not the legacy global token/`RemoteWorker` example.
+
+For that host, validate real multi-device TLS/load behavior, timed result retention and
 crash recovery. Broader remote files/tasks need tenant workspaces and OS isolation
 before exposure. Cold local reply latency is still a priority: the latest real
 host run took 32.55 seconds for its first reply; shared queuing does not fix cold

@@ -345,7 +345,7 @@ class ChatTranscript(QScrollArea):
         # prefix (including selections, tables and expanded artifacts) alive
         # instead of allocating the whole conversation on every token preview.
         prefix = 0
-        for previous, current in zip(self._row_signatures, rows):
+        for previous, current in zip(self._row_signatures, rows, strict=False):
             if previous != current:
                 break
             prefix += 1
@@ -370,7 +370,8 @@ class ChatTranscript(QScrollArea):
         self.layout.addStretch(1)
         self.content.adjustSize()
         bar.setValue(bar.maximum() if at_bottom else position)
-        QTimer.singleShot(0, lambda: bar.setValue(bar.maximum() if at_bottom else min(position, bar.maximum())))
+        # Qt cancels this callback when its owning transcript is destroyed.
+        QTimer.singleShot(0, self, lambda: bar.setValue(bar.maximum() if at_bottom else min(position, bar.maximum())))
 
     def copy_text(self):
         QApplication.clipboard().setText(self._plain_text)

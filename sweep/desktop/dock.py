@@ -397,9 +397,11 @@ class DockWindow(SweepWindow):
             if turn.get("task_id"):
                 try:
                     task = self.task_store.get(turn["task_id"])
+                    if task.get("thread_id") not in (None, self.thread_id):
+                        continue
                     if task["state"] != "completed":
                         continue
-                    result = json.loads((self.task_store.directory(task["id"]) / "result.json").read_text(encoding="utf-8"))
+                    result = self.task_store.result(task["id"])
                     text = result_text(result)
                 except (OSError, ValueError):
                     continue
@@ -706,11 +708,15 @@ class DockWindow(SweepWindow):
                      "attachments": turn.get("attachments", [])}
             task_id = turn.get("task_id")
             if task_id:
+                task = None
                 try:
                     task = self.task_store.get(task_id)
+                    if task.get("thread_id") not in (None, self.thread_id):
+                        task = None
+                        raise ValueError("The task belongs to a different conversation.")
                     state = task["state"]
                     if state == "completed":
-                        result = json.loads((self.task_store.directory(task_id) / "result.json").read_text(encoding="utf-8"))
+                        result = self.task_store.result(task_id)
                         value = self._result_message(task, result)
                     else:
                         value.update(state=state, state_label=state.capitalize(), task_title=titles.get(task["capability"], "Working on your request"))
@@ -724,11 +730,15 @@ class DockWindow(SweepWindow):
                             value["text"] = task.get("error") or "The task stopped before finishing. You can try again."
                             value["actions"] = [("Try again", f"sweep:retry/{task_id}", True)]
                 except (OSError, ValueError, KeyError):
-                    value["text"] = "This task record is unavailable."
+                    value.update(state="failed", state_label="Result unavailable",
+                                 text="The saved result is missing or damaged. You can retry the task; its original record is preserved.")
+                    if task and task["state"] in {"completed", "failed", "cancelled", "interrupted"}:
+                        value["actions"] = [("Try again", f"sweep:retry/{task_id}", True)]
             elif value["attachments"] and index + 1 < len(turns) and turns[index + 1].get("task_id"):
                 try:
                     task = self.task_store.get(turns[index + 1]["task_id"])
-                    value["preview"] = self._task_preview(task)
+                    if task.get("thread_id") in (None, self.thread_id):
+                        value["preview"] = self._task_preview(task)
                 except (OSError, ValueError):
                     pass
             messages.append(value)
@@ -743,7 +753,12 @@ class DockWindow(SweepWindow):
         try:
             segments = url.path().split("/")
             action, task_id = segments[:2]
+            thread = self.chat_store.get(self.thread_id)
+            if task_id not in {turn.get("task_id") for turn in thread["turns"]}:
+                raise ValueError("This task does not belong to the open conversation.")
             task = self.task_store.get(task_id)
+            if task.get("thread_id") not in (None, self.thread_id):
+                raise ValueError("This task belongs to a different conversation.")
             if action == "speech-setup":
                 if self.start_task("speech.setup", "Set up English speech recognition on this device"):
                     self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
@@ -757,7 +772,7 @@ class DockWindow(SweepWindow):
                                    source_tasks=task.get("source_tasks", []), source_output=task.get("source_output", False)):
                     self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
             elif action in {"export", "propose", "artifact", "text", "context"}:
-                result = json.loads((self.task_store.directory(task_id) / "result.json").read_text(encoding="utf-8"))
+                result = self.task_store.result(task_id)
                 if action == "context":
                     parts = [f"{item['label']} {item['filename']}\n{item['scope']}\n\n{item['excerpt']}"
                              for item in result.get("context_sources", [])[:4]]

@@ -252,6 +252,45 @@ def test_cancellation_stops_worker_even_if_saving_state_fails(desktop, monkeypat
     assert "could not save" in window.result_view.toPlainText()
 
 
+@pytest.mark.parametrize("failure", ["invalid", "oversized", "disk"])
+def test_result_failure_is_durable_and_queue_keeps_working(desktop, monkeypatch, failure):
+    app, window = desktop
+    original = module.launch_command
+    monkeypatch.setattr(module, "launch_command", lambda *args: [sys.executable, "-c", "import time; time.sleep(30)"])
+    window.start_task("computer.command", "calculate 1 + 1")
+    failed_id = window.task["id"]
+    assert window.process.waitForStarted(5000)
+    monkeypatch.setattr(module, "launch_command", original)
+    window.start_task("computer.command", "calculate 2 + 2")
+    with monkeypatch.context() as patch:
+        if failure == "disk":
+            from sweep.desktop import tasks
+
+            def disk_full(*args):
+                raise OSError("Disk full")
+
+            patch.setattr(tasks, "save_result", disk_full)
+        result = {"message": []} if failure == "invalid" else {"message": "x" * 2_000_001} if failure == "oversized" else {"message": "2"}
+        window.accept_event({"kind": "result", "data": result})
+    finish(app, window)
+    assert window.task_store.get(failed_id)["state"] == "failed"
+    assert not (window.task_store.directory(failed_id) / "result.json").exists()
+    assert window.task["state"] == "completed" and window.last_result["message"].endswith("4")
+
+
+def test_missing_history_result_offers_recovery_without_stale_export(desktop, monkeypatch):
+    app, window = desktop
+    window.start_task("computer.command", "calculate 2 + 2")
+    finish(app, window)
+    assert window.export_button.isEnabled()
+    task_id = window.task["id"]
+    (window.task_store.directory(task_id) / "result.json").unlink()
+    window.open_history(select(window, task_id))
+    assert "missing or damaged" in window.result_view.toPlainText()
+    assert window.last_result is None and not window.export_button.isEnabled()
+    assert window.task_store.get(task_id)["state"] == "completed"
+
+
 def test_blocking_worker_is_stopped_by_parent_deadline(desktop, monkeypatch):
     app, window = desktop
     monkeypatch.setattr(module, "launch_command", lambda *args: [sys.executable, "-c", "import time; time.sleep(30)"])

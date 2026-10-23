@@ -42,6 +42,21 @@ def test_message_markup_never_loads_source_html():
     assert "<b>summary</b>" in rendered
 
 
+def test_pending_scroll_callback_is_cancelled_when_transcript_is_destroyed(dock, monkeypatch):
+    import sys
+
+    import shiboken6
+
+    app, window = dock
+    errors = []
+    monkeypatch.setattr(sys, "excepthook", lambda *args: errors.append(args))
+    transcript = ChatTranscript()
+    transcript.render([{"role": "assistant", "text": "Saved evidence"}])
+    shiboken6.delete(transcript)
+    app.processEvents()
+    assert not errors
+
+
 def test_streaming_preserves_completed_cards_and_text_selection(dock):
     app, window = dock
     transcript = ChatTranscript()
@@ -221,6 +236,9 @@ def test_artifact_links_reject_outside_files_and_preview_csv_safely(dock, tmp_pa
     outside = tmp_path / "private.csv"
     outside.write_text("secret", encoding="utf-8")
     result_path = directory / "result.json"
+    window.task_store.update(task["id"], state="running", approved=True)
+    window.task_store.update(task["id"], state="completed")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": task["id"]})
     result_path.write_text(json.dumps({"artifacts": [{"path": str(outside)}]}), encoding="utf-8")
     warnings = []
     monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[2]))
@@ -361,6 +379,9 @@ def test_markdown_artifacts_open_as_inert_text(dock, monkeypatch, tmp_path):
     raw = '# Research\n<img src="https://example.com/tracker">'
     report.write_text(raw, encoding="utf-8")
     (directory / "result.json").write_text(json.dumps({"artifacts": [{"path": str(report)}]}), encoding="utf-8")
+    window.task_store.update(task["id"], state="running", approved=True)
+    window.task_store.update(task["id"], state="completed")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": task["id"]})
     seen = []
 
     def inspect(dialog):

@@ -4,25 +4,45 @@ from __future__ import annotations
 import ctypes
 import html
 import json
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
-from PySide6.QtCore import Qt, QProcess, QSettings, QTimer, QUrl, QAbstractNativeEventFilter
-from PySide6.QtGui import QAction, QDesktopServices, QKeySequence, QShortcut, QImageReader, QPixmap
+from PySide6.QtCore import QAbstractNativeEventFilter, QProcess, QSettings, Qt, QTimer, QUrl
+from PySide6.QtGui import QAction, QDesktopServices, QImageReader, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
-    QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
-    QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMainWindow, QMenu,
-    QMessageBox, QPlainTextEdit, QPushButton, QSplitter, QSystemTrayIcon,
-    QTableWidget, QTableWidgetItem, QTabWidget, QTextBrowser, QVBoxLayout, QWidget,
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMenu,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QSplitter,
+    QSystemTrayIcon,
+    QTableWidget,
+    QTableWidgetItem,
+    QTabWidget,
+    QTextBrowser,
+    QVBoxLayout,
+    QWidget,
 )
 
 from sweep.store import _save_json
+
 from .owl import Owl, owl_icon
 from .platform import launch_command, set_startup, startup_enabled
 from .runtime import CAPABILITIES, needs_approval, route, task_timeout
 from .tasks import TaskStore
-
 
 STYLE = """
 QMainWindow, QDialog { background: #f5f4ef; color: #223b35; }
@@ -540,10 +560,12 @@ class SweepWindow(QMainWindow):
                 self.fail_running("The task returned an invalid result.")
                 return
             try:
-                _save_json(self.current_directory / "result.json", result)
-                self.task = self.task_store.update(self.task["id"], state="completed")
-            except (OSError, ValueError):
-                self.storage_failed()
+                self.task = self.task_store.complete(self.task["id"], result)
+            except ValueError as exc:
+                self.fail_running(f"The task result could not be accepted: {exc}")
+                return
+            except OSError:
+                self.fail_running("Sweep could not save this task's result. Check disk space and folder permissions, then retry.")
                 return
             if visible:
                 self.render_result(result)
@@ -593,7 +615,7 @@ class SweepWindow(QMainWindow):
         self.tabs.setTabText(1, f"Sources · {len(sources)}")
         self.result_view.setHtml("".join(parts))
         self.tabs.setCurrentIndex(0)
-        columns, rows = result.get("columns", []), result.get("rows", [])
+        columns, rows = result.get("columns", [])[:30], result.get("rows", [])[:1000]
         self.table.clear()
         self.table.setColumnCount(len(columns))
         self.table.setRowCount(len(rows))
@@ -751,8 +773,12 @@ class SweepWindow(QMainWindow):
                             continue
                         if isinstance(event, dict) and event.get("message"):
                             self.activity.addItem(str(event["message"]))
-            if task["state"] == "completed" and (directory / "result.json").exists():
-                self.render_result(json.loads((directory / "result.json").read_text(encoding="utf-8")))
+            if task["state"] == "completed":
+                try:
+                    self.render_result(self.task_store.result(task_id))
+                except (OSError, ValueError):
+                    self.activity_summary.setText("Result unavailable")
+                    self.result_view.setPlainText("The saved result is missing or damaged. Select Retry to create a new task with fresh permission. The original record is preserved.")
             else:
                 self.result_view.setPlainText(task.get("error", "Waiting in the queue. Permission is checked before execution." if task["state"] == "queued" else
                     "This task is running. Its activity appears here." if task["state"] == "running" else

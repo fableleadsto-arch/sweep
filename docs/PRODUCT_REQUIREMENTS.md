@@ -1,12 +1,20 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-22. Last verified installed release: `4d42bba69` (companion repairs).
+Audit date: 2026-10-23. Last verified installed release: `4d42bba69` (companion repairs).
 Current priorities and continuation instructions are in [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md).
 This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
 product backlog and release checklist, not a claim that every listed feature ships.
 
 ## Current delivery slice
+
+The Oct23 prompt reread returns priority to the existing desktop task/evidence
+infrastructure. A shared bounded result contract now serves completion, chat,
+history, exports and follow-ups. Invalid or missing evidence gets a recovery
+card; it cannot become successful chat context. Results are saved before the
+task is marked complete, and chat actions check conversation membership. This
+does not yet add dependency retry plans, project workspaces or TradeOps field
+reconciliation. Release evidence and next actions live in the continuation file.
 
 The current repair slice adds explicit references to saved results in the same
 chat, up to four-document comparison, and data follow-ups that consume a prior

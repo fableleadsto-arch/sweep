@@ -18,6 +18,8 @@ from typing import Any
 
 from sweep.store import _save_json
 
+from .results import load_result, save_result
+
 MAX_TASK_BYTES = 1_048_576
 MAX_LIST_TASKS = 1000
 _TASK_ID = re.compile(r"[0-9a-f]{32}")
@@ -102,6 +104,23 @@ class TaskStore:
         if _redirected(path) or path.resolve() != path:
             raise ValueError("Task directory must not redirect outside its directory.")
         return path
+
+    def result(self, task_id: str) -> dict:
+        """Read completed evidence through the same contract in every consumer."""
+        if self.get(task_id)["state"] != "completed":
+            raise ValueError("This task has no completed result.")
+        return load_result(self.directory(task_id) / "result.json")
+
+    def complete(self, task_id: str, result: dict) -> dict:
+        """Persist evidence before marking a running task complete.
+
+        A crash between the writes leaves an interrupted task on recovery, never
+        a completed task without evidence. Approval is cleared by update().
+        """
+        if self.get(task_id)["state"] != "running":
+            raise ValueError("Only a running task can complete.")
+        save_result(self.directory(task_id) / "result.json", result)
+        return self.update(task_id, state="completed")
 
     @staticmethod
     def _validate(task: Any, task_id: str) -> dict:

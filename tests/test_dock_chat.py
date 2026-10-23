@@ -257,7 +257,7 @@ def test_queued_data_followup_uses_previous_output_in_real_worker(dock, tmp_path
 def test_multiple_documents_queue_real_extractions_and_scoped_answer(dock, tmp_path, monkeypatch):
     app, window = dock
     paths = [tmp_path / "invoice.txt", tmp_path / "packing.txt"]
-    for path, text in zip(paths, ["Quantity: 12", "Quantity: 10"]):
+    for path, text in zip(paths, ["Quantity: 12", "Quantity: 10"], strict=True):
         path.write_text(text, encoding="utf-8")
     monkeypatch.setattr(window, "approve_task", lambda capability, *args, **kwargs: capability != "context.answer")
     window.set_attachments(paths)
@@ -284,3 +284,65 @@ def test_mixed_multiple_attachments_are_kept_for_correction(dock, tmp_path):
     assert len(window.attachments) == 2
     assert not window.task_store.list()
     assert "one file" in window.transcript.toPlainText()
+
+
+@pytest.mark.parametrize("payload", [b'[]', b'{"location":null}', b'{"message":"x","message":"y"}',
+                                     b' ' * 2_000_001, None], ids=["array", "invalid-field", "duplicate", "oversized", "missing"])
+def test_damaged_evidence_is_recoverable_and_not_used_as_chat_context(dock, monkeypatch, payload):
+    app, window = dock
+    task = window.task_store.create("computer.command", "calculate 6 * 7", thread_id=window.thread_id)
+    window.task_store.update(task["id"], state="running", approved=True)
+    window.task_store.complete(task["id"], {"message": "old evidence"})
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": task["id"]})
+    path = window.task_store.directory(task["id"]) / "result.json"
+    if payload is None:
+        path.unlink()
+    else:
+        path.write_bytes(payload)
+    window.refresh_chat()
+    assert "missing or damaged" in window.transcript.toPlainText()
+    assert "Try again" in [button.text() for button in window.transcript.findChildren(QPushButton)]
+    assert window.context_messages() == []
+    warnings, exports = [], []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    monkeypatch.setattr(window, "export_result", lambda: exports.append(True))
+    window.chat_link(QUrl(f"sweep:export/{task['id']}"))
+    assert warnings and not exports
+    window.chat_link(QUrl(f"sweep:retry/{task['id']}"))
+    retry_id = window.last_enqueued_id
+    finish(app, window)
+    assert retry_id != task["id"]
+    assert window.task_store.result(retry_id)["message"].endswith("42")
+    assert window.task_store.get(retry_id)["retry_of"] == task["id"]
+    assert (path.read_bytes() if path.exists() else None) == payload
+
+
+@pytest.mark.parametrize("action", ["retry", "export", "text", "propose", "cancel", "speech-setup"])
+def test_chat_actions_cannot_target_another_conversation(dock, monkeypatch, action):
+    app, window = dock
+    other = window.chat_store.create()
+    task = window.task_store.create("computer.command", "calculate 1 + 1", thread_id=other["id"])
+    window.chat_store.append(other["id"], {"role": "assistant", "task_id": task["id"]})
+    warnings = []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    window.chat_link(QUrl(f"sweep:{action}/{task['id']}"))
+    assert warnings == ["This task does not belong to the open conversation."]
+    assert window.task_store.get(task["id"])["state"] == "queued"
+    assert len(window.task_store.list()) == 1 and window.process is None
+
+
+def test_inconsistent_chat_record_cannot_expose_another_threads_evidence(dock, monkeypatch):
+    app, window = dock
+    other = window.chat_store.create()
+    task = window.task_store.create("conversation", "Private synthetic note", thread_id=other["id"])
+    window.task_store.update(task["id"], state="running", approved=True)
+    window.task_store.complete(task["id"], {"message": "other-thread-secret"})
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": task["id"]})
+    window.refresh_chat()
+    assert "other-thread-secret" not in window.transcript.toPlainText()
+    assert window.context_messages() == []
+    assert "Try again" not in [button.text() for button in window.transcript.findChildren(QPushButton)]
+    warnings = []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    window.chat_link(QUrl(f"sweep:text/{task['id']}"))
+    assert warnings == ["This task belongs to a different conversation."]

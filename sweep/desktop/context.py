@@ -7,18 +7,15 @@ from __future__ import annotations
 
 import asyncio
 import ipaddress
-import json
 import math
-import os
 import re
-import stat
 from pathlib import Path
 from urllib.parse import urlsplit
 
 from .chat import ChatStore
+from .results import MAX_RESULT_BYTES as MAX_RESULT_BYTES
 from .tasks import TaskStore
 
-MAX_RESULT_BYTES = 2_000_000
 MAX_SOURCES = 4
 MAX_EXCERPT_CHARS = 1500
 MAX_SOURCE_MESSAGE_CHARS = 2200
@@ -31,38 +28,6 @@ _STOPWORDS = frozenset(
     "recording recordings transcript image video about compare explain summarize "
     "summary earlier previous saved answer result results".split()
 )
-
-
-def _redirected(path: Path) -> bool:
-    info = path.lstat()
-    return (stat.S_ISLNK(info.st_mode) or path.is_junction()
-            or bool(getattr(info, "st_file_attributes", 0)
-                    & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)))
-
-
-def _load_result(path: Path) -> dict:
-    if _redirected(path):
-        raise ValueError("Saved results must not use redirected files.")
-    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
-    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
-    with os.fdopen(os.open(path, flags), "rb") as stream:
-        info = os.fstat(stream.fileno())
-        if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_RESULT_BYTES:
-            raise ValueError("Saved results must be regular files under 2 MB.")
-        raw = stream.read(MAX_RESULT_BYTES + 1)
-        current = path.lstat()
-        if (_redirected(path) or (info.st_dev, info.st_ino) != (current.st_dev, current.st_ino)
-                or info.st_size != os.fstat(stream.fileno()).st_size):
-            raise ValueError("The saved result changed while it was being read.")
-    if len(raw) > MAX_RESULT_BYTES:
-        raise ValueError("The saved result exceeds 2 MB.")
-    try:
-        result = json.loads(raw)
-    except (ValueError, UnicodeError, RecursionError) as exc:
-        raise ValueError("This saved result is damaged. Retry its original task.") from exc
-    if not isinstance(result, dict):
-        raise ValueError("The saved result must contain a result object.")
-    return result
 
 
 def load_sources(root: Path, thread_id: str, source_tasks: list[str]) -> list[dict]:
@@ -90,7 +55,7 @@ def load_sources(root: Path, thread_id: str, source_tasks: list[str]) -> list[di
             raise PermissionError("A referenced task belongs to a different conversation.")
         if task["state"] != "completed":
             raise ValueError("A referenced task has not completed. Wait for it or retry that task first.")
-        result = _load_result(store.directory(source_id) / "result.json")
+        result = store.result(source_id)
         sources.append({"task": task, "result": result})
     return sources
 

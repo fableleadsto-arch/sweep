@@ -130,15 +130,15 @@ def test_result_link_is_not_followed(saved):
 
 
 def test_result_reparse_flag_rejected_without_opening(saved, monkeypatch):
-    from sweep.desktop import context
+    from sweep.desktop import results
     source = saved.create({"text": "source"})
-    monkeypatch.setattr(context, "_redirected", lambda path: True)
+    monkeypatch.setattr(results, "_redirected", lambda path: True)
     with pytest.raises(ValueError, match="redirected"):
         load_sources(saved.root, saved.thread_id, [source])
 
 
 def test_result_must_be_regular_even_if_open_succeeds(saved, monkeypatch):
-    from sweep.desktop import context
+    from sweep.desktop import results
     source = saved.create({})
     original = os.fstat
 
@@ -146,9 +146,9 @@ def test_result_must_be_regular_even_if_open_succeeds(saved, monkeypatch):
         value = original(descriptor)
         return SimpleNamespace(st_mode=0, st_size=value.st_size)
 
-    original_load = context._load_result
+    original_load = results.load_result
     path = saved.tasks.directory(source) / "result.json"
-    monkeypatch.setattr(context.os, "fstat", nonregular)
+    monkeypatch.setattr(results.os, "fstat", nonregular)
     with pytest.raises(ValueError, match="regular"):
         original_load(path)
 
