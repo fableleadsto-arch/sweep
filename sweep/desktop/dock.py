@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
     QPushButton,
+    QScrollArea,
     QSizeGrip,
     QTableWidget,
     QTabWidget,
@@ -38,12 +39,19 @@ from .owl import Owl
 from .platform import set_startup, startup_enabled
 from .presentation import ChatTranscript, granted_thumbnail, public_source
 from .providers import load_config, save_config
+from .recovery import recovery_sources, validate_selection
 from .window import SweepWindow, label
 
 DOCK_STYLE = """
 QMainWindow { background: transparent; }
 QWidget { font-family: 'Segoe UI'; font-size: 13px; color: #253f36; }
 QFrame#dock { background: #fafbf7; border: 1px solid #becdc2; border-radius: 16px; }
+QFrame#composer { background: #ffffff; border: 1px solid #c9d6ce; border-radius: 14px; }
+QFrame#recoverySource { background: #f0f4ef; border: 1px solid #dbe5dc; border-radius: 10px; }
+QScrollArea#recoveryScroll, QWidget#recoveryBody { background: transparent; border: none; }
+QLabel#conversationTitle { font-size: 15px; font-weight: 600; color: #24483b; }
+QLabel#conversationDetail { font-size: 11px; color: #708177; }
+QPlainTextEdit#messageInput { border: none; background: transparent; padding: 6px; }
 QFrame#handle { background: #183c33; border: none; border-radius: 13px; }
 QFrame#handle QLabel { color: #f2f7ed; background: transparent; }
 QFrame#handle QPushButton { background: transparent; color: #eef6ea; border: none; padding: 7px; }
@@ -53,6 +61,7 @@ QPushButton { background: #eef2e8; border: 1px solid #d7dfd0; border-radius: 7px
 QPushButton:hover { background: #e1eadb; }
 QPushButton:disabled { color: #8c998e; }
 QPushButton#primary { background: #234d3f; color: white; border: none; font-weight: 600; }
+QPushButton#primary:disabled { background: #e2e9e2; color: #89998d; }
 QTextBrowser { background: transparent; border: none; padding: 8px; selection-background-color: #cfe0c8; }
 QPlainTextEdit { background: #ffffff; border: 1px solid #d1dccd; border-radius: 9px; padding: 8px; font-size: 14px; }
 QLabel#muted { color: #718374; }
@@ -75,7 +84,7 @@ QLabel#attachmentCaption { color: #637769; font-size: 11px; }
 QLabel#sourceSnippet { color: #617368; font-size: 12px; }
 QLabel#welcomeTitle { font-size: 29px; font-weight: 600; color: #254b3d; }
 QLabel#welcomeDescription { font-size: 14px; color: #6a7e71; }
-QPushButton#suggestion { text-align: left; background: #f0f4ea; border: 1px solid #e0e7d8; border-radius: 10px; padding: 12px 14px; }
+QPushButton#suggestion { text-align: left; background: #f0f4ea; border: 1px solid #e0e7d8; border-radius: 10px; padding: 8px 14px; }
 QPushButton#suggestion:hover { background: #e4eddd; border-color: #bbccaf; }
 QPushButton#cardAction { background: transparent; color: #446956; border: none; padding: 5px 3px; font-size: 11px; }
 QPushButton#cardAction:hover { background: #edf3e8; }
@@ -178,7 +187,7 @@ class DockWindow(SweepWindow):
         self.owl = Owl()
         self.owl.setFixedSize(28, 28)
         header.addWidget(self.owl)
-        self.open_button = QPushButton("Sweep  ·  Ask anything")
+        self.open_button = QPushButton("Sweep")
         self.open_button.setAccessibleName("Open Sweep conversation")
         self.open_button.clicked.connect(self.reveal)
         header.addWidget(self.open_button, 1)
@@ -204,24 +213,37 @@ class DockWindow(SweepWindow):
         self.body = QWidget()
         body = QVBoxLayout(self.body)
         body.setContentsMargins(12, 8, 12, 5)
-        body.setSpacing(8)
+        body.setSpacing(10)
+        self.conversation_title = label("New conversation", "conversationTitle")
+        self.conversation_title.setTextFormat(Qt.TextFormat.PlainText)
+        self.conversation_title.setWordWrap(True)
+        body.addWidget(self.conversation_title)
+        self.conversation_detail = label("On this device · Ready when you are", "conversationDetail")
+        body.addWidget(self.conversation_detail)
         self.transcript = ChatTranscript()
         self.transcript.anchorClicked.connect(self.chat_link)
         self.transcript.exampleRequested.connect(self.use_example)
         body.addWidget(self.transcript, 1)
+        composer = QFrame()
+        composer.setObjectName("composer")
+        composer_layout = QVBoxLayout(composer)
+        composer_layout.setContentsMargins(10, 8, 10, 10)
+        composer_layout.setSpacing(6)
+        body.addWidget(composer)
         self.attachment_preview = QLabel()
         self.attachment_preview.setAccessibleName("Selected attachment preview")
         self.attachment_preview.hide()
-        body.addWidget(self.attachment_preview)
+        composer_layout.addWidget(self.attachment_preview)
         self.attachment_label = label("", "muted")
         self.attachment_label.hide()
-        body.addWidget(self.attachment_label)
+        composer_layout.addWidget(self.attachment_label)
         self.prompt = ChatInput()
         self.prompt.setAccessibleName("Message Sweep")
         self.prompt.setPlaceholderText("Ask anything, or tell Sweep what to do…")
-        self.prompt.setFixedHeight(80)
+        self.prompt.setObjectName("messageInput")
+        self.prompt.setFixedHeight(56)
         self.prompt.submitted.connect(self.submit)
-        body.addWidget(self.prompt)
+        composer_layout.addWidget(self.prompt)
         row = QHBoxLayout()
         attach = QPushButton("＋ Attach")
         attach.clicked.connect(self.choose_file)
@@ -239,10 +261,15 @@ class DockWindow(SweepWindow):
         self.run_button = QPushButton("Send ↑")
         self.run_button.setObjectName("primary")
         self.run_button.clicked.connect(self.submit)
+        self.prompt.textChanged.connect(self.update_composer)
+        self.run_button.setEnabled(False)
         row.addWidget(self.run_button)
-        body.addLayout(row)
+        composer_layout.addLayout(row)
         footer = QHBoxLayout()
-        footer.addWidget(label("Enter to send · Shift+Enter for a new line · Ctrl+Alt+Space to open", "muted"), 1)
+        hint = label("Enter to send · Shift+Enter for a new line", "muted")
+        hint.setWordWrap(True)
+        hint.setToolTip("Ctrl+Alt+Space opens Sweep from other apps")
+        footer.addWidget(hint, 1)
         footer.addWidget(QSizeGrip(self))
         body.addLayout(footer)
         outer.addWidget(self.body, 1)
@@ -252,6 +279,11 @@ class DockWindow(SweepWindow):
         self.reveal_animation = QPropertyAnimation(self.body_effect, b"opacity", self)
         self.reveal_animation.setDuration(160)
         self.reveal_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    def update_composer(self):
+        self.run_button.setEnabled(bool(self.prompt.toPlainText().strip() or self.attachments))
+        lines = min(5, max(1, self.prompt.document().blockCount()))
+        self.prompt.setFixedHeight(max(56, 24 + lines * self.prompt.fontMetrics().lineSpacing()))
 
     def use_example(self, request):
         if request == "__attach__":
@@ -353,6 +385,7 @@ class DockWindow(SweepWindow):
         self.attachment_preview.clear()
         self.attachment_preview.hide()
         self.clear_attachment_button.hide()
+        self.update_composer()
 
     def set_attachment(self, path):
         self.set_attachments([path])
@@ -365,6 +398,7 @@ class DockWindow(SweepWindow):
         if not selected:
             return
         self.attachments = selected
+        self.update_composer()
         self.clear_attachment_button.show()
         self.attachment_label.setTextFormat(Qt.TextFormat.PlainText)
         self.attachment_label.setText(" · ".join(Path(path).name for path in selected) + " · ready for local processing")
@@ -693,7 +727,19 @@ class DockWindow(SweepWindow):
         if not self.thread_id or not hasattr(self, "transcript"):
             return
         messages = []
-        turns = self.chat_store.get(self.thread_id)["turns"]
+        thread = self.chat_store.get(self.thread_id)
+        turns = thread["turns"]
+        self.conversation_title.setText(thread.get("title") if turns else "New conversation")
+        waiting = len(self.pending)
+        working = self.process is not None
+        detail = ("Working on your request" if working else "On this device")
+        if waiting:
+            detail += f" · {waiting} waiting"
+        elif not working:
+            detail += " · Ready when you are"
+        self.conversation_detail.setText(detail)
+        self.cancel_button.setVisible(working)
+        self.update_composer()
         titles = {"web.search": "Searching the web", "web.scrape": "Reading the page",
                   "web.research": "Following the evidence", "images.analyze": "Looking at the image",
                   "images.inspect": "Reading image details", "documents.inspect": "Reading your document",
@@ -728,12 +774,12 @@ class DockWindow(SweepWindow):
                             value["text"] = self._response_previews.get(task_id) or (self.activity_summary.text() if self.task and self.task["id"] == task_id else "Working on your request…")
                         else:
                             value["text"] = task.get("error") or "The task stopped before finishing. You can try again."
-                            value["actions"] = [("Try again", f"sweep:retry/{task_id}", True)]
+                            value["actions"] = [("Review recovery" if task.get("source_tasks") else "Try again", f"sweep:retry/{task_id}", True)]
                 except (OSError, ValueError, KeyError):
                     value.update(state="failed", state_label="Result unavailable",
                                  text="The saved result is missing or damaged. You can retry the task; its original record is preserved.")
                     if task and task["state"] in {"completed", "failed", "cancelled", "interrupted"}:
-                        value["actions"] = [("Try again", f"sweep:retry/{task_id}", True)]
+                        value["actions"] = [("Review recovery" if task.get("source_tasks") else "Try again", f"sweep:retry/{task_id}", True)]
             elif value["attachments"] and index + 1 < len(turns) and turns[index + 1].get("task_id"):
                 try:
                     task = self.task_store.get(turns[index + 1]["task_id"])
@@ -767,10 +813,7 @@ class DockWindow(SweepWindow):
                 self.pending = [item for item in self.pending if item != task_id]
                 self.load_history()
             elif action == "retry" and task["state"] in {"completed", "failed", "cancelled", "interrupted"}:
-                if self.start_task(task["capability"], task["text"], retry_of=task_id,
-                                   granted_paths=task.get("granted_paths", []), history=task.get("history", []),
-                                   source_tasks=task.get("source_tasks", []), source_output=task.get("source_output", False)):
-                    self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
+                self.retry_chat_task(task)
             elif action in {"export", "propose", "artifact", "text", "context"}:
                 result = self.task_store.result(task_id)
                 if action == "context":
@@ -802,6 +845,111 @@ class DockWindow(SweepWindow):
             self.refresh_chat()
         except (OSError, ValueError, KeyError, IndexError, TypeError) as exc:
             QMessageBox.warning(self, "Sweep", str(exc))
+
+    def retry_chat_task(self, task, selected_sources=None):
+        if task.get("source_tasks") and selected_sources is None:
+            self.review_recovery(task)
+            return
+        if self.start_task(task["capability"], task["text"], retry_of=task["id"],
+                           granted_paths=task.get("granted_paths", []), history=task.get("history", []),
+                           source_tasks=task.get("source_tasks", []) if selected_sources is None else selected_sources,
+                           source_output=task.get("source_output", False)):
+            self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
+
+    def review_recovery(self, task):
+        origin = self.thread_id
+        sources = recovery_sources(self.task_store, origin, task["id"])
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Review task recovery")
+        area = self.screen().availableGeometry()
+        dialog.resize(min(620, area.width() - 32), min(680, 220 + 130 * len(sources), area.height() - 60))
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(24, 22, 24, 22)
+        layout.setSpacing(14)
+        layout.addWidget(label("Continue with the right sources", "settingsTitle"))
+        description = label("Keep completed work, or choose a completed retry below. If a source failed, retry it first, then return here. Each task keeps its normal permission checks.", "muted")
+        description.setWordWrap(True)
+        layout.addWidget(description)
+        scroll = QScrollArea()
+        scroll.setObjectName("recoveryScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        source_body = QWidget()
+        source_body.setObjectName("recoveryBody")
+        source_layout = QVBoxLayout(source_body)
+        source_layout.setContentsMargins(0, 0, 0, 0)
+        scroll.setWidget(source_body)
+        layout.addWidget(scroll, 1)
+        choices = []
+        source_retry = []
+        for number, source in enumerate(sources, 1):
+            record = source["task"]
+            card = QFrame()
+            card.setObjectName("recoverySource")
+            section = QVBoxLayout(card)
+            heading = label(f"{number}. {record['text'][:140]}", "settingsSection")
+            heading.setTextFormat(Qt.TextFormat.PlainText)
+            heading.setWordWrap(True)
+            section.addWidget(heading)
+            line = QHBoxLayout()
+            choice = QComboBox()
+            choice.setMinimumWidth(0)
+            choice.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+            choice.setAccessibleName(f"Completed result for source {number}")
+            choice.addItem("Choose a completed retry…", None)
+            for option in source["options"]:
+                title = "Keep original result" if option["original"] else "Completed retry · " + option["created"][:19].replace("T", " ") + " UTC"
+                choice.addItem(title, option["id"])
+                if option["original"]:
+                    choice.setCurrentIndex(choice.count() - 1)
+            line.addWidget(choice, 1)
+            retry = QPushButton("Retry source")
+            retry.setEnabled(record["state"] not in {"queued", "running"})
+            retry.setToolTip("Create a new source task; original evidence is preserved")
+            retry.clicked.connect(lambda checked=False, identifier=record["id"]:
+                                  (source_retry.append(identifier), dialog.accept()))
+            line.addWidget(retry)
+            section.addLayout(line)
+            excerpt = label("", "muted")
+            excerpt.setTextFormat(Qt.TextFormat.PlainText)
+            excerpt.setWordWrap(True)
+            options = {item["id"]: item for item in source["options"]}
+            source_state = record["state"]
+            if source_state == "completed" and not any(item["original"] for item in options.values()):
+                source_state = "saved result unavailable"
+
+            def show_choice(index, combo=choice, view=excerpt, values=options, state=source_state):
+                chosen = values.get(combo.currentData())
+                view.setText(chosen["excerpt"][:300] if chosen else f"Original source: {state}. No replacement selected.")
+
+            choice.currentIndexChanged.connect(show_choice)
+            show_choice(0)
+            section.addWidget(excerpt)
+            source_layout.addWidget(card)
+            choices.append(choice)
+        source_layout.addStretch(1)
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
+        run = buttons.addButton("Retry with these sources", QDialogButtonBox.ButtonRole.AcceptRole)
+        run.setObjectName("primary")
+        run.setEnabled(all(choice.currentData() for choice in choices))
+        for choice in choices:
+            choice.currentIndexChanged.connect(lambda _: run.setEnabled(all(item.currentData() for item in choices)))
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        if self.thread_id != origin:
+            raise ValueError("The conversation changed. Open recovery again in the original chat.")
+        if source_retry:
+            current = recovery_sources(self.task_store, origin, task["id"])
+            source = next(item["task"] for item in current if item["task"]["id"] == source_retry[0])
+            if source["state"] in {"queued", "running"}:
+                raise ValueError("This source is already queued or running.")
+            self.retry_chat_task(source)
+        else:
+            selected = validate_selection(self.task_store, origin, task["id"], [choice.currentData() for choice in choices])
+            self.retry_chat_task(task, selected)
 
     def show_extracted_text(self, result):
         dialog = QDialog(self)

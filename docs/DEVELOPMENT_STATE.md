@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-10-23. Read this file when the user says **continue**. Keep one
+Updated: 2026-10-24. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -173,20 +173,48 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
   integration. Cold inference startup remains slow. Do not mark the main prompt
   complete based on this infrastructure repair.
 
+## Native recovery and UI milestone (2026-10-24)
+
+- The dock groups attachment, input and send controls into one composer; input
+  grows for up to five explicit lines. Empty Send is disabled, Stop appears only
+  for active work, and the conversation title/queue summary remain visible.
+  The compact header and secondary-action menu keep narrow layouts usable.
+- Failed/interrupted follow-ups offer **Review recovery**. The panel retains
+  valid original sources and offers completed retry descendants from this chat,
+  showing a saved excerpt. Replacements must be selected explicitly. **Retry
+  source** creates one task through existing approval/worker paths; return to
+  the panel after completion to retry the follow-up with new source IDs.
+- Selection is revalidated after the modal review. Other chats, changed request
+  scopes, running/queued results, damaged evidence and cyclic retry chains are
+  excluded. Up to eight available choices per source are read, including a valid
+  original and the most recent retries. Records/grants remain immutable; normal
+  remembered permissions still apply. Cancelling review or denying an action
+  creates no work. No automatic computer-action replay or implicit fallback.
+- Source dock fresh-start check recovered a queued follow-up as interrupted,
+  then retried a failed CSV cleanup and explicitly rebound JSON conversion:
+  two approvals, two output rows, original CSV/old references preserved, 1.34 s.
+  Welcome, 420-pixel dock, recovery review and recovered artifact were inspected.
+- UI checks found and fixed stale deferred scroll restores. One Qt-owned timer
+  now coalesces updates, preserving selections/reader position and cancelling
+  safely on widget destruction. No idle animation/timer was added.
+- Broad desktop/dock regression: **656 passed, six Windows symlink-fixture
+  skips**, 78.68 s. Final recovery/chat checks: **46 passed**; final bounded-choice
+  checks: **eight passed**. Ruff passed. Native release packaging is pending.
+- Limits: manual recovery one dependency at a time, bounded to retained chat
+  records; no general DAG or project workspace. A missing original task record
+  requires reattaching/recreating the request. Choosing a saved result cannot
+  restore a deleted generated artifact. TradeOps and cold latency remain open.
+
 ## Next action and release gate
 
-Next: repair explicit dependency recovery in the existing desktop queue. Current
-follow-ups retain immutable source IDs: retrying a failed extraction produces a
-new task, but retrying its dependent task still points at the failed original.
-Provide a deliberate, reviewable retry plan that preserves successful evidence,
-rebinds only selected dependencies in the same chat, and obtains fresh approvals.
-Never silently replay computer actions or substitute another result. Test failure,
-cancellation and restart through the native chat before claiming resumable work.
-
-Then build the narrow TradeOps shipment comparison on the existing document,
+Next: build the narrow TradeOps shipment comparison on the existing document,
 data, task and evidence adapters: field extraction, discrepancies/missing fields,
 page references and a saved review package in the same chat. Generic document
 comparison is not yet this workflow. Continue cold-start latency and tool audits.
+Keep improving the native UI as workflows land; the user explicitly requested
+better UI on Oct24. Test narrow layouts, progress, errors and recovery, not just
+the welcome view. Explicit dependency recovery now works through a review panel;
+automatic DAG scheduling and full workflow resume remain unimplemented.
 
 Hosting backlog remains: native pairing/host settings and a lightweight client
 with explicit certificate trust and OS-protected credentials. Route only text

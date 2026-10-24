@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt, QUrl
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
+    QComboBox,
     QDialog,
     QMessageBox,
     QPlainTextEdit,
@@ -346,3 +347,80 @@ def test_inconsistent_chat_record_cannot_expose_another_threads_evidence(dock, m
     monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
     window.chat_link(QUrl(f"sweep:text/{task['id']}"))
     assert warnings == ["This task belongs to a different conversation."]
+
+
+@pytest.mark.parametrize("parent_state", ["failed", "interrupted"])
+def test_review_recovery_retries_source_then_runs_followup_with_explicit_selection(dock, tmp_path, monkeypatch, parent_state):
+    app, window = dock
+    path = tmp_path / "orders.csv"
+    path.write_text("item,quantity\nbolt,2\nbolt,2\nnut,3\n", encoding="utf-8")
+    original = path.read_bytes()
+    source = window.task_store.create("data.transform", "Remove duplicate rows", granted_paths=[str(path)], thread_id=window.thread_id)
+    window.task_store.update(source["id"], state="running", approved=True)
+    window.task_store.update(source["id"], state="failed", error="Earlier extraction failed")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": source["id"]})
+    parent = window.task_store.create("data.transform", "Convert to JSON", thread_id=window.thread_id,
+                                      source_tasks=[source["id"]], source_output=True)
+    window.task_store.update(parent["id"], state="running", approved=True)
+    window.task_store.update(parent["id"], state=parent_state)
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": parent["id"]})
+    approvals = []
+    monkeypatch.setattr(window, "approve_task", lambda *args, **kwargs: approvals.append(args[0]) or True)
+
+    def choose_retry_source(dialog):
+        run = next(button for button in dialog.findChildren(QPushButton) if button.text() == "Retry with these sources")
+        assert not run.isEnabled()
+        assert dialog.findChild(QComboBox).currentData() is None
+        next(button for button in dialog.findChildren(QPushButton) if button.text() == "Retry source").click()
+        return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr(QDialog, "exec", choose_retry_source)
+    window.chat_link(QUrl(f"sweep:retry/{parent['id']}"))
+    source_retry = window.last_enqueued_id
+    finish(app, window)
+    assert window.task_store.result(source_retry)["output_rows"] == 2
+
+    def choose_replacement(dialog):
+        combo = dialog.findChild(QComboBox)
+        assert combo.currentData() is None  # No silent selection of the newest result.
+        combo.setCurrentIndex(combo.findData(source_retry))
+        return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr(QDialog, "exec", choose_replacement)
+    window.chat_link(QUrl(f"sweep:retry/{parent['id']}"))
+    retry = window.last_enqueued_id
+    finish(app, window)
+    record = window.task_store.get(retry)
+    assert record["source_tasks"] == [source_retry] and record["retry_of"] == parent["id"]
+    assert record["source_output"] is True and record["approved"] is False
+    result = window.task_store.result(retry)
+    assert result["input_rows"] == 2 and result["output_rows"] == 2
+    assert approvals == ["data.transform", "data.transform"]
+    assert window.task_store.get(source["id"])["state"] == "failed"
+    assert window.task_store.get(parent["id"])["source_tasks"] == [source["id"]]
+    assert path.read_bytes() == original
+
+
+def test_recovery_cancel_does_not_queue_or_replay_a_task(dock, monkeypatch):
+    app, window = dock
+    source = window.task_store.create("computer.command", "open calculator", thread_id=window.thread_id)
+    window.task_store.update(source["id"], state="running", approved=True)
+    window.task_store.update(source["id"], state="failed")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": source["id"]})
+    parent = window.task_store.create("context.answer", "Explain the result", thread_id=window.thread_id, source_tasks=[source["id"]])
+    window.task_store.update(parent["id"], state="interrupted")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": parent["id"]})
+    monkeypatch.setattr(QDialog, "exec", lambda dialog: QDialog.DialogCode.Rejected)
+    window.chat_link(QUrl(f"sweep:retry/{parent['id']}"))
+    assert len(window.task_store.list()) == 2 and window.process is None and not window.pending
+
+    def choose_source(dialog):
+        next(button for button in dialog.findChildren(QPushButton) if button.text() == "Retry source").click()
+        return QDialog.DialogCode.Accepted
+
+    approvals = []
+    monkeypatch.setattr(QDialog, "exec", choose_source)
+    monkeypatch.setattr(window, "approve_task", lambda *args, **kwargs: approvals.append(args[0]) or False)
+    window.chat_link(QUrl(f"sweep:retry/{parent['id']}"))
+    assert approvals == ["computer.command"]
+    assert len(window.task_store.list()) == 2 and window.process is None and not window.pending

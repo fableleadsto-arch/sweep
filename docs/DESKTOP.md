@@ -27,6 +27,9 @@ upgrading or uninstalling.
   **Esc** or the minus button collapses it. Drag the bar to move it and use the
   bottom-right grip to resize the expanded chat.
 - Type a message and press **Enter** to send; **Shift+Enter** inserts a new line.
+  The composer grows for multiline messages. The conversation title and waiting
+  count sit above the chat; **Stop** appears while a task is active. Secondary
+  result actions are available under **More**.
   Chat, desktop actions, search, scraping and research share this one input.
   Ordinary conversation runs locally and streams its answer into the dock. Sweep can propose a
   supported action through **Review and run proposed task**.
@@ -52,6 +55,12 @@ upgrading or uninstalling.
   operation uses the earlier output, including when queued before that task
   finishes. A failed source stops its follow-up; it never silently reuses the
   original file or another conversation's result.
+- If a follow-up fails or is interrupted, choose **Review recovery**. Keep valid
+  original sources or explicitly select a completed retry and review its excerpt.
+  For a failed source, choose **Retry source**, wait for it to finish, then return
+  to the follow-up's recovery panel. **Retry with these sources** creates a new
+  follow-up with your selected results; original tasks remain unchanged. Normal
+  task permissions still apply, including approval for device actions.
 - Continue sending while a task runs to add requests to the queue. Up to 50 tasks
   can wait; one worker runs at a time. Waiting actions receive permission checks
   when dispatched. Use the inline **Remove from queue** link or **Stop** for the

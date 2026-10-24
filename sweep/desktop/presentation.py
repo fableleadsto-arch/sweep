@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QLabel,
+    QMenu,
     QProgressBar,
     QPushButton,
     QScrollArea,
@@ -91,6 +92,10 @@ class ChatTranscript(QScrollArea):
         self._signature = None
         self._row_signatures = []
         self._following = True
+        self._scroll_target = (False, 0)
+        self._scroll_timer = QTimer(self)
+        self._scroll_timer.setSingleShot(True)
+        self._scroll_timer.timeout.connect(self._restore_scroll)
         self._expanded_artifacts: set[tuple[str, ...]] = set()
         self.verticalScrollBar().rangeChanged.connect(self._range_changed)
         self.content = QWidget()
@@ -106,6 +111,11 @@ class ChatTranscript(QScrollArea):
     def _range_changed(self, minimum, maximum):
         if self._following:
             self.verticalScrollBar().setValue(maximum)
+
+    def _restore_scroll(self):
+        following, position = self._scroll_target
+        bar = self.verticalScrollBar()
+        bar.setValue(bar.maximum() if following else min(position, bar.maximum()))
 
     def _text(self, value: str, name="messageText") -> QLabel:
         widget = QLabel(rich_text(value))
@@ -187,8 +197,8 @@ class ChatTranscript(QScrollArea):
         frame = QFrame()
         frame.setObjectName("welcome")
         layout = QVBoxLayout(frame)
-        layout.setContentsMargins(15, 12, 15, 12)
-        layout.setSpacing(11)
+        layout.setContentsMargins(15, 8, 15, 8)
+        layout.setSpacing(8)
         eyebrow = QLabel("YOUR SPACE TO THINK & DO")
         eyebrow.setObjectName("eyebrow")
         layout.addWidget(eyebrow)
@@ -307,8 +317,18 @@ class ChatTranscript(QScrollArea):
         if actions or (value and not user and message.get("state") not in {"running", "queued"}):
             buttons = QHBoxLayout()
             buttons.setSpacing(6)
-            for title, url, primary in actions:
+            for title, url, primary in actions[:1]:
                 self._action(title, url, buttons, primary)
+            if len(actions) > 1:
+                more = QPushButton("More")
+                more.setObjectName("cardAction")
+                more.setAccessibleName("More actions for this response")
+                menu = QMenu(more)
+                for title, url, _ in actions[1:]:
+                    action = menu.addAction(title)
+                    action.triggered.connect(lambda checked=False, target=url: self.anchorClicked.emit(QUrl(target)))
+                more.setMenu(menu)
+                buttons.addWidget(more)
             buttons.addStretch(1)
             if value and not user and message.get("state") not in {"running", "queued"}:
                 copy = QPushButton("Copy")
@@ -370,8 +390,10 @@ class ChatTranscript(QScrollArea):
         self.layout.addStretch(1)
         self.content.adjustSize()
         bar.setValue(bar.maximum() if at_bottom else position)
-        # Qt cancels this callback when its owning transcript is destroyed.
-        QTimer.singleShot(0, self, lambda: bar.setValue(bar.maximum() if at_bottom else min(position, bar.maximum())))
+        # Coalesce layout restores: an older empty-state callback must never
+        # move a newly rendered answer back to the top. Qt owns timer lifetime.
+        self._scroll_target = (at_bottom, position)
+        self._scroll_timer.start(0)
 
     def copy_text(self):
         QApplication.clipboard().setText(self._plain_text)

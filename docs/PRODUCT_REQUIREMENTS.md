@@ -1,12 +1,19 @@
 # Sweep product requirements and implementation audit
 
-Audit date: 2026-10-23. Last verified installed release: `d7c5e0ffe` (shared evidence/recovery).
+Audit date: 2026-10-24. Last verified installed release: `d7c5e0ffe` (shared evidence/recovery).
 Current priorities and continuation instructions are in [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md).
 This document maps the **entire original Sweep
 prompt**, including its acceptance examples, to real repository code. It is a
 product backlog and release checklist, not a claim that every listed feature ships.
 
 ## Current delivery slice
+
+The Oct24 UI/recovery slice adds a grouped composer, conversation/queue context,
+compact result actions and an explicit dependency-recovery panel. Users can retry
+one source, inspect completed retry excerpts and deliberately rebind a follow-up
+while preserving original records. This is manual recovery within one retained
+chat, not automatic DAG scheduling or full project/workflow resume. Source tests
+and a real worker recovery chain pass; the new native package is being validated.
 
 The Oct23 prompt reread returns priority to the existing desktop task/evidence
 infrastructure. A shared bounded result contract now serves completion, chat,

@@ -57,6 +57,44 @@ def test_pending_scroll_callback_is_cancelled_when_transcript_is_destroyed(dock,
     assert not errors
 
 
+def test_composer_handles_empty_multiline_and_attachment_messages(dock, tmp_path):
+    app, window = dock
+    window.reveal()
+    app.processEvents()
+    assert not window.run_button.isEnabled() and not window.cancel_button.isVisible()
+    base = window.prompt.height()
+    window.prompt.setPlainText("First line\nSecond line\nThird line")
+    assert window.run_button.isEnabled() and window.prompt.height() > base
+    window.prompt.clear()
+    assert window.prompt.height() == base and not window.run_button.isEnabled()
+    path = tmp_path / "note.txt"
+    path.write_text("A local note", encoding="utf-8")
+    window.set_attachment(path)
+    assert window.run_button.isEnabled()
+    window.clear_attachment()
+    assert not window.run_button.isEnabled()
+
+
+def test_narrow_cards_keep_secondary_actions_accessible(dock):
+    app, window = dock
+    window.reveal()
+    window.resize(420, 620)
+    actions = [("Read extracted text", "sweep:text/one", False),
+               ("Export result", "sweep:export/one", False),
+               ("Try again", "sweep:retry/one", False)]
+    window.transcript.render([{"role": "assistant", "text": "A completed document", "actions": actions}])
+    app.processEvents()
+    buttons = window.transcript.findChildren(QPushButton)
+    more = next(button for button in buttons if button.text() == "More")
+    received = []
+    window.transcript.anchorClicked.disconnect()
+    window.transcript.anchorClicked.connect(lambda url: received.append(url.toString()))
+    assert [action.text() for action in more.menu().actions()] == ["Export result", "Try again"]
+    more.menu().actions()[1].trigger()
+    assert received == ["sweep:retry/one"]
+    assert window.transcript.horizontalScrollBar().maximum() == 0
+
+
 def test_streaming_preserves_completed_cards_and_text_selection(dock):
     app, window = dock
     transcript = ChatTranscript()
