@@ -1,0 +1,3 @@
+# Preserve supplied attachment bytes so manifest SHA-256 values survive checkout.
+SWEEP_ENTERPRISE_MASTER.md -text whitespace=cr-at-eol
+SWEEP_IMPLEMENTATION_RESOURCES.md -text whitespace=cr-at-eol

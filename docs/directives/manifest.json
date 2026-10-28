@@ -1,0 +1,17 @@
+{
+  "adopted": "2026-10-28",
+  "directives": [
+    {
+      "file": "SWEEP_ENTERPRISE_MASTER.md",
+      "sha256": "25c2055eb77591393900e194ca57f5685db38466fcc743dce91328bb92e6bf21",
+      "bytes": 18277,
+      "source_attachment": "d52e9693-f178-48f9-a85d-981d468dbbd1"
+    },
+    {
+      "file": "SWEEP_IMPLEMENTATION_RESOURCES.md",
+      "sha256": "ac8c27e6e2994e96599763ee576968cef0c8a2b44ac89913dfffbfc490092253",
+      "bytes": 10356,
+      "source_attachment": "22b28d01-3df0-40af-a381-1bd7d93cb5fa"
+    }
+  ]
+}

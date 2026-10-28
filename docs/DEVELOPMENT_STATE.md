@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-10-24. Read this file when the user says **continue**. Keep one
+Updated: 2026-10-28. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -8,7 +8,10 @@ The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
 Python-based installed desktop companion, one native top-screen chat dock with
 history and settings. Users describe tasks or converse in the same chat. Local
-AI inference is required; public web retrieval is a separate, requested tool.
+AI inference remains the default; public web retrieval is a separate, requested
+tool. The Oct28 directive permits future opt-in cloud processing with permissions
+and cost limits; no cloud upload, charge or backend activation is authorized by
+that architectural option alone.
 Hide model/vendor details from routine interaction, retain honest diagnostics.
 Preserve personal data and unrelated development work. Test focused changes,
 commit and push them, then validate and replace the installer. Do not equate a
@@ -16,87 +19,64 @@ registered tool, UI control, or passing mock test with an operational feature.
 
 ## Latest direction and order
 
-The user reports minute-long replies, unreliable application launching, weak
-companion behavior, missing OSINT tools, excessive resource use and incomplete
-neural-mesh integration. Fix those failures before expanding the product.
+Before **every new Sweep task**, read both full versioned directives:
+[enterprise master](directives/SWEEP_ENTERPRISE_MASTER.md) and
+[implementation resources](directives/SWEEP_IMPLEMENTATION_RESOURCES.md), then
+this file. They were adopted Oct28 and copied byte-for-byte from the attachments;
+`directives/manifest.json` preserves their hashes. [Adoption rules](directives/README.md)
+explain precedence and local/cloud permissions.
 
-1. **Chat latency and companion behavior — installed release validated.**
-   Native chat roles replace flattened prompts; small response packets display
-   immediately, with bounded 4K context, two-minute residency and one model/context
-   when Sweep starts the engine. CPU thread trials did not justify hardcoding a
-   thread count. Cold loading remains slow; further quality/latency work is needed.
-2. **Device actions — installed release validated.** Installed apps resolve
-   through aliases, App Paths, executable paths, Start Menu and registered Store
-   entries. Missing/ambiguous apps do not silently become web searches. Native
-   receipts distinguish accepted requests from observed windows. Browser intent
-   such as “open YouTube in Brave” remains supported.
-3. **Conversation continuity — installed release validated.** Saved results
-   stay scoped to the same chat; up to four documents can be compared. Queued data
-   follow-ups consume the earlier transformed output. Failures stop dependent
-   work; source labels remain visible even if the model omits inline citations.
-4. **Resource use and fair multi-user scheduling — experimental text host validated.** Bound local
-   inference, queues, context and idle memory. The user clarified on 2026-10-18:
-   start with a locally hosted installation; as more users join, share the heavy
-   processing on a host while additional devices stay lightweight. Preserve a
-   local standalone mode. Design an optional trusted host with authenticated
-   user/organization isolation, bounded per-user queues, fair dispatch,
-   cancellation and load validation. Desktop actions stay on the requesting
-   device. Do not silently turn other users' computers into compute workers or
-   share their files. Pairing, consent and routing need an explicit product flow.
-   `FairComputePool` now supplies bounded owner-scoped dispatch over the existing
-   real subprocess worker, with round-robin queues, cancellation and timeouts.
-   A separate opt-in text host now adds persistent organization/user/device
-   identities, single-use invitations, revocable credentials and a strict local
-   inference contract. A temporary loopback host completed two actual-model jobs.
-   It is not connected to the desktop or installed as a persistent service. See
-   [SHARED_COMPUTE.md](SHARED_COMPUTE.md) for limits and remaining host requirements.
-5. **OSINT and neural mesh — audit active.** Count actual executable tools and
-   desktop routes, identify unavailable dependencies and placeholder results.
-   Connect useful public-source research through existing permissions, evidence
-   and progress contracts. Never promise “120+ working tools” from registry count.
-   Mesh integrity repairs are source-tested: failure propagation, dependency skips,
-   estimated-budget admission and truthful cache confidence/provenance. The mesh
-   cache accepts at most 32 small supported values (1 MiB estimated Python size
-   each), skipping opaque/tensor outputs before copying. Node/engine histories
-   retain 64 recent executions by default, configurable down to zero. These are
-   retention bounds, not OS enforcement of execution RAM or distributed scheduling.
-6. **Shared workflow foundation.** Reuse existing tasks, approvals, document/data
-   adapters and evidence records. Add project/workspace isolation, resumable
-   dependencies and verified results where missing; avoid duplicate frameworks.
-7. **First industry workflow: TradeOps.** Shipment document reconciliation:
-   invoice, packing list, bill of lading and origin documents; extract fields,
-   compare names/quantities/weights/values/currencies/references, flag missing and
-   contradictory evidence, cite pages and produce a saved review package. Test
-   realistic nonsensitive fixtures and integrate with the same chat. No claim of
-   final customs/legal classification or autonomous official submission.
-8. **Then Industrial**, narrow component/specification and supplier research;
-   **then Construction**, evidence timelines and contract-linked delay review.
-9. **Later modules**, each independently validated: environmental compliance,
-   insurance, supplier risk, property, infrastructure, regulations, and healthcare
-   administration only after its data/security requirements are satisfied.
-10. **Remaining original companion scope:** stronger image/object investigation,
-    research chaining, evidence visualization, supported desktop/browser
-    observe-act-verify loops, live voice, richer document/tabular formats and
-    media workflows. See the full requirement audit for actual limits.
+The current commercial order is **audit -> shared foundations -> TradeOps -> pilot
+-> commercial readiness -> optional Vision/TestLab/Evidence**, preserving the
+general-purpose Python desktop companion. This supersedes the old Industrial /
+Construction expansion order. The [implementation roadmap](IMPLEMENTATION_ROADMAP.md)
+tracks phase gates and all nine required deliverables; the
+[architecture audit](ENTERPRISE_ARCHITECTURE_AUDIT.md) contains the feature matrix.
+
+Phase 0 is active, not complete. A structural pass parsed 729 first-party Python
+files with zero syntax errors; runtime boundaries and existing source/release
+evidence were reviewed. All 43 resource candidates are tracked; four official
+repositories were checked initially, without adopting dependencies or downloading
+datasets. Rights, maintenance, compatibility and performance reviews remain open.
+See [the registry](SOURCE_AND_DATASET_REGISTRY.md).
+
+Adoption validation: both repository directive copies match the supplied attachment
+bytes and SHA-256 hashes; 28 local documentation links resolve; registry IDs cover
+all 43 candidates exactly once. Git attributes preserve the supplied line endings
+so the manifest remains valid after checkout. The AGENTS.md change is limited to
+the mandatory-read instruction; the user's separate dataset catalog remains untouched.
+
+Companion compatibility priorities remain: cold reply latency, dependable device
+actions, same-chat continuity, native UI usability, bounded memory, real public
+research coverage and explicit failure recovery. Their verified improvements and
+limits are below. Registries do not establish 120 working tools or general intelligence.
+
+Optional shared compute must preserve standalone use and keep secondary devices
+lightweight. Existing authenticated text hosting remains source-only with native
+pairing, multi-device TLS, expiry/crash recovery and broader tenant isolation still
+missing. Never send confidential business files to untrusted peers. Do not expand
+hosting ahead of the first coherent TradeOps workflow.
 
 ## Current verified release
 
-Installed code release: `d7c5e0ffe` (shared desktop evidence and recovery),
-committed and pushed. Installer: `dist/Sweep-Setup.exe`, 126,031,223 bytes. Native
-installer, packaged dock and installed dock launch/exit passed. Both dock startup
-checks included three deliberately damaged synthetic results. The normal upgrade
-preserved 44 personal files hash-for-hash. Unrelated user work remains unstaged;
-the build metadata correctly records a dirty source tree.
-Oct23 verification passed installer/app checksums, all 3,110 installed payload
-CRCs, 27 native-library hashes and 28 license-notice hashes.
+Installed code release: `3ae1258be` (native composer and explicit dependency
+recovery), committed and pushed. Installer: `dist/Sweep-Setup.exe`, 126,040,375
+bytes. Its normal upgrade completed Oct28 and preserved 44 personal files
+hash-for-hash. Source tree dirty provenance is recorded; unrelated work remains
+unstaged. Later directive/audit documentation commits do not change this binary.
 
-Seven packaged workers ran outside the repository: calculator, data, text, PDF,
-DOCX, OCR and local chat passed, and every output passed the shared result
-contract. The greeting took 15.60 seconds with five preview events. A native dock
-driving packaged workers compared invoice quantity 12 with packing quantity 10
-in 20.10 seconds, then completed queued CSV cleanup and JSON conversion in 1.23
-seconds, preserving the original file. Source and packaged timings varied; this
-release repairs evidence handling, not cold model latency.
+Packaged and installed verification passed app/setup checksums, all 3,110 installed
+payload CRCs, 27 native-library hashes and 28 license-notice hashes. Native installer,
+packaged dock and installed dock launch/clean-exit checks passed. The dock smoke
+used synthetic interrupted-task history. Installer remains unsigned.
+
+Seven real packaged workers outside the repository passed: calculator 1.70 s,
+data 1.35 s, text 0.78 s, PDF 1.12 s, DOCX 0.65 s, OCR 2.02 s and local chat
+24.14 s (five preview events). Small synthetic fixtures do not establish broad
+accuracy or percentile latency. The recovery UI driving packaged workers completed
+a restarted CSV-cleanup -> JSON chain in 3.99 s; with installed workers it took
+3.14 s. Both required two approvals, returned two rows and preserved original
+CSV bytes and old task references. No claim that cold inference latency is fixed.
 
 Previous installed-release app launch evidence (Oct22): Character Map opened an
 independently observed window in 3.90 seconds. Its shorter product verification
@@ -112,9 +92,12 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
 - Latest explicit user corrections take precedence: a usable local companion,
   reduced resource use, reliable device actions and remembered continuation work.
 - Both supplied prompts were reread on 2026-10-23. The latest direction is to
-  improve the already-built infrastructure. Prioritize reliable companion tasks,
+  improve the already-built infrastructure at that milestone. Prioritize reliable companion tasks,
   recovery and evidence, then the first TradeOps workflow. The optional text host
   is useful existing work, but does not satisfy those desktop requirements.
+- Oct28 enterprise master and resource directives supersede the commercial
+  sequence above; their full repository copies are linked at the top of this file.
+  Both were read in full and preserved with attachment hashes. Phase 0 remains active.
 
 ## Repair evidence (2026-10-21)
 
@@ -199,7 +182,8 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
   safely on widget destruction. No idle animation/timer was added.
 - Broad desktop/dock regression: **656 passed, six Windows symlink-fixture
   skips**, 78.68 s. Final recovery/chat checks: **46 passed**; final bounded-choice
-  checks: **eight passed**. Ruff passed. Native release packaging is pending.
+  checks: **eight passed**. Ruff passed. Native packaging, installed upgrade and recovery checks
+  completed Oct28; see the current release above.
 - Limits: manual recovery one dependency at a time, bounded to retained chat
   records; no general DAG or project workspace. A missing original task record
   requires reattaching/recreating the request. Choosing a saved result cannot
@@ -207,14 +191,18 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
 
 ## Next action and release gate
 
-Next: build the narrow TradeOps shipment comparison on the existing document,
-data, task and evidence adapters: field extraction, discrepancies/missing fields,
-page references and a saved review package in the same chat. Generic document
-comparison is not yet this workflow. Continue cold-start latency and tool audits.
-Keep improving the native UI as workflows land; the user explicitly requested
-better UI on Oct24. Test narrow layouts, progress, errors and recovery, not just
-the welcome view. Explicit dependency recovery now works through a review panel;
-automatic DAG scheduling and full workflow resume remain unimplemented.
+Next: finish the Phase 0 TradeOps product contract, focused threat model,
+evaluation protocol and resource/cost baseline. Then add source-linked structured
+document ingestion using the current local adapters, followed by workspace and
+correction state, deterministic invoice/packing-list reconciliation and native
+side-by-side review. Follow the numbered increments in IMPLEMENTATION_ROADMAP.md.
+Generic model comparison is not TradeOps field extraction. Do not claim the new
+master prompt, pilot targets or all resource checks are complete.
+
+Keep the companion operational and test native progress, long/narrow layouts,
+source navigation, permissions, failure recovery and original-file preservation.
+Document-only continuation updates do not need a new installer. Runtime changes
+must pass packaged and installed checks before replacement.
 
 Hosting backlog remains: native pairing/host settings and a lightweight client
 with explicit certificate trust and OS-protected credentials. Route only text

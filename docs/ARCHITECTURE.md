@@ -1,5 +1,9 @@
 # Sweep architecture and readiness
 
+For the Oct28 enterprise adoption, current reuse decisions and known gaps, see
+[ENTERPRISE_ARCHITECTURE_AUDIT.md](ENTERPRISE_ARCHITECTURE_AUDIT.md). This older
+map includes optional/legacy APIs; the installed desktop currently routes AI locally.
+
 Sweep's direction is a Python personal assistant and reusable intelligence/tool
 runtime: desktop operations, public-web collection, reasoning and memory.
 These are separate subsystems today; there is not yet one general agent capable
