@@ -9,8 +9,8 @@ Statuses use the master directive's vocabulary. Targets are not achievements.
 
 | Phase | Status | Work and acceptance evidence |
 | --- | --- | --- |
-| 0: Audit and validation | Partially implemented | Structural inventory and initial architecture audit recorded; registry started. Finish precise TradeOps spec, threat model, evaluation/cost baseline and dependency assessment. Customer access is currently unavailable. |
-| 1: Shared foundations | Partially implemented | Existing native tasks/results/approvals/local adapters reused. Add versioned source-linked document contracts, workspace ownership, correction/audit storage, ingestion failure handling and meaningful boundary tests. |
+| 0: Audit and validation | Partially implemented | Structural inventory and initial architecture audit recorded; registry started. Initial TradeOps spec, threat model, evaluation protocol and synthetic cost baseline recorded; dependency/security and representative-data assessment remain. Customer access is currently unavailable. |
+| 1: Shared foundations | Partially implemented | Existing native tasks/results/approvals/local adapters reused. Source-only versioned document snapshots/references now tested; workspace ownership, correction/audit storage and native integration remain. |
 | 2: TradeOps MVP | Planned | Invoice + packing-list workflow; deterministic discrepancies, native side-by-side source review, corrections, CSV/Excel report, draft communication and separately approved follow-up. |
 | 3: Pilot readiness | Planned | Representative authorized corpus, measured exact-match/alert precision and sample sizes, resource/cost metrics, security tests, onboarding, deployment/recovery. |
 | 4: Commercial readiness | Planned | Metering/billing experiments, team roles, monitoring/support, signed reliable updates and measured capacity. No hardcoded pricing before validation. |
@@ -52,6 +52,14 @@ Statuses use the master directive's vocabulary. Targets are not achievements.
    exact match and 98% severe-alert precision require actual denominators and
    uncertainty intervals. Stop release on any known cross-tenant exposure.
 
+### Oct28 foundation checkpoint
+
+The design and source-only ingestion/reference increment are implemented and
+covered by 186 passing focused tests (one platform skip). Desktop routing, local
+workspaces, correction persistence and business-field extraction are not yet
+implemented. Next is increment 3; retain the schema and reference invariants when
+wiring workers and UI. No installer update is needed for this unconnected library.
+
 ## Required deliverables and current state
 
 | Deliverable | Status | Completion criterion |
@@ -59,12 +67,12 @@ Statuses use the master directive's vocabulary. Targets are not achievements.
 | [ENTERPRISE_ARCHITECTURE_AUDIT.md](ENTERPRISE_ARCHITECTURE_AUDIT.md) | Partially implemented | Initial inventory/map/risks measured; deeper dependency/security and footprint assessment remains. |
 | [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md) | Partially implemented | Governing sequence and acceptance gates recorded; refine estimates and implementation scope as Phase 0 closes. |
 | [SOURCE_AND_DATASET_REGISTRY.md](SOURCE_AND_DATASET_REGISTRY.md) | Partially implemented | All 43 candidates tracked; verify relevant resources before use, then complete remaining reviews by module. |
-| `TRADEOPS_PRODUCT_SPEC.md` | Planned | Precise initial document/field schemas, matching, correction and UI acceptance examples. |
-| `SECURITY_THREAT_MODEL.md` | Planned | Assets/actors/boundaries/mitigations/tests for local and optional shared workflows; implemented vs missing controls. |
-| `EVALUATION_PROTOCOL.md` | Planned | Rights-cleared fixtures, split policy, labels, deterministic scoring, failure strata, sample size and confidence reporting. |
-| `MARKET_VALIDATION.md` | Planned | Customer hypotheses, interview protocol and actual findings; no invented interviews or demand. |
-| `COST_AND_UNIT_ECONOMICS.md` | Planned | Instrumentation plan and measured local/cloud/support costs; unmeasured quantities explicit. |
-| `DEPLOYMENT_GUIDE.md` | Planned | Existing desktop instructions extended with module setup, backup/restore, update/rollback and security configuration. |
+| [TRADEOPS_PRODUCT_SPEC.md](TRADEOPS_PRODUCT_SPEC.md) | Partially implemented | Initial local workflow, source/field contracts, matching, correction and UI acceptance examples recorded; MVP still planned. |
+| [SECURITY_THREAT_MODEL.md](SECURITY_THREAT_MODEL.md) | Partially implemented | Initial assets/boundaries/control gaps/tests recorded; hosted and workspace controls not implemented. |
+| [EVALUATION_PROTOCOL.md](EVALUATION_PROTOCOL.md) | Partially implemented | Foundation invariants and scoring defined/tested; representative extraction/reconciliation evaluation pending. |
+| [MARKET_VALIDATION.md](MARKET_VALIDATION.md) | Partially implemented | Hypotheses and consent/interview protocol recorded; no customer interviews or demand findings. |
+| [COST_AND_UNIT_ECONOMICS.md](COST_AND_UNIT_ECONOMICS.md) | Partially implemented | Nine synthetic source-reader process samples; full application, realistic load and monetary economics unmeasured. |
+| [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | Partially implemented | Existing desktop and source-only API instructions recorded; enterprise deployment/migrations not available. |
 
 Existing companion latency/device/recovery regressions remain release gates. Do
 not replace the working native shell, erase personal history or expand optional

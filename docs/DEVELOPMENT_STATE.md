@@ -33,7 +33,7 @@ Construction expansion order. The [implementation roadmap](IMPLEMENTATION_ROADMA
 tracks phase gates and all nine required deliverables; the
 [architecture audit](ENTERPRISE_ARCHITECTURE_AUDIT.md) contains the feature matrix.
 
-Phase 0 is active, not complete. A structural pass parsed 729 first-party Python
+Phase 0 remains active; the bounded document-foundation design is now recorded. A structural pass parsed 729 first-party Python
 files with zero syntax errors; runtime boundaries and existing source/release
 evidence were reviewed. All 43 resource candidates are tracked; four official
 repositories were checked initially, without adopting dependencies or downloading
@@ -189,15 +189,51 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
   requires reattaching/recreating the request. Choosing a saved result cannot
   restore a deleted generated artifact. TradeOps and cold latency remain open.
 
+## Source-linked document foundation (2026-10-28)
+
+- Reread both full directives and reviewed existing reader/result boundaries.
+  Added the initial TradeOps specification, threat model, evaluation protocol,
+  market-validation hypotheses, cost baseline and deployment guide. All nine
+  required documents now exist; they explicitly distinguish design from operation.
+  Broader dependency/security review and representative customer data remain open.
+- Added `sweep.documents`, a source-only additive API over the existing granted
+  PDF/DOCX/text reader. Immutable versioned snapshots retain original hash/bytes,
+  parser/version, actual PDF page text and extraction hash. Exact references bind
+  document + extraction + unit + Unicode range + quote; altered evidence, invalid
+  types, unknown fields and invented DOCX/text pagination are rejected.
+- Partial/empty extraction stays explicit. Mixed PDFs expose pages without
+  selectable text and require review. Hashes are not authenticity or permission;
+  the eventual workspace caller must enforce membership before resolution.
+  No business fields, correction ledger, tenant store or comparison UI is claimed.
+- **186 tests passed, one Windows symlink-fixture skip**, 4.78 s, across the new
+  contract and existing document/data/result paths. Includes real PDF/DOCX/text,
+  changed source/quotes, Unicode, no-text/mixed/partial pages, permission denial,
+  malformed/encrypted input, no model/network/GUI imports in isolated text ingestion,
+  and maximum Unicode snapshots saved through the existing result contract.
+  Ruff passed for all three new Python files.
+- All nine required documents are present; 33 local links resolve. Directive
+  hashes remain unchanged and recorded benchmark code hashes match measured files.
+- Reproducible `scripts/benchmark_documents.py --runs 3` completed nine fresh
+  process runs with fixed synthetic inputs and source preservation. Exact samples,
+  parser/environment/code/fixture hashes and OS peak process memory are in
+  [the baseline](evaluations/document-foundation-2026-10-28.json). See
+  [cost scope and measurements](COST_AND_UNIT_ECONOMICS.md). Tiny files and three
+  samples per format do not establish production accuracy, latency or p95.
+- This increment is **source-only** and is not routed by the installed dock.
+  Existing runtime files, personal data and installer remain unchanged at
+  `3ae1258be`. No dependency/model download, new cloud connection, migrated history
+  or new desktop control. Packaging follows native integration of a complete slice.
+
 ## Next action and release gate
 
-Next: finish the Phase 0 TradeOps product contract, focused threat model,
-evaluation protocol and resource/cost baseline. Then add source-linked structured
-document ingestion using the current local adapters, followed by workspace and
-correction state, deterministic invoice/packing-list reconciliation and native
-side-by-side review. Follow the numbered increments in IMPLEMENTATION_ROADMAP.md.
-Generic model comparison is not TradeOps field extraction. Do not claim the new
-master prompt, pilot targets or all resource checks are complete.
+Next: add explicit local workspace ownership/version storage and correction
+history through the existing task boundary, with backup/rollback and cross-workspace
+tests before migrating any personal data. Use the new source snapshot contract;
+then implement deterministic invoice/packing-list fields and reconciliation,
+followed by native side-by-side review and report/export. Follow the ordered
+increments and contracts in IMPLEMENTATION_ROADMAP.md and TRADEOPS_PRODUCT_SPEC.md.
+Finish relevant dependency/security/resource reviews as each adapter is selected;
+no representative customer pilot data or proven commercial demand is available.
 
 Keep the companion operational and test native progress, long/narrow layouts,
 source navigation, permissions, failure recovery and original-file preservation.

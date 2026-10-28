@@ -88,6 +88,7 @@ Statuses refer to the specifically described scope, not an entire product.
 | Task approvals, cancellation, manual dependency recovery | Implemented and tested | Immutable retry requests and explicit source selection; not a general durable DAG. |
 | Shared-host text processing | Partially implemented | Auth/owner queues and two local test users; no native pairing or multi-machine TLS test. |
 | Neural-mesh / broad OSINT integration | Partially implemented | Source repairs and optional catalogs; 18 desktop routes are not 120 operational research tools. |
+| Versioned document snapshots / exact references | Implemented and tested | Source-only `sweep.documents`; 186 focused checks including existing adapters. No native route or workspace authority yet. |
 | Enterprise workspace/tenant storage | Planned | Conversation scoping and host identities are not document tenancy. |
 | TradeOps structured fields, reconciliation, corrections | Planned | Needs source-linked contracts, decimal rules, matching and explicit uncertainty. |
 | Side-by-side document review / CSV and Excel report | Planned | Existing source dialogs and CSV artifacts are only reusable building blocks. |
@@ -169,9 +170,11 @@ supports the feature comparison, not a performance claim for Sweep.
 
 ## Next acceptance gate
 
-Follow [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md). Complete the Phase 0
-TradeOps contract, focused threat model and reproducible evaluation design; then
-add a versioned source-linked document representation using existing local
-extraction. Every field must retain evidence or explicitly report missing/ambiguous.
+Follow [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md). Initial TradeOps,
+threat and evaluation contracts are now
+recorded; source-only versioned snapshots and exact references reuse the local
+reader without migration. Next add workspace ownership and correction/version
+storage, with boundary and rollback tests before native integration. Every field
+must retain evidence or explicitly report missing/ambiguous.
 No pilot/commercial readiness claim until the remaining security, representative
 data, performance and deployment gates have measured evidence.
