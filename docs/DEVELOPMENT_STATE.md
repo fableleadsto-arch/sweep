@@ -65,42 +65,51 @@ hosting ahead of the first coherent TradeOps workflow.
 
 ## Current verified release
 
-Nov25 source work is undergoing release validation: explicit primary-screen OCR
-with per-capture approval, dock hide/restore, no retained screenshot, same-chat
-source follow-ups, immediate greeting/help replies and a shorter chat prompt.
-The native source check passed real model chat/context, Character Map launch,
-CSV deduplication -> JSON, primary-screen fixture OCR and a grounded follow-up.
-Observed greeting 0.54 s, chat first preview 2.03 s/total 9.27 s, context recall
-5.70 s, app launch 2.10 s, screen OCR 2.11 s; screen question 25.75 s. Synthetic
-single samples, not performance guarantees. An earlier cold baseline took 31.11 s.
+Installed code release: **`8ab3f4408`**, committed and pushed. Installer:
+`dist/Sweep-Setup.exe`, **126,047,992 bytes**. Normal upgrade on Nov25 preserved
+all **44 personal files hash-for-hash**. Dirty-tree build provenance is explicit;
+unrelated work remains unstaged. Later verification/docs commits do not change
+the packaged runtime. Installer remains unsigned.
+
+This release adds explicit primary-screen OCR with per-capture approval,
+dock hide/restore, no retained screenshot, same-chat source follow-ups, immediate
+greeting/help replies and a shorter chat prompt. No new dependency, cloud route,
+model download, continuous monitoring or arbitrary visual UI automation.
+
 Desktop regression: **725 passed, 6 skipped** (731 collected; Windows link
 privileges account for skips). Final screen/context checks: **72 passed, 1 skipped**.
-Ruff passes for all changed Python files. Installer replacement is the remaining
-release gate; source evidence is not installed-release evidence.
+Ruff passes for all changed Python files. Native source and packaged-worker
+integration passed real local chat/context recall, calculation, observed Character
+Map launch, CSV deduplication -> JSON, screen fixture OCR and a grounded follow-up.
+The installed workers passed the same flows. Screen testing needed a corrected
+borderless fixture: exclusive full-screen sometimes minimized when focus changed,
+so those initial fixture assertions were failures, not product success evidence.
+`scripts/verify_companion_desktop.py --exe <Sweep.exe>` reproduces these checks;
+`--screen-only` reruns the capture/follow-up slice. Use an unlocked test desktop.
 
-Installed code release: `3ae1258be` (native composer and explicit dependency
-recovery), committed and pushed. Installer: `dist/Sweep-Setup.exe`, 126,040,375
-bytes. Its normal upgrade completed Oct28 and preserved 44 personal files
-hash-for-hash. Source tree dirty provenance is recorded; unrelated work remains
-unstaged. Later directive/audit documentation commits do not change this binary.
+Installed samples: greeting **2.06 s**, substantive chat first preview **2.76 s**,
+completion **9.76 s**, context recall **4.60 s**, calculation **0.99 s**, app launch
+**1.31 s**, CSV deduplication **1.06 s**, JSON conversion **1.14 s**, screen OCR
+**1.08 s**, saved-screen answer **7.26 s**. The packaged substantive request took
+**19.33 s** with first preview at **15.83 s**. An earlier cold baseline took
+**31.11 s**. These are single synthetic samples under different cache/load
+conditions, not a controlled speedup benchmark or percentile guarantee.
+Public web source checks returned a readable example.com page in **6.73 s** and
+eight search sources in **4.13 s**. That does not certify all providers or websites.
 
 Packaged and installed verification passed app/setup checksums, all 3,110 installed
-payload CRCs, 27 native-library hashes and 28 license-notice hashes. Native installer,
-packaged dock and installed dock launch/clean-exit checks passed. The dock smoke
-used synthetic interrupted-task history. Installer remains unsigned.
+payload CRCs, 27 native-library hashes and 28 license-notice hashes. Native installed
+app and installer launch/clean-exit checks passed (**3.37 / 4.28 s**). Native Qt
+integration screenshots were inspected at 720px and 380px widths. Independent
+desktop-control inspection was unavailable: the Computer Use native pipe was
+missing after the documented retry/reset sequence. Do not claim an independent
+mouse/keyboard automation pass. Automatic approval review blocked deletion of one
+failed test's temporary workspace; it was left in place, not retried through another tool.
 
-Seven real packaged workers outside the repository passed: calculator 1.70 s,
-data 1.35 s, text 0.78 s, PDF 1.12 s, DOCX 0.65 s, OCR 2.02 s and local chat
-24.14 s (five preview events). Small synthetic fixtures do not establish broad
-accuracy or percentile latency. The recovery UI driving packaged workers completed
-a restarted CSV-cleanup -> JSON chain in 3.99 s; with installed workers it took
-3.14 s. Both required two approvals, returned two rows and preserved original
-CSV bytes and old task references. No claim that cold inference latency is fixed.
-
-Previous installed-release app launch evidence (Oct22): Character Map opened an
-independently observed window in 3.90 seconds. Its shorter product verification
-window reported only accepted execution. Sampled video previously took 111.63
-seconds. Those paths were not re-benchmarked in this evidence-storage release.
+Limits: OCR reads only visible primary-display text; recognition can be wrong and
+follow-ups use a saved observation. Cold inference still needs work. Basic tools
+are operational; general autonomous UI control, broad OSINT coverage, the shared
+host's native client and the enterprise products are not completed by this release.
 
 ## Source prompts
 
@@ -245,8 +254,8 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
 
 ## Next action and release gate
 
-Immediate: package and install the verified companion changes, validate the real
-installed worker flows and preserve personal files. After that gate, resume explicit local workspace ownership/version storage and correction
+The Nov25 installed companion gate has passed for the supported flows above.
+Next: resume explicit local workspace ownership/version storage and correction
 history through the existing task boundary, with backup/rollback and cross-workspace
 tests before migrating any personal data. Use the new source snapshot contract;
 then implement deterministic invoice/packing-list fields and reconciliation,

@@ -80,11 +80,11 @@ Statuses refer to the specifically described scope, not an entire product.
 | Capability | Status | Evidence and remaining boundary |
 | --- | --- | --- |
 | Native dock, installer, chat history, recovery UI | Implemented and tested | Oct24 source regression; Oct28 packaged/installed smoke and upgrade. |
-| Local conversational inference | Implemented and tested | Actual packaged greeting 24.14 s; cold latency remains unacceptable for many interactions. |
+| Local conversational inference | Implemented and tested | Nov25 installed substantive chat: first preview 2.76 s / total 9.76 s; simple greeting 2.06 s. Cold latency remains a limitation; see continuation evidence. |
 | Basic desktop launch / named browser URLs | Implemented and tested | Prior installed launch/intent tests; no general observe-act-verify agent. |
 | Bounded PDF/DOCX/text/data ingestion | Implemented and tested | Real packaged workers; page text and original hashes; limited formats and extraction. |
 | Image OCR | Implemented and tested | Packaged synthetic image text read locally; no layout/table accuracy benchmark. |
-| On-demand screen text | Partially implemented | Nov25 source native check: primary display once, approval, local OCR, discarded screenshot and saved-text follow-up. Packaged/installed checks pending; no continuous perception or arbitrary UI control. |
+| On-demand screen text | Implemented and tested | Nov25 packaged/installed workers: primary display once, approval, local OCR, discarded screenshot and saved-text follow-up. Installed OCR 1.08 s on a synthetic fixture; no continuous perception or arbitrary UI control. |
 | Multi-document conversation comparison | Partially implemented | Up to four same-chat sources, saved excerpts; no deterministic shipment reconciliation. |
 | Task approvals, cancellation, manual dependency recovery | Implemented and tested | Immutable retry requests and explicit source selection; not a general durable DAG. |
 | Shared-host text processing | Partially implemented | Auth/owner queues and two local test users; no native pairing or multi-machine TLS test. |

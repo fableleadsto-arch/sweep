@@ -1,6 +1,6 @@
 """Exercise native dock + real workers/models with isolated synthetic data.
 
-Run manually on an unlocked Windows desktop. A full-screen synthetic fixture
+Run manually on an unlocked Windows desktop. A borderless synthetic fixture
 temporarily covers the display for the approved screen-reading check. Personal
 Sweep history/settings are never edited. --exe selects a packaged worker.
 """
@@ -18,12 +18,14 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path)
+    parser.add_argument("--screen-only", action="store_true")
     args = parser.parse_args()
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from sweep.desktop.platform import data_directory
     from sweep.desktop.providers import load_config
     config = load_config(data_directory())
     workspace = Path(tempfile.mkdtemp(prefix="sweep-companion-check-"))
+    print(json.dumps({"workspace": str(workspace)}), flush=True)
     root = workspace / "desktop"
     root.mkdir()
     (root / "providers.json").write_text(json.dumps({"schema_version": 1, **{
@@ -52,7 +54,8 @@ def main():
     QMessageBox.exec = approve
     observations = []
     fixture = QWidget()
-    fixture.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.WindowStaysOnTopHint)
+    fixture.setWindowTitle("Sweep verification screen")
+    fixture.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
     fixture.setStyleSheet("background: white; color: black;")
     layout = QVBoxLayout(fixture)
     label = QLabel("SWEEP SCREEN CHECK\nProject Lumen\nInvoice quantity 12\nPacking quantity 10")
@@ -84,28 +87,31 @@ def main():
         return result
 
     try:
-        run("Hi Sweep", lambda r: "I'm here" in r["message"])
-        run("My project is called Lumen. Suggest one short next step for organizing its notes.",
-            lambda r: bool(r.get("message")) and not r.get("proposal"))
-        run("What is my project called?", lambda r: "lumen" in r["message"].casefold())
-        run("calculate 17 * 23", lambda r: "391" in r["message"])
-        run("open character map", lambda r: r.get("status") == "ok")
-        data = workspace / "orders.csv"
-        original = "item,quantity\nbolt,2\nbolt,2\nnut,3\n"
-        data.write_text(original, encoding="utf-8")
-        run("Remove duplicate rows", lambda r: r.get("output_rows") == 2, data)
-        run("Now convert it to JSON", lambda r: len(json.loads(Path(r["artifacts"][0]["path"]).read_text())) == 2)
-        assert data.read_text() == original
+        if not args.screen_only:
+            run("Hi Sweep", lambda r: "I'm here" in r["message"])
+            run("My project is called Lumen. Suggest one short next step for organizing its notes.",
+                lambda r: bool(r.get("message")) and not r.get("proposal"))
+            run("What is my project called?", lambda r: "lumen" in r["message"].casefold())
+            run("calculate 17 * 23", lambda r: "391" in r["message"])
+            run("open character map", lambda r: r.get("status") == "ok")
+            data = workspace / "orders.csv"
+            original = "item,quantity\nbolt,2\nbolt,2\nnut,3\n"
+            data.write_text(original, encoding="utf-8")
+            run("Remove duplicate rows", lambda r: r.get("output_rows") == 2, data)
+            run("Now convert it to JSON", lambda r: len(json.loads(Path(r["artifacts"][0]["path"]).read_text())) == 2)
+            assert data.read_text() == original
         fixture.setGeometry(app.primaryScreen().geometry())
-        fixture.showFullScreen()
+        # Borderless, not exclusive full-screen: changing focus to the dock
+        # must not make Windows minimize the fixture before screen capture.
+        fixture.show()
         fixture.raise_()
         fixture.activateWindow()
         app.processEvents()
         time.sleep(1)
         run("Read my screen", lambda r: all(word in r.get("text", "") for word in ("Lumen", "12", "10")))
         assert window.isVisible()
-        run("What were the two quantities in that screen text?", lambda r: "12" in r["message"] and "10" in r["message"])
         fixture.hide()
+        run("What were the two quantities in that screen text?", lambda r: "12" in r["message"] and "10" in r["message"])
         window.reveal()
         app.processEvents()
         window.grab().save(str(workspace / "verified-dock.png"))
