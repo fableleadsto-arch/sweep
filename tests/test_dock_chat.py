@@ -144,6 +144,29 @@ def test_missing_image_stays_in_chat_and_asks_for_attachment(dock):
     assert "Attach the image" in window.transcript.toPlainText()
 
 
+def test_screen_capture_denial_keeps_dock_visible_without_worker(dock, monkeypatch):
+    app, window = dock
+    monkeypatch.setattr(QMessageBox, "exec", lambda self: QMessageBox.StandardButton.No)
+    window.reveal()
+    window.prompt.setPlainText("Read my screen")
+    window.submit()
+    assert window.isVisible() and window.process is None
+    assert window.task_store.list() == []
+
+
+def test_screen_capture_restores_dock_on_worker_failure(dock, monkeypatch):
+    from sweep.desktop.window import SweepWindow
+    app, window = dock
+    window.task = {"id": "a" * 32, "capability": "screen.read", "state": "running"}
+    monkeypatch.setattr(SweepWindow, "launch_task", lambda self: None)
+    monkeypatch.setattr(SweepWindow, "worker_finished", lambda *a: None)
+    window.reveal()
+    window.launch_task()
+    assert not window.isVisible()
+    window.worker_finished(-1, None)
+    assert window.isVisible() and window._screen_capture_pending is None
+
+
 def test_chat_store_blocks_path_escape_and_survives_malformed_file(tmp_path):
     store = ChatStore(tmp_path)
     with pytest.raises(ValueError):

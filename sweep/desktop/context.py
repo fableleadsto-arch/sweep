@@ -162,7 +162,10 @@ def _terms(text: str) -> set[str]:
 def _scope(task: dict, result: dict) -> str:
     capability = task["capability"]
     parts = ["Saved observations only; original files were not reread."]
-    if capability == "documents.inspect":
+    if capability == "screen.read":
+        parts = ["Saved screen OCR only, not a live view. Recognition may contain errors.",
+                 "Primary display captured at " + str(result.get("captured_at", "an unknown time"))[:64] + "."]
+    elif capability == "documents.inspect":
         pages = result.get("pages")
         if isinstance(pages, list) and pages:
             parts.append(f"{len(pages)} extracted pages available.")
@@ -266,6 +269,8 @@ async def execute_context(request: dict, progress, on_preview=None) -> dict:
         raise RuntimeError("Local processing returned no answer. The original results remain available; try this question again.")
     scope = (f"Based on selected excerpts from {len(references)} saved result{'s' if len(references) != 1 else ''} "
              "in this chat. Original files were not reread; extraction and preview limits still apply.")
+    if all(source["task"]["capability"] == "screen.read" for source in sources):
+        scope = "Based on saved screen text, not a live view. OCR may contain errors."
     # Model-generated inline citations are not guaranteed. Always expose the
     # actual supplied source labels without inventing claim-to-source links.
     source_list = "Source excerpts supplied:\n" + "\n".join(

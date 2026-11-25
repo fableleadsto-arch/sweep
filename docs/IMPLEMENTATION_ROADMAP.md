@@ -5,6 +5,12 @@ before every new task, then [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md). This i
 the current execution order; the original companion backlog remains supported.
 Statuses use the master directive's vocabulary. Targets are not achievements.
 
+**2026-11-25 explicit priority change:** the user requested a usable installed
+companion by this session's end. Complete native chat, supported desktop tasks,
+and permission-bound screen text reading with real packaged/installed tests
+before resuming the enterprise increments below. Enterprise requirements remain
+open. The workspace-storage draft is parked without a production import or migration.
+
 ## Phase gates
 
 | Phase | Status | Work and acceptance evidence |

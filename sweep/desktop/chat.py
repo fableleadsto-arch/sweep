@@ -41,6 +41,9 @@ def understand(text: str, attachments: list[str] | None = None) -> tuple[str, st
             return "documents.inspect", original
         return ("images.inspect" if suffix in {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
                 else "files.inspect"), original
+    from .screen import screen_request
+    if screen_request(core):
+        return "screen.read", original
     if re.search(r"\b(?:this|that|attached) (?:audio|video|clip|recording|voice memo)\b", core, re.I):
         return "chat.clarify", "Attach the recording or video here. I can inspect local media, sample video frames, or transcribe English speech with timestamps."
     if re.search(r"\b(?:this|that|attached) (?:document|pdf|csv|dataset|spreadsheet|data file)\b", core, re.I):

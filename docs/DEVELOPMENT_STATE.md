@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-10-28. Read this file when the user says **continue**. Keep one
+Updated: 2026-11-25. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -18,6 +18,12 @@ commit and push them, then validate and replace the installer. Do not equate a
 registered tool, UI control, or passing mock test with an operational feature.
 
 ## Latest direction and order
+
+Nov25 user priority: make the installed companion usable for chat, supported
+device tasks and reading the screen this session. This temporarily precedes the
+enterprise foundation sequence. Preserve the workspace draft without migrating
+personal data. Acceptance requires real native chat/context, app launch, a file
+task, screen OCR and a saved-screen follow-up, then packaged/installed verification.
 
 Before **every new Sweep task**, read both full versioned directives:
 [enterprise master](directives/SWEEP_ENTERPRISE_MASTER.md) and
@@ -58,6 +64,19 @@ missing. Never send confidential business files to untrusted peers. Do not expan
 hosting ahead of the first coherent TradeOps workflow.
 
 ## Current verified release
+
+Nov25 source work is undergoing release validation: explicit primary-screen OCR
+with per-capture approval, dock hide/restore, no retained screenshot, same-chat
+source follow-ups, immediate greeting/help replies and a shorter chat prompt.
+The native source check passed real model chat/context, Character Map launch,
+CSV deduplication -> JSON, primary-screen fixture OCR and a grounded follow-up.
+Observed greeting 0.54 s, chat first preview 2.03 s/total 9.27 s, context recall
+5.70 s, app launch 2.10 s, screen OCR 2.11 s; screen question 25.75 s. Synthetic
+single samples, not performance guarantees. An earlier cold baseline took 31.11 s.
+Desktop regression: **725 passed, 6 skipped** (731 collected; Windows link
+privileges account for skips). Final screen/context checks: **72 passed, 1 skipped**.
+Ruff passes for all changed Python files. Installer replacement is the remaining
+release gate; source evidence is not installed-release evidence.
 
 Installed code release: `3ae1258be` (native composer and explicit dependency
 recovery), committed and pushed. Installer: `dist/Sweep-Setup.exe`, 126,040,375
@@ -226,7 +245,8 @@ seconds. Those paths were not re-benchmarked in this evidence-storage release.
 
 ## Next action and release gate
 
-Next: add explicit local workspace ownership/version storage and correction
+Immediate: package and install the verified companion changes, validate the real
+installed worker flows and preserve personal files. After that gate, resume explicit local workspace ownership/version storage and correction
 history through the existing task boundary, with backup/rollback and cross-workspace
 tests before migrating any personal data. Use the new source snapshot contract;
 then implement deterministic invoice/packing-list fields and reconciliation,

@@ -7,6 +7,7 @@ from pathlib import Path
 from .chat import understand
 
 SOURCE_CAPABILITIES = frozenset({
+    "screen.read",
     "documents.inspect", "data.inspect", "data.transform", "files.inspect",
     "images.inspect", "images.analyze", "media.inspect", "media.analyze",
     "audio.transcribe", "web.search", "web.scrape", "web.research",
@@ -86,7 +87,7 @@ def followup_request(text: str, sources: list[dict]) -> dict | None:
     # Explicit new web/computer commands must not become file operations merely
     # because a previous result exists. Derived web queries need a separate review.
     plain, _ = understand(text)
-    if plain in {"computer.command", "web.search", "web.scrape", "web.research", "chat.new"}:
+    if plain in {"computer.command", "web.search", "web.scrape", "web.research", "chat.new", "screen.read"}:
         return None
     if not requested and not re.search(r"\?|\b(?:what|when|where|which|why|how|tell|read|inspect|describe|mention|remove|trim|drop)\b", lowered):
         return None

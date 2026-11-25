@@ -23,6 +23,13 @@ upgrading or uninstalling.
 
 ## Working in the dock
 
+- Choose **Read screen** or send `read my screen`. After approval, the dock hides
+  briefly while Sweep captures the primary display once and reads visible text
+  locally. The screenshot is discarded; recognized text remains in that chat.
+  Move the content to the primary display first. Ask `Explain this error` or a
+  question about that text to use the saved observation; send `read my screen`
+  again for a fresh capture. This is OCR, not continuous monitoring or a general
+  visual clicking agent. Windows needs an installed OCR language.
 - Hover over the top bar or click it to expand the chat. **Pin** keeps it expanded;
   **Esc** or the minus button collapses it. Drag the bar to move it and use the
   bottom-right grip to resize the expanded chat.
@@ -84,6 +91,8 @@ Workers have a 120-second runtime budget for ordinary tools, 240 seconds for
 conversation, documents and speech setup, and 300 seconds for image analysis,
 sampled-video descriptions and transcription, plus a five-second watchdog grace period.
 Local model answers can take longer on a CPU, especially when loading a model.
+Simple greetings, thanks and `what can you do?` use immediate local replies,
+without starting a model. Substantive conversation uses the downloaded model.
 Streaming keeps completed cards and text selections intact while the current
 answer changes. Local chat uses a bounded 4,096-token context and allows the
 model to unload two minutes after its last request. An engine started by Sweep

@@ -123,6 +123,7 @@ class DockWindow(SweepWindow):
         self._scroll_to_latest = True
         self._preview_cache = {}
         self._response_previews = {}
+        self._screen_capture_pending = None
         super().__init__(root)
         self.setWindowTitle("Sweep")
         self.setStyleSheet(DOCK_STYLE)
@@ -248,12 +249,17 @@ class DockWindow(SweepWindow):
         attach = QPushButton("＋ Attach")
         attach.clicked.connect(self.choose_file)
         row.addWidget(attach)
+        screen = QPushButton("Read screen")
+        screen.setToolTip("Read visible text on your primary display once, with your permission")
+        screen.clicked.connect(self.prepare_screen_request)
+        row.addWidget(screen)
         self.clear_attachment_button = QPushButton("Clear attachment")
         self.clear_attachment_button.clicked.connect(self.clear_attachment)
         self.clear_attachment_button.hide()
         row.addWidget(self.clear_attachment_button)
         self.status = label("Local processing", "muted")
-        row.addWidget(self.status, 1)
+        self.status.hide()  # Progress is already shown in each task card.
+        row.addStretch(1)
         self.cancel_button = QPushButton("Stop")
         self.cancel_button.setEnabled(False)
         self.cancel_button.clicked.connect(self.cancel_task)
@@ -294,6 +300,10 @@ class DockWindow(SweepWindow):
             cursor = self.prompt.textCursor()
             cursor.movePosition(cursor.MoveOperation.End)
             self.prompt.setTextCursor(cursor)
+
+    def prepare_screen_request(self):
+        self.clear_attachment()
+        self.use_example("Read my screen")
 
     def expand(self, focus=True):
         if not self.expanded:
@@ -533,6 +543,15 @@ class DockWindow(SweepWindow):
                                  thread_id=self._task_threads.get(task["id"], ""))
 
     def approve_task(self, capability, text, selected_file=False, *, thread_id=None):
+        if capability == "screen.read":
+            dialog = QMessageBox(QMessageBox.Icon.Question, "Read your screen?",
+                "Sweep will briefly hide and capture your primary display once. Visible text is recognized locally "
+                "and saved in this chat, including any private text on screen. The screenshot is discarded.\n\n"
+                "Move the content you want read to your primary display before continuing.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
+            dialog.setTextFormat(Qt.TextFormat.PlainText)
+            dialog.setDefaultButton(QMessageBox.StandardButton.No)
+            return dialog.exec() == QMessageBox.StandardButton.Yes
         if capability in {"images.inspect", "files.inspect", "documents.inspect", "data.inspect", "media.inspect", "audio.transcribe"}:
             return True  # Picker/drop grants are independently checked in the worker.
         if capability == "speech.setup":
@@ -593,6 +612,9 @@ class DockWindow(SweepWindow):
             self.refresh_chat()
 
     def accept_event(self, event):
+        if event.get("kind") == "screen.captured":
+            self.restore_after_capture()
+            return
         if event.get("kind") == "response.preview":
             if not self.task or self.task["state"] != "running" or not isinstance(event.get("text"), str):
                 return
@@ -610,14 +632,24 @@ class DockWindow(SweepWindow):
         self.refresh_chat()
 
     def launch_task(self):
+        if self.task["capability"] == "screen.read":
+            self._screen_capture_pending = self.task["id"]
+            self.hide()
         super().launch_task()
         self.run_button.setText("Send ↑")
         self.update_owl_state()
 
     def worker_finished(self, code, status):
+        self.restore_after_capture()
         super().worker_finished(code, status)
         self.run_button.setText("Send ↑")
         self.refresh_chat()
+
+    def restore_after_capture(self):
+        if self._screen_capture_pending:
+            self._screen_capture_pending = None
+            if not self.closing:
+                self.reveal()
 
     def update_owl_state(self):
         if not self.task:
@@ -748,7 +780,7 @@ class DockWindow(SweepWindow):
                   "media.inspect": "Sampling your media", "media.analyze": "Describing sampled frames",
                   "audio.transcribe": "Recognizing speech locally", "speech.setup": "Setting up local speech",
                   "computer.command": "Taking care of your request", "providers.check": "Checking local processing",
-                  "providers.start": "Starting local processing"}
+                  "providers.start": "Starting local processing", "screen.read": "Reading your screen"}
         for index, turn in enumerate(turns):
             value = {"role": turn["role"], "text": str(turn.get("text", "")),
                      "attachments": turn.get("attachments", [])}
