@@ -1,6 +1,6 @@
 # Sweep continuation state
 
-Updated: 2026-11-25. Read this file when the user says **continue**. Keep one
+Updated: 2026-11-28. Read this file when the user says **continue**. Keep one
 current backlog here; update evidence and the next action after each milestone.
 The full original requirement mapping remains in `PRODUCT_REQUIREMENTS.md`.
 
@@ -19,11 +19,15 @@ registered tool, UI control, or passing mock test with an operational feature.
 
 ## Latest direction and order
 
-Nov25 user priority: make the installed companion usable for chat, supported
-device tasks and reading the screen this session. This temporarily precedes the
-enterprise foundation sequence. Preserve the workspace draft without migrating
-personal data. Acceptance requires real native chat/context, app launch, a file
-task, screen OCR and a saved-screen follow-up, then packaged/installed verification.
+Nov26 user priority: companion quality first. Stop interpreting casual chat as
+commands, improve the native UI, embed useful compact parts of the existing
+mesh, and reduce CPU/GPU use without a 40+ GB download. This precedes the enterprise
+foundation sequence. Preserve the workspace draft and unrelated model/training
+work. Acceptance includes real native slang/chat/context, bounded mesh reasoning,
+app launch, a file task, screen OCR and saved-screen follow-up, then packaged and
+installed verification. Ordinary web browsing and original-source tracing were
+both requested; explicit Tor access and source tracing remain pending after this
+core companion milestone. Do not imply Tor routing is available yet.
 
 Before **every new Sweep task**, read both full versioned directives:
 [enterprise master](directives/SWEEP_ENTERPRISE_MASTER.md) and
@@ -64,6 +68,35 @@ missing. Never send confidential business files to untrusted peers. Do not expan
 hosting ahead of the first coherent TradeOps workflow.
 
 ## Current verified release
+
+Nov28 source candidate (release verification in progress): ordinary chat uses
+plain streaming and no per-thread local consent/task-result chrome. A desktop
+intent guard separates prose/idioms from supported actions, preserves URL payloads
+and keeps private file/note lookups local. Worker approval and execution now use
+the same normalized command. Existing app/file/web/screen permissions remain.
+The compact mesh adds strict formal-chain reasoning without frameworks or weights;
+existing classifier checkpoints and unevaluated nano/small generators are not a
+validated replacement for the installed chat model. The source closure is nine
+files / 73,392 bytes. Quiet/Balanced chat budgets and in-place UI updates reduce
+avoidable processing. No new package/model download was performed.
+
+Source regression: 922 passed, six Windows symlink skips (92.88 s), followed by
+additional routing/privacy/approval fixes: 250 passed, one skip (27.25 s). Ruff
+and scoped whitespace checks pass. Real source native flows passed slang/chat,
+project recall, mesh reasoning, calculation, observed Character Map launch,
+CSV deduplication -> JSON, screen OCR and saved-screen follow-up. Source samples:
+greeting 0.39 s, cold chat 28.24 s (first text 25.11 s), warm example 8.89 s
+(first text 2.41 s), mesh 0.71 s, app launch 1.66 s and screen OCR 1.61 s.
+Native screenshots at 720px and 380px were inspected. Mesh tests
+include 18,396 deductions checked against independent truth-table/order oracles.
+[Whole-engine resource samples](evaluations/companion-resources-2026-11-26.json):
+two warm synthetic replies per profile; previous automatic 44.2–44.3% machine CPU,
+Balanced 29.9–32.9%, Quiet 14.7–15.2%. Quiet completion took 3.38–4.17 s versus
+2.18 s automatic and 2.20–2.70 s Balanced. Observed summed RSS stayed around
+2.1 GiB; no meaningful RAM or GPU savings established. These are small cached
+samples, not p95, energy or quality benchmarks. Computer Use still reports a
+missing native pipe after retry/reset on Nov28; use native Qt checks and do not
+claim independent OS-input automation.
 
 Installed code release: **`8ab3f4408`**, committed and pushed. Installer:
 `dist/Sweep-Setup.exe`, **126,047,992 bytes**. Normal upgrade on Nov25 preserved
@@ -254,8 +287,12 @@ host's native client and the enterprise products are not completed by this relea
 
 ## Next action and release gate
 
-The Nov25 installed companion gate has passed for the supported flows above.
-Next: resume explicit local workspace ownership/version storage and correction
+Finish the Nov28 companion candidate: final native source flow, focused checks,
+commit/push, package and verify the installed upgrade with personal-data hashes.
+Then continue original-source tracing and explicit Tor access (both requested,
+neither completed), and evaluate compact learned chat models against actual
+conversation quality before adopting any checkpoints. Preserve regular public
+browsing and native action permissions. Return to local workspace/version storage and correction
 history through the existing task boundary, with backup/rollback and cross-workspace
 tests before migrating any personal data. Use the new source snapshot contract;
 then implement deterministic invoice/packing-list fields and reconciliation,

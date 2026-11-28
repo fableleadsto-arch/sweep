@@ -66,7 +66,7 @@ class Owl(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.state = "idle"
+        self.state = None
         self.setFixedSize(84, 84)
         self.set_state("idle")
 
@@ -79,7 +79,10 @@ class Owl(QWidget):
         self.set_state("working" if value else "idle")
 
     def set_state(self, state):
-        self.state = state if state in self.STATES else "idle"
+        state = state if state in self.STATES else "idle"
+        if self.state == state:
+            return
+        self.state = state
         description = "Sweep · " + self.STATES[self.state]
         self.setAccessibleName(description)
         self.setToolTip(description)

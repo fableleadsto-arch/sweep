@@ -38,8 +38,10 @@ upgrading or uninstalling.
   count sit above the chat; **Stop** appears while a task is active. Secondary
   result actions are available under **More**.
   Chat, desktop actions, search, scraping and research share this one input.
-  Ordinary conversation runs locally and streams its answer into the dock. Sweep can propose a
-  supported action through **Review and run proposed task**.
+  Ordinary conversation runs locally and streams as a plain chat bubble. It does
+  not create an action proposal or display task completion/export controls.
+  Casual requests such as `yo can u open yt in brave pls` are understood; remarks
+  such as `today was rough` and requests such as `show me an example` stay in chat.
 - Try `what is 15% of 200`, `open YouTube in Brave`, `open calculator`,
   `search Python documentation`, `research Python packaging`, or
   `scrape https://example.com`. Named sites resolve to actual URLs; if a requested
@@ -72,7 +74,7 @@ upgrading or uninstalling.
   can wait; one worker runs at a time. Waiting actions receive permission checks
   when dispatched. Use the inline **Remove from queue** link or **Stop** for the
   active worker. Completed actions cannot be undone, and launched apps may remain open.
-- Results include source links and inline **Export result** and **Try again** actions.
+- Tool results include source links and inline **Export result** and **Try again** actions.
   Research also saves a readable Markdown report and a JSON evidence graph, with
   actual excerpts, source URLs, recorded timestamps and unresolved work. Open their
   file cards to preview or save a copy. These records do not verify every source claim.
@@ -95,16 +97,28 @@ Simple greetings, thanks and `what can you do?` use immediate local replies,
 without starting a model. Substantive conversation uses the downloaded model.
 Streaming keeps completed cards and text selections intact while the current
 answer changes. Local chat uses a bounded 4,096-token context and allows the
-model to unload two minutes after its last request. An engine started by Sweep
+model to unload two minutes after its last request in Balanced mode. An engine started by Sweep
 loads at most one model and one inference context at a time; settings of an
-already-running external engine are left unchanged.
+already-running external engine are left unchanged. Per-request budgets still
+apply: **Balanced** uses at most four CPU threads; **Quiet** uses at most two,
+disables GPU offload for text replies and releases the model after 30 seconds.
+Quiet can reply more slowly and reload more often. These are inference options,
+not OS-wide CPU/memory caps. Image analysis has separate limits.
+
+A compact slice of Sweep's existing mesh is included in the application. It
+answers completely parsed formal implication, set-inclusion and comparison chains
+without a model download. For example: `All cats are mammals. All mammals are
+animals. Are all cats animals?` General prose still uses the installed language
+model. This embedded reasoner is deterministic; it is not a compressed copy of
+the trained classifiers or a replacement generative neural network. Classifier
+checkpoints, training frameworks and datasets are excluded from the installer.
 
 ## Local processing and permissions
 
 Computer-changing commands require an explicit task approval. Web tasks ask
 before sending queries externally; Settings can remember permission for public
-web tasks. Local conversation asks to use the message and recent thread context,
-with an option to remember approval for that conversation. Image analysis asks
+web tasks. Sending a local chat message authorizes use of that message and recent
+thread context on this device; no additional per-chat dialog is needed. Image analysis asks
 for each request. File selection grants access to that file for inspection;
 data transformations create separate task files after approval. These are
 application-level permissions, not an OS sandbox.

@@ -1,7 +1,6 @@
 """A compact native chat dock; the existing worker queue stays behind the chat."""
 from __future__ import annotations
 
-import json
 import shutil
 from pathlib import Path
 
@@ -49,6 +48,7 @@ QFrame#dock { background: #fafbf7; border: 1px solid #becdc2; border-radius: 16p
 QFrame#composer { background: #ffffff; border: 1px solid #c9d6ce; border-radius: 14px; }
 QFrame#recoverySource { background: #f0f4ef; border: 1px solid #dbe5dc; border-radius: 10px; }
 QScrollArea#recoveryScroll, QWidget#recoveryBody { background: transparent; border: none; }
+QScrollArea#settingsScroll, QWidget#settingsBody { background: transparent; border: none; }
 QLabel#conversationTitle { font-size: 15px; font-weight: 600; color: #24483b; }
 QLabel#conversationDetail { font-size: 11px; color: #708177; }
 QPlainTextEdit#messageInput { border: none; background: transparent; padding: 6px; }
@@ -103,6 +103,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: none;
 
 class ChatInput(QPlainTextEdit):
     submitted = Signal()
+    resized = Signal()
 
     def keyPressEvent(self, event):
         if event.key() in {Qt.Key.Key_Return, Qt.Key.Key_Enter} and not event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
@@ -110,6 +111,10 @@ class ChatInput(QPlainTextEdit):
             event.accept()
         else:
             super().keyPressEvent(event)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.resized.emit()
 
 
 class DockWindow(SweepWindow):
@@ -237,7 +242,14 @@ class DockWindow(SweepWindow):
         composer_layout.addWidget(self.attachment_preview)
         self.attachment_label = label("", "muted")
         self.attachment_label.hide()
-        composer_layout.addWidget(self.attachment_label)
+        attachment_row = QHBoxLayout()
+        attachment_row.addWidget(self.attachment_label, 1)
+        self.clear_attachment_button = QPushButton("Remove")
+        self.clear_attachment_button.setAccessibleName("Remove attached files")
+        self.clear_attachment_button.clicked.connect(self.clear_attachment)
+        self.clear_attachment_button.hide()
+        attachment_row.addWidget(self.clear_attachment_button)
+        composer_layout.addLayout(attachment_row)
         self.prompt = ChatInput()
         self.prompt.setAccessibleName("Message Sweep")
         self.prompt.setPlaceholderText("Ask anything, or tell Sweep what to do…")
@@ -253,10 +265,6 @@ class DockWindow(SweepWindow):
         screen.setToolTip("Read visible text on your primary display once, with your permission")
         screen.clicked.connect(self.prepare_screen_request)
         row.addWidget(screen)
-        self.clear_attachment_button = QPushButton("Clear attachment")
-        self.clear_attachment_button.clicked.connect(self.clear_attachment)
-        self.clear_attachment_button.hide()
-        row.addWidget(self.clear_attachment_button)
         self.status = label("Local processing", "muted")
         self.status.hide()  # Progress is already shown in each task card.
         row.addStretch(1)
@@ -268,6 +276,7 @@ class DockWindow(SweepWindow):
         self.run_button.setObjectName("primary")
         self.run_button.clicked.connect(self.submit)
         self.prompt.textChanged.connect(self.update_composer)
+        self.prompt.resized.connect(self.update_composer)
         self.run_button.setEnabled(False)
         row.addWidget(self.run_button)
         composer_layout.addLayout(row)
@@ -282,14 +291,20 @@ class DockWindow(SweepWindow):
         self.body_effect = QGraphicsOpacityEffect(self.body)
         self.body.setGraphicsEffect(self.body_effect)
         self.body_effect.setOpacity(1)
+        self.body_effect.setEnabled(False)
         self.reveal_animation = QPropertyAnimation(self.body_effect, b"opacity", self)
         self.reveal_animation.setDuration(160)
         self.reveal_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self.reveal_animation.finished.connect(lambda: self.body_effect.setEnabled(False))
 
     def update_composer(self):
         self.run_button.setEnabled(bool(self.prompt.toPlainText().strip() or self.attachments))
-        lines = min(5, max(1, self.prompt.document().blockCount()))
-        self.prompt.setFixedHeight(max(56, 24 + lines * self.prompt.fontMetrics().lineSpacing()))
+        # QPlainTextDocumentLayout reports visual lines, including wrapped prose.
+        # A single long paragraph should grow just like explicit newlines do.
+        lines = min(5, max(1, int(self.prompt.document().documentLayout().documentSize().height())))
+        height = max(56, 24 + lines * self.prompt.fontMetrics().lineSpacing())
+        if self.prompt.height() != height:
+            self.prompt.setFixedHeight(height)
 
     def use_example(self, request):
         if request == "__attach__":
@@ -318,6 +333,7 @@ class DockWindow(SweepWindow):
             self.place_at_top(screen)
             if not self.settings.value("reduce_motion", False, type=bool):
                 self.reveal_animation.stop()
+                self.body_effect.setEnabled(True)
                 self.reveal_animation.setStartValue(0)
                 self.reveal_animation.setEndValue(1)
                 self.reveal_animation.start()
@@ -339,6 +355,7 @@ class DockWindow(SweepWindow):
         self.expanded = False
         self.reveal_animation.stop()
         self.body_effect.setOpacity(1)
+        self.body_effect.setEnabled(False)
         self.body.hide()
         self.setMinimumHeight(48)
         self.setMaximumHeight(48)
@@ -527,7 +544,9 @@ class DockWindow(SweepWindow):
                            source_output=source_output):
             self.chat_store.append(self.thread_id, {"role": "assistant", "task_id": self.last_enqueued_id})
         else:
-            self.chat_store.append(self.thread_id, {"role": "assistant", "text": "Task cancelled or not started. No new action was performed."})
+            message = ("I couldn’t start a reply. You can send your message again." if capability in {"conversation", "context.answer"}
+                       else "That action wasn’t started. You can try again when you’re ready.")
+            self.chat_store.append(self.thread_id, {"role": "assistant", "text": message})
         self.refresh_chat()
 
     def start_task(self, *args, **kwargs):
@@ -572,24 +591,15 @@ class DockWindow(SweepWindow):
             dialog.setDefaultButton(QMessageBox.StandardButton.No)
             return dialog.exec() == QMessageBox.StandardButton.Yes
         if capability in {"conversation", "context.answer"}:
-            config = load_config(self.root)
-            signature = json.dumps({key: config[key] for key in ("provider", "model", "ollama_base_url")}, sort_keys=True)
-            origin = self.thread_id if thread_id is None else thread_id
-            key = "chat_permission/" + str(origin)
-            if origin and self.settings.value(key, "") == signature:
-                return True
-            dialog = QMessageBox(QMessageBox.Icon.Question, "Allow conversation?",
-                f"Use local processing for this conversation?\n\n{text[:3000]}\n\nRecent messages and file excerpts discussed here are processed on this device.",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
-            dialog.setTextFormat(Qt.TextFormat.PlainText)
-            remember = QCheckBox("Remember for this conversation")
-            remember.setChecked(True)
-            dialog.setCheckBox(remember)
-            dialog.setDefaultButton(QMessageBox.StandardButton.No)
-            approved = dialog.exec() == QMessageBox.StandardButton.Yes
-            if approved and origin and remember.isChecked():
-                self.settings.setValue(key, signature)
-            return approved
+            # Sending a message already requests a local reply. Configuration
+            # validation still rejects non-loopback inference; file/source
+            # access and every real action retain their own permission checks.
+            try:
+                load_config(self.root)
+            except (OSError, RuntimeError, ValueError) as exc:
+                QMessageBox.warning(self, "Local processing settings", str(exc))
+                return False
+            return True
         if capability == "images.analyze":
             detail = f"Analyze the attached image on this device?\n\n{text}\n\nThe image stays on this computer. Analysis may take a moment."
             dialog = QMessageBox(QMessageBox.Icon.Question, "Allow image analysis?", detail,
@@ -672,6 +682,8 @@ class DockWindow(SweepWindow):
                 state = "working"
         else:
             state = {"completed": "success", "failed": "attention", "interrupted": "attention"}.get(state, "idle")
+            if self.task["capability"] in {"conversation", "context.answer"} and state == "success":
+                state = "idle"
         self.owl.set_state(state)
 
     def _task_preview(self, task):
@@ -692,9 +704,11 @@ class DockWindow(SweepWindow):
 
     def _result_message(self, task, result):
         task_id = task["id"]
+        conversation = task["capability"] in {"conversation", "context.answer"}
         value = {"role": "assistant", "state": "completed", "state_label": "Complete",
                  "text": str(result.get("message") or result.get("text") or "Done.")[:30000]}
-        if task["capability"] == "conversation":
+        if conversation:
+            value["kind"] = "conversation"
             value.pop("state_label")
         if result.get("text") and result.get("message") and result["text"] != result["message"]:
             extracted = str(result["text"])
@@ -735,14 +749,15 @@ class DockWindow(SweepWindow):
                     value["preview"] = self._task_preview({"granted_paths": [str(path)]})
             except (OSError, ValueError):
                 pass
-        if result.get("text") and (result.get("summary") or len(str(result["text"])) > 1200):
+        if not conversation and result.get("text") and (result.get("summary") or len(str(result["text"])) > 1200):
             value["actions"].append(("Read extracted text", f"sweep:text/{task_id}", False))
         if result.get("proposal"):
             value["actions"].append(("Review proposed task", f"sweep:propose/{task_id}", True))
         if result.get("context_sources"):
             value["actions"].append(("Sources used", f"sweep:context/{task_id}", False))
-        value["actions"].extend([("Export result", f"sweep:export/{task_id}", False),
-                                  ("Try again", f"sweep:retry/{task_id}", False)])
+        if not conversation:
+            value["actions"].extend([("Export result", f"sweep:export/{task_id}", False),
+                                      ("Try again", f"sweep:retry/{task_id}", False)])
         artifacts = result.get("artifacts", [])
         if isinstance(artifacts, list):
             indexed = [(index, item) for index, item in enumerate(artifacts[:10]) if isinstance(item, dict)]
@@ -764,7 +779,8 @@ class DockWindow(SweepWindow):
         self.conversation_title.setText(thread.get("title") if turns else "New conversation")
         waiting = len(self.pending)
         working = self.process is not None
-        detail = ("Working on your request" if working else "On this device")
+        replying = bool(working and self.task and self.task["capability"] in {"conversation", "context.answer"})
+        detail = ("Replying…" if replying else "Working on your request") if working else "On this device"
         if waiting:
             detail += f" · {waiting} waiting"
         elif not working:
@@ -793,23 +809,33 @@ class DockWindow(SweepWindow):
                         task = None
                         raise ValueError("The task belongs to a different conversation.")
                     state = task["state"]
+                    conversation = task["capability"] in {"conversation", "context.answer"}
                     if state == "completed":
                         result = self.task_store.result(task_id)
                         value = self._result_message(task, result)
                     else:
-                        value.update(state=state, state_label=state.capitalize(), task_title=titles.get(task["capability"], "Working on your request"))
-                        if state == "queued":
-                            value["text"] = ("Waiting to use the earlier results in this conversation." if task.get("source_tasks") else
-                                             "Ready to begin when the current task finishes.")
-                            value["actions"] = [("Remove from queue", f"sweep:cancel/{task_id}", False)]
-                        elif state == "running":
-                            value["text"] = self._response_previews.get(task_id) or (self.activity_summary.text() if self.task and self.task["id"] == task_id else "Working on your request…")
+                        value.update(state=state)
+                        if conversation:
+                            value["kind"] = "conversation"
                         else:
-                            value["text"] = task.get("error") or "The task stopped before finishing. You can try again."
+                            value.update(state_label=state.capitalize(), task_title=titles.get(task["capability"], "Working on your request"))
+                        if state == "queued":
+                            value["text"] = ("I’ll reply when the current request finishes." if conversation else
+                                             "Waiting to use the earlier results in this conversation." if task.get("source_tasks") else
+                                             "Ready to begin when the current task finishes.")
+                            value["actions"] = [("Cancel reply" if conversation else "Remove from queue", f"sweep:cancel/{task_id}", False)]
+                        elif state == "running":
+                            value["text"] = self._response_previews.get(task_id) or (
+                                "Thinking…" if conversation else self.activity_summary.text() if self.task and self.task["id"] == task_id else "Working on your request…")
+                        else:
+                            value["text"] = ("Reply stopped." if conversation and state == "cancelled" else task.get("error") or
+                                             ("My reply was interrupted. You can try again." if conversation else "The task stopped before finishing. You can try again."))
                             value["actions"] = [("Review recovery" if task.get("source_tasks") else "Try again", f"sweep:retry/{task_id}", True)]
                 except (OSError, ValueError, KeyError):
-                    value.update(state="failed", state_label="Result unavailable",
-                                 text="The saved result is missing or damaged. You can retry the task; its original record is preserved.")
+                    is_reply = bool(task and task["capability"] in {"conversation", "context.answer"})
+                    value.update(state="failed", state_label="Reply unavailable" if is_reply else "Result unavailable",
+                                 text="The saved reply is missing or damaged. You can ask me to reply again." if is_reply else
+                                 "The saved result is missing or damaged. You can retry the task; its original record is preserved.")
                     if task and task["state"] in {"completed", "failed", "cancelled", "interrupted"}:
                         value["actions"] = [("Review recovery" if task.get("source_tasks") else "Try again", f"sweep:retry/{task_id}", True)]
             elif value["attachments"] and index + 1 < len(turns) and turns[index + 1].get("task_id"):
@@ -1140,12 +1166,25 @@ class DockWindow(SweepWindow):
         self.reveal()
         dialog = QDialog(self)
         dialog.setWindowTitle("Sweep settings")
-        dialog.resize(560, 570)
-        layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(26, 24, 26, 22)
+        available = self.screen().availableGeometry()
+        dialog.resize(min(560, available.width() - 40), min(730, available.height() - 48))
+        dialog_layout = QVBoxLayout(dialog)
+        dialog_layout.setContentsMargins(12, 12, 12, 12)
+        settings_scroll = QScrollArea()
+        settings_scroll.setObjectName("settingsScroll")
+        settings_scroll.setWidgetResizable(True)
+        settings_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        settings_body = QWidget()
+        settings_body.setObjectName("settingsBody")
+        settings_scroll.setWidget(settings_body)
+        dialog_layout.addWidget(settings_scroll, 1)
+        layout = QVBoxLayout(settings_body)
+        layout.setContentsMargins(14, 12, 14, 10)
         layout.setSpacing(15)
         layout.addWidget(label("Make yourself at home", "settingsTitle"))
-        layout.addWidget(label("Local intelligence. Your files, your conversations, your control.", "muted"))
+        introduction = label("Local intelligence. Your files, your conversations, your control.", "muted")
+        introduction.setWordWrap(True)
+        layout.addWidget(introduction)
         try:
             config = load_config(self.root)
         except (OSError, ValueError, RuntimeError) as exc:
@@ -1161,6 +1200,19 @@ class DockWindow(SweepWindow):
         local_actions.addWidget(check)
         local_actions.addWidget(start)
         layout.addLayout(local_actions)
+        resource_label = label("Chat resource use", "settingsSection")
+        layout.addWidget(resource_label)
+        resource_profile = QComboBox()
+        resource_profile.setObjectName("resourceProfile")
+        resource_profile.setAccessibleName("Resource use for local replies")
+        resource_profile.addItem("Balanced", "balanced")
+        resource_profile.addItem("Quiet — less CPU and GPU use", "efficient")
+        resource_profile.setCurrentIndex(max(0, resource_profile.findData(config.get("resource_profile", "balanced"))))
+        resource_label.setBuddy(resource_profile)
+        layout.addWidget(resource_profile)
+        resource_hint = label("Quiet limits local text replies to two CPU threads, avoids the GPU and releases the model sooner. Replies can take longer. Image analysis uses its own limits.", "muted")
+        resource_hint.setWordWrap(True)
+        layout.addWidget(resource_hint)
         from .media_setup import model_ready
         speech_ready = model_ready(self.root)
         speech_actions = QHBoxLayout()
@@ -1209,18 +1261,17 @@ class DockWindow(SweepWindow):
         def toggle_advanced(checked):
             advanced.setVisible(checked)
             advanced_button.setText(("⌄" if checked else "›") + "  Advanced local settings")
-            dialog.adjustSize()
 
         advanced_button.toggled.connect(toggle_advanced)
         layout.addStretch(1)
         buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel)
-        layout.addWidget(buttons)
+        dialog_layout.addWidget(buttons)
         buttons.rejected.connect(dialog.reject)
 
         def save():
             try:
                 values = {key: field.text().strip() for key, field in fields.items()}
-                values.update(provider="ollama", vision_provider="ollama")
+                values.update(provider="ollama", vision_provider="ollama", resource_profile=resource_profile.currentData())
                 save_config(self.root, values)
                 for saved_key in self.settings.allKeys():
                     if saved_key.startswith("chat_permission/"):

@@ -29,7 +29,7 @@ def main():
     root = workspace / "desktop"
     root.mkdir()
     (root / "providers.json").write_text(json.dumps({"schema_version": 1, **{
-        key: config[key] for key in ("provider", "model", "vision_provider", "vision_model", "ollama_base_url")}}), encoding="utf-8")
+        key: config[key] for key in ("provider", "model", "vision_provider", "vision_model", "ollama_base_url", "resource_profile")}}), encoding="utf-8")
     os.environ["SWEEP_DESKTOP_DIR"] = str(root)
     os.environ["SWEEP_CONTROLLER_DIR"] = str(workspace / "controller")
     from PySide6.QtCore import Qt
@@ -88,7 +88,17 @@ def main():
 
     try:
         if not args.screen_only:
-            run("Hi Sweep", lambda r: "I'm here" in r["message"])
+            from sweep.desktop.conversation import quick_reply
+            run("yo Sweep", lambda r: r["message"] == quick_reply("yo Sweep"))
+            run("today was rough ngl, can u give me one short suggestion?",
+                lambda r: bool(r.get("message")) and not r.get("proposal"))
+            assert observations[-1]["capability"] == "conversation"
+            run("show me an example of a kind message to a friend who had a bad day",
+                lambda r: bool(r.get("message")) and not r.get("proposal"))
+            assert observations[-1]["capability"] == "conversation"
+            run("All cats are mammals. All mammals are animals. Are all cats animals?",
+                lambda r: r.get("reasoning", {}).get("conclusion") == "supported")
+            assert observations[-1]["capability"] == "conversation"
             run("My project is called Lumen. Suggest one short next step for organizing its notes.",
                 lambda r: bool(r.get("message")) and not r.get("proposal"))
             run("What is my project called?", lambda r: "lumen" in r["message"].casefold())

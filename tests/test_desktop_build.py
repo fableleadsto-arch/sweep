@@ -64,6 +64,10 @@ def test_build_info_records_only_explicit_metadata(tmp_path, monkeypatch):
     assert info["dependencies"]["PySide6-Essentials"] == "1.2.3"
     assert info["dependencies"]["httpx"] is None
     assert set(info["dependencies"]) == set(build_desktop.RECORDED_DISTRIBUTIONS)
+    assert info["embedded_reasoning"] == {
+        "implementation": "sweep_neural_mesh.companion",
+        "method": "deterministic_formal_logic", "model_weights_bundled": False,
+    }
     assert datetime.fromisoformat(info["built_at_utc"]).utcoffset().total_seconds() == 0
     assert info["python"]["version"]
     assert set(info["platform"]) == {"system", "machine"}
@@ -149,6 +153,18 @@ def test_build_writes_metadata_before_packaging_and_checksums_only_current_outpu
     assert build_desktop.main(["--app-only"] if app_only else []) == 0
     assert len(calls) == (1 if app_only else 2)
     assert "--additional-hooks-dir" in calls[0]
+    excluded = {
+        calls[0][index + 1] for index, value in enumerate(calls[0])
+        if value == "--exclude-module"
+    }
+    included = {
+        calls[0][index + 1] for index, value in enumerate(calls[0])
+        if value == "--hidden-import"
+    }
+    assert set(build_desktop.COMPACT_MESH_MODULES) <= included
+    assert set(build_desktop.EXCLUDED_MESH_MODULES) <= excluded
+    assert {"torch", "transformers", "numpy"} <= excluded
+    assert "sweep_neural_mesh" not in excluded
     checksums = (root / "dist/SHA256SUMS.txt").read_text()
     assert "Sweep/Sweep.exe" in checksums
     assert "Sweep/build-info.json" in checksums

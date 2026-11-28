@@ -2,24 +2,35 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import hashlib
-from importlib import metadata
 import json
-from pathlib import Path
 import platform
 import re
 import shutil
 import subprocess
 import sys
 import tomllib
-from zipfile import ZipFile, ZIP_DEFLATED
+from datetime import UTC, datetime
+from importlib import metadata
+from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORDED_DISTRIBUTIONS = (
     "PySide6-Essentials", "shiboken6", "pyinstaller", "httpx", "httpcore", "h11",
     "certifi", "anyio", "pydantic", "pydantic-settings", "python-dotenv",
     "beautifulsoup4", "trafilatura", "lxml", "courlan", "tld", "justext", "pillow", "pypdf", "av", "vosk", "cffi",
+)
+COMPACT_MESH_MODULES = (
+    "sweep_neural_mesh.companion", "sweep_neural_mesh.core.engine",
+    "sweep_neural_mesh.core.graph", "sweep_neural_mesh.core.node",
+    "sweep_neural_mesh.core.packet", "sweep_neural_mesh.neurons.logical_inference",
+)
+EXCLUDED_MESH_MODULES = (
+    "sweep_neural_mesh.mesh", "sweep_neural_mesh.training", "sweep_neural_mesh.chat",
+    "sweep_neural_mesh.adapters", "sweep_neural_mesh.face_search",
+    "sweep_neural_mesh.neurons.cortex", "sweep_neural_mesh.neurons.neural_engine",
+    "sweep_neural_mesh.neurons.general_intelligence",
 )
 
 
@@ -57,12 +68,16 @@ def write_build_info(root: Path, destination: Path) -> Path:
             dependencies[name] = None
     info = {
         "schema_version": 1,
-        "built_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        "built_at_utc": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "source": source_state(root),
         "sweep_version": version,
         "python": {"version": platform.python_version(), "implementation": platform.python_implementation()},
         "platform": {"system": platform.system(), "machine": platform.machine()},
         "dependencies": dependencies,
+        "embedded_reasoning": {
+            "implementation": "sweep_neural_mesh.companion",
+            "method": "deterministic_formal_logic", "model_weights_bundled": False,
+        },
     }
     path = destination / "build-info.json"
     temporary = path.with_suffix(".json.tmp")
@@ -103,6 +118,7 @@ def main(argv=None):
     build = ROOT / "build" / "desktop"
     build.mkdir(parents=True, exist_ok=True)
     from PySide6.QtWidgets import QApplication
+
     from sweep.desktop.owl import owl_icon
     _application = QApplication.instance() or QApplication([])  # retain Qt ownership
     owl_icon().pixmap(256, 256).save(str(build / "sweep.ico"), "ICO")
@@ -114,9 +130,16 @@ def main(argv=None):
                "--collect-data", "trafilatura", "--collect-data", "courlan", "--collect-data", "tld",
                "--collect-data", "justext", "--collect-all", "av", "--collect-all", "vosk"]
     for module in ("torch", "tensorflow", "transformers", "sentence_transformers", "companion.vendor",
-                   "sweep_neural_mesh", "sweep_cognitive", "pandas", "scipy", "sklearn",
+                   "sweep_cognitive", "pandas", "scipy", "sklearn",
                    "numpy", "matplotlib", "IPython", "pytest", "PySide6.QtQml", "PySide6.QtQuick"):
         command.extend(["--exclude-module", module])
+    # Only the small existing graph core and bounded formal reasoner are embedded.
+    # Classifier checkpoints, training frameworks and the full research cortex
+    # remain optional; no model downloader is added to the desktop startup path.
+    for module in EXCLUDED_MESH_MODULES:
+        command.extend(["--exclude-module", module])
+    for module in COMPACT_MESH_MODULES:
+        command.extend(["--hidden-import", module])
     command.append(str(ROOT / "scripts" / "desktop_entry.py"))
     subprocess.run(command, cwd=ROOT, check=True)
     destination = ROOT / "dist" / "Sweep"

@@ -56,6 +56,28 @@ def test_environment_and_dotenv_cloud_credentials_are_ignored(tmp_path, monkeypa
     assert not any(providers.load_config(tmp_path)["key_present"].values())
 
 
+def test_legacy_resource_default_is_read_only_and_profile_survives_other_saves(tmp_path):
+    path = tmp_path / providers.CONFIG_NAME
+    original = '{"schema_version": 1, "model": "downloaded:3b"}\n'
+    path.write_text(original)
+    assert providers.load_config(tmp_path)["resource_profile"] == "balanced"
+    assert path.read_text() == original
+    providers.save_config(tmp_path, {"resource_profile": "efficient"})
+    assert providers.load_config(tmp_path)["model"] == "downloaded:3b"
+    providers.save_config(tmp_path, {"vision_model": "images:2b"})
+    assert providers.load_config(tmp_path)["resource_profile"] == "efficient"
+
+
+@pytest.mark.parametrize("profile", [None, True, 1, "unlimited", "", [], {}])
+def test_invalid_resource_profile_does_not_replace_settings(tmp_path, profile):
+    providers.save_config(tmp_path, {"resource_profile": "efficient"})
+    path = tmp_path / providers.CONFIG_NAME
+    original = path.read_bytes()
+    with pytest.raises(ValueError, match="Balanced or Quiet"):
+        providers.save_config(tmp_path, {"resource_profile": profile})
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("config,keys", [
     ({"provider": "openai"}, None), ({"vision_provider": "gemini"}, None),
     ({}, {"anthropic": "test-secret"}),
@@ -160,7 +182,8 @@ def test_start_server_rejects_legacy_remote_address_before_launch(tmp_path, monk
         asyncio.run(providers.start_local_server(tmp_path))
 
 
-def test_start_server_uses_installed_executable_with_cloud_disabled(tmp_path, monkeypatch):
+@pytest.mark.parametrize("profile,residency", [("balanced", "2m"), ("efficient", "30s")])
+def test_start_server_uses_installed_executable_with_cloud_disabled(tmp_path, monkeypatch, profile, residency):
     local = tmp_path / "local"
     executable = local / "Programs/Ollama/ollama.exe"
     executable.parent.mkdir(parents=True)
@@ -168,7 +191,7 @@ def test_start_server_uses_installed_executable_with_cloud_disabled(tmp_path, mo
     monkeypatch.setenv("LOCALAPPDATA", str(local))
     monkeypatch.setenv("OLLAMA_NO_CLOUD", "0")
     monkeypatch.setattr(providers.shutil, "which", lambda name: None)
-    providers.save_config(tmp_path, {"ollama_base_url": "http://localhost:11434"})
+    providers.save_config(tmp_path, {"ollama_base_url": "http://localhost:11434", "resource_profile": profile})
     replies = iter([False, True])
 
     async def models(url):
@@ -186,7 +209,7 @@ def test_start_server_uses_installed_executable_with_cloud_disabled(tmp_path, mo
     assert calls[0][0] == [str(executable), "serve"]
     assert calls[0][1]["env"]["OLLAMA_HOST"] == "127.0.0.1:11434"
     assert calls[0][1]["env"]["OLLAMA_NO_CLOUD"] == "1"
-    assert calls[0][1]["env"]["OLLAMA_KEEP_ALIVE"] == "2m"
+    assert calls[0][1]["env"]["OLLAMA_KEEP_ALIVE"] == residency
     assert calls[0][1]["env"]["OLLAMA_MAX_LOADED_MODELS"] == "1"
     assert calls[0][1]["env"]["OLLAMA_NUM_PARALLEL"] == "1"
     assert calls[0][1]["stdout"] == providers.subprocess.DEVNULL
@@ -281,9 +304,11 @@ def test_local_chat_verifies_model_then_generates_without_cloud_fallback(tmp_pat
 
 
 @pytest.mark.parametrize("with_preview", [False, True])
+@pytest.mark.parametrize("profile", ["balanced", "efficient"])
 def test_local_chat_preserves_conversation_roles_and_finishes_with_or_without_preview(
-        tmp_path, local_http, with_preview):
-    providers.save_config(tmp_path, {"model": "installed:3b"})
+        tmp_path, local_http, with_preview, profile, monkeypatch):
+    monkeypatch.setattr(local_stream.os, "process_cpu_count", lambda: 12, raising=False)
+    providers.save_config(tmp_path, {"model": "installed:3b", "resource_profile": profile})
     paths, previews = [], []
     messages = [{"role": "user", "content": "My project is Lumen."},
                 {"role": "assistant", "content": "I can help with Lumen."},
@@ -300,6 +325,12 @@ def test_local_chat_preserves_conversation_roles_and_finishes_with_or_without_pr
         assert request.url.path == "/api/chat"
         payload = json.loads(request.content)
         assert payload["messages"] == [{"role": "system", "content": "You are Sweep."}, *messages]
+        assert payload["options"]["num_thread"] == (2 if profile == "efficient" else 4)
+        assert payload["options"]["num_batch"] == (128 if profile == "efficient" else 256)
+        assert payload["keep_alive"] == ("30s" if profile == "efficient" else "2m")
+        assert payload["options"].get("num_gpu") == (0 if profile == "efficient" else None)
+        assert payload["options"]["num_ctx"] == 4096
+        assert payload["options"]["num_predict"] == 600
         body = json.dumps({"message": {"content": '{"message":"Your project is Lumen."}'},
                            "done": True, "eval_count": 9}) + "\n"
         return httpx.Response(200, content=body)

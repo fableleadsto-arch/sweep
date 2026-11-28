@@ -89,6 +89,7 @@ Statuses refer to the specifically described scope, not an entire product.
 | Task approvals, cancellation, manual dependency recovery | Implemented and tested | Immutable retry requests and explicit source selection; not a general durable DAG. |
 | Shared-host text processing | Partially implemented | Auth/owner queues and two local test users; no native pairing or multi-machine TLS test. |
 | Neural-mesh / broad OSINT integration | Partially implemented | Source repairs and optional catalogs; 18 desktop routes are not 120 operational research tools. |
+| Compact companion reasoning and resource budgets | Implemented but unverified in installer | Nov28 source: bounded exact formal grammar through existing mesh, stdlib-only lazy imports; 18,396 deductions checked independently. Balanced/Quiet chat budgets measured on two warm samples each; inference RAM remains about 2.1 GiB. Packaging/installed verification pending. Trained generators lack companion-quality evaluation. |
 | Versioned document snapshots / exact references | Implemented and tested | Source-only `sweep.documents`; 186 focused checks including existing adapters. No native route or workspace authority yet. |
 | Enterprise workspace/tenant storage | Planned | Conversation scoping and host identities are not document tenancy. |
 | TradeOps structured fields, reconciliation, corrections | Planned | Needs source-linked contracts, decimal rules, matching and explicit uncertainty. |
@@ -171,7 +172,8 @@ supports the feature comparison, not a performance claim for Sweep.
 
 ## Next acceptance gate
 
-Follow [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md). Initial TradeOps,
+Follow the user's companion-first priority in [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md)
+and complete the Nov28 packaged/installed gate before the next enterprise slice. Initial TradeOps,
 threat and evaluation contracts are now
 recorded; source-only versioned snapshots and exact references reuse the local
 reader without migration. Next add workspace ownership and correction/version

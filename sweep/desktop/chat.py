@@ -12,9 +12,11 @@ from sweep.store import _save_json
 
 def understand(text: str, attachments: list[str] | None = None) -> tuple[str, str]:
     """Resolve explicit tasks without turning every question into a web search."""
-    from sweep.parser import parse, strip_politeness
+    from sweep.parser import parse
+
+    from .language import command_core, conversational_search, explicit_command, local_lookup
     original = text.strip()
-    core = strip_politeness(original)
+    core = command_core(original)
     if not original:
         raise ValueError("Write a message or attach a file first.")
     if attachments:
@@ -44,37 +46,47 @@ def understand(text: str, attachments: list[str] | None = None) -> tuple[str, st
     from .screen import screen_request
     if screen_request(core):
         return "screen.read", original
-    if re.search(r"\b(?:this|that|attached) (?:audio|video|clip|recording|voice memo)\b", core, re.I):
+    asks_about_attachment = re.match(
+        r"(?:inspect|analy[sz]e|describe|explain|summari[sz]e|read|transcribe|extract|clean|"
+        r"convert|compare|look at|check|scan|identify|where|what|how|who|find|is|does)\b", core, re.I)
+    if asks_about_attachment and re.search(r"\b(?:this|that|attached) (?:audio|video|clip|recording|voice memo)\b", core, re.I):
         return "chat.clarify", "Attach the recording or video here. I can inspect local media, sample video frames, or transcribe English speech with timestamps."
-    if re.search(r"\b(?:this|that|attached) (?:document|pdf|csv|dataset|spreadsheet|data file)\b", core, re.I):
+    if asks_about_attachment and re.search(r"\b(?:this|that|attached) (?:document|pdf|csv|dataset|spreadsheet|data file)\b", core, re.I):
         return "chat.clarify", "Attach the document or data file here. I can read PDF, DOCX and text, or inspect, clean, filter and convert supported data files locally."
-    if re.search(r"\b(?:this|that) (?:image|photo|picture|screenshot)\b", core, re.I):
+    if asks_about_attachment and re.search(r"\b(?:this|that) (?:image|photo|picture|screenshot)\b", core, re.I):
         return "chat.clarify", "Attach the image here so I can inspect it. You can then ask about its text, metadata, objects or location clues."
     if re.search(r"\b(?:this|that) (?:person(?:'s|s)?|man|woman|face)\b", core, re.I) and re.search(r"social|profile|identity|who|find", core, re.I):
         return "chat.clarify", "Give me a name or public handle to search for public profiles. I can inspect an attached image's visible content, but I can't identify a private person or find their accounts from a photo."
     if core.casefold() in {"clear chat", "clear conversation", "reset chat", "reset conversation", "new chat", "new conversation"}:
         return "chat.new", original
-    command = parse(original)
+    command = parse(core)
+    original_command = parse(original)
+    action_text = original if (command and original_command
+                              and command.intent == original_command.intent
+                              and command.params == original_command.params) else core
     # These explicit local requests must precede generic "find/search" web routing.
-    if command and command.intent in {"files", "notes"}:
-        return "computer.command", original
+    if command and command.intent in {"files", "notes"} and explicit_command(core, command):
+        return "computer.command", action_text
+    lookup = local_lookup(core)
+    if lookup:
+        return lookup
     # The terminal's discussion skill has its own model and history. All desktop
     # discussion stays with the selected provider and the current chat thread.
     if command and command.intent == "discuss":
         return "conversation", original
     match = re.match(r"(?:research|investigate|gather (?:information|sources) (?:on|about))\s+(.+)", core, re.I)
-    if match:
+    if match and not conversational_search(core):
         return "web.research", match[1]
     match = re.match(r"(?:scrape|web\s*scrape|extract (?:the )?(?:text|data) from|read (?:the )?(?:web ?page|website))\s+(https?://\S+)", core, re.I)
     if match:
-        return "web.scrape", match[1].rstrip(".,")
+        return "web.scrape", match[1]
     if re.fullmatch(r"https?://\S+", core):
         return "web.scrape", core
     match = re.match(r"(?:search(?: the web)?(?: for)?|look up|find(?: me)?(?: sources (?:for|on))?)\s+(.+)", core, re.I)
-    if match:
+    if match and not conversational_search(core):
         return "web.search", match[1]
-    if command and command.intent not in {"chat", "search", "exit"}:
-        return "computer.command", original
+    if explicit_command(core, command):
+        return "computer.command", action_text
     return "conversation", original
 
 
@@ -89,8 +101,10 @@ def validate_proposal(value: object) -> dict | None:
         return None
     if capability == "computer.command":
         from sweep.parser import parse
+
+        from .language import command_core, explicit_command
         command = parse(text)
-        if not command or command.intent not in {"open", "calc", "time", "date", "weather", "system", "notes", "help"}:
+        if not command or not explicit_command(command_core(text), command):
             return None
     if capability == "web.scrape" and not text.startswith(("http://", "https://")):
         return None

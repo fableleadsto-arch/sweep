@@ -27,8 +27,7 @@ Architecture:
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 
 @dataclass
@@ -104,6 +103,91 @@ class LogicalInferenceEngine:
         self._memberships.clear()
         self._facts.clear()
 
+    def analyze_exact(self, text: str) -> InferenceResult | None:
+        """Evaluate a small, fully parsed formal argument, or abstain.
+
+        This desktop entry point deliberately does not use the permissive legacy
+        natural-language heuristics below. Every premise and the question must
+        match the same grammar. Missing evidence means unknown, not false. Input
+        and graph size are bounded, and no model, file, or network is accessed.
+        The confidence field is a rule indicator, not a calibrated probability.
+        """
+        if not isinstance(text, str) or not 1 <= len(text) <= 4096:
+            return None
+        sentences = [part.strip() for part in re.split(r"[.;\n]", text.casefold())]
+        if any(not part for part in sentences) or not 2 <= len(sentences) <= 17:
+            return None
+        premises, question = sentences[:-1], sentences[-1]
+        label = r"([a-z][a-z0-9_-]{0,39})"
+        grammars = (
+            ("all", rf"all {label} are {label}", rf"are all {label} {label}\?"),
+            ("implies", rf"if {label} then {label}", rf"does {label} imply {label}\?"),
+            (">", rf"{label}\s*>\s*{label}", rf"is {label}\s*>\s*{label}\?"),
+            ("<", rf"{label}\s*<\s*{label}", rf"is {label}\s*<\s*{label}\?"),
+        )
+        for kind, premise_pattern, question_pattern in grammars:
+            asked = re.fullmatch(question_pattern, question)
+            if not asked:
+                continue
+            matches = [re.fullmatch(premise_pattern, premise) for premise in premises]
+            if not all(matches):
+                return None
+            edges = [match.groups() for match in matches]
+            start, target = asked.groups()
+            adjacency: dict[str, list[str]] = {}
+            for left, right in edges:
+                adjacency.setdefault(left, []).append(right)
+
+            def path_between(
+                source: str, destination: str, adjacency=adjacency,
+            ) -> list[str] | None:
+                pending = [(source, [source])]
+                visited = {source}
+                for current, path in pending:
+                    for neighbor in adjacency.get(current, []):
+                        if neighbor == destination:
+                            return path + [neighbor]
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            pending.append((neighbor, path + [neighbor]))
+                return None
+
+            comparison = kind in (">", "<")
+            if comparison and any(path_between(node, node) for node in adjacency):
+                return InferenceResult(
+                    "mixed", 0.0,
+                    "Those strict comparisons contradict each other. A value cannot be "
+                    "strictly greater or smaller than itself, so the premises need correcting.",
+                    [],
+                )
+            path = [start] if start == target and not comparison else path_between(start, target)
+            if path:
+                display = " -> ".join(path)
+                conclusion = (
+                    f"all {start} are {target}" if kind == "all" else
+                    f"{start} implies {target}" if kind == "implies" else
+                    f"{start} {kind} {target}"
+                )
+                return InferenceResult(
+                    "supported", 1.0, f"Yes. From your premises, {conclusion} ({display}).",
+                    [f"Given: {premise}" for premise in premises] + [f"Therefore: {conclusion}"],
+                )
+            reverse = path_between(target, start) if comparison else None
+            if comparison and (start == target or reverse):
+                detail = " -> ".join(reverse) if reverse else f"{start} is itself"
+                return InferenceResult(
+                    "refuted", 1.0,
+                    f"No. From your premises, {start} {kind} {target} is false ({detail}).",
+                    [f"Given: {premise}" for premise in premises],
+                )
+            return InferenceResult(
+                "insufficient", 0.0,
+                "That doesn't follow from the supplied premises. It could still be true, "
+                "but the premises don't establish it.",
+                [f"Given: {premise}" for premise in premises],
+            )
+        return None
+
     def analyze(
         self,
         query: str,
@@ -117,7 +201,6 @@ class LogicalInferenceEngine:
         """
         self.reset()
 
-        all_text = query + " " + " ".join(evidence)
         chain: list[str] = []
 
         # Step 1: Extract logical structures from BOTH query and evidence
@@ -293,7 +376,6 @@ class LogicalInferenceEngine:
         Also handles: If P then Q. Not P. -> nothing (that's denial of antecedent).
         """
         evidence_lower = [e.lower() for e in evidence]
-        all_text = " ".join(evidence_lower)
 
         for cond in self._conditionals:
             ant = cond.antecedent.strip()
@@ -473,7 +555,6 @@ class LogicalInferenceEngine:
             for nxt in graph.get(node, set()):
                 chain_edges.append((node, nxt))
                 if _fuzzy_eq(nxt, target):
-                    edges = [(a, b) for a, b in chain_edges if b in visited or _fuzzy_eq(b, target)]
                     return {
                         "conclusion": "supported",
                         "confidence": 0.90,
@@ -550,7 +631,7 @@ class LogicalInferenceEngine:
                     f"therefore all {x} are {y}"
                 ),
                 "chain": [
-                    f"Premise: all {a} are {b}" for a, b in zip(fwd, fwd[1:])
+                    f"Premise: all {a} are {b}" for a, b in zip(fwd, fwd[1:], strict=False)
                 ] + [f"Conclusion: all {x} are {y}"],
             }
 
@@ -566,7 +647,7 @@ class LogicalInferenceEngine:
                 "chain": [
                     f"Derivable: {' -> '.join(rev)}",
                     f"Question asks: all {x} are {y} (reverse — not derivable)",
-                    f"Conclusion: unknown (converse of a chain is not entailed)",
+                    "Conclusion: unknown (converse of a chain is not entailed)",
                 ],
             }
 
@@ -588,9 +669,6 @@ class LogicalInferenceEngine:
         - All X are Y. Z is X. -> Z is Y. (Universal instantiation)
         - Some X are Y. Z is X. -> Z might be Y. (Uncertain)
         """
-        evidence_lower = [e.lower() for e in evidence]
-        query_lower = query.lower()
-
         # Look for "No X are Y" + "Z is X" -> "Z is not Y"
         no_statements = [m for m in self._memberships if m.quantifier == "no"]
         is_statements = [m for m in self._memberships if m.quantifier in ("some",)]

@@ -1,197 +1,188 @@
+"""Optional reasoning components, loaded individually on first access.
+
+Public names are preserved without importing the entire cortex, downloading
+models, or starting model-loader threads when a small reasoning component is used.
 """
-Sweep Neuronal Reasoning System — the brain.
+from importlib import import_module
 
-Models Sweep's reasoning after biological neural architecture
-with three brain divisions (hindbrain/midbrain/forebrain),
-cortex-basal ganglia-thalamus action selection loop,
-hippocampal memory system, synaptic plasticity (LTP/LTD),
-myelination, and multi-dimensional evidence grading.
+_EXPORTS = {
+    'Signal': ('signal', 'Signal'),
+    'SignalType': ('signal', 'SignalType'),
+    'Synapse': ('signal', 'Synapse'),
+    'SynapseType': ('signal', 'SynapseType'),
+    'ProcessingCenter': ('centers', 'ProcessingCenter'),
+    'EvidenceGatherer': ('centers', 'EvidenceGatherer'),
+    'CredibilityAssessor': ('centers', 'CredibilityAssessor'),
+    'TemporalSequencer': ('centers', 'TemporalSequencer'),
+    'CausalLinker': ('centers', 'CausalLinker'),
+    'ContradictionDetector': ('centers', 'ContradictionDetector'),
+    'ExplanationBuilder': ('centers', 'ExplanationBuilder'),
+    'IntegrationHub': ('integration', 'IntegrationHub'),
+    'ConsensusEngine': ('integration', 'ConsensusEngine'),
+    'ConsensusDecision': ('integration', 'ConsensusDecision'),
+    'ReasoningCortex': ('cortex', 'ReasoningCortex'),
+    'ReasoningResult': ('cortex', 'ReasoningResult'),
+    'ReasoningTrace': ('cortex', 'ReasoningTrace'),
+    'ExplanationNarrator': ('narrator', 'ExplanationNarrator'),
+    'Explanation': ('narrator', 'Explanation'),
+    'Hindbrain': ('brain', 'Hindbrain'),
+    'Midbrain': ('brain', 'Midbrain'),
+    'Forebrain': ('brain', 'Forebrain'),
+    'BasalGanglia': ('basal_ganglia', 'BasalGanglia'),
+    'Thalamus': ('basal_ganglia', 'Thalamus'),
+    'ActionProposal': ('basal_ganglia', 'ActionProposal'),
+    'ActionDecision': ('basal_ganglia', 'ActionDecision'),
+    'ThalamusRelay': ('basal_ganglia', 'ThalamusRelay'),
+    'ActionType': ('basal_ganglia', 'ActionType'),
+    'SynapticPlasticity': ('plasticity', 'SynapticPlasticity'),
+    'MasteryPhase': ('plasticity', 'MasteryPhase'),
+    'LearningMetrics': ('plasticity', 'LearningMetrics'),
+    'EvidenceGrader': ('grading', 'EvidenceGrader'),
+    'EvidenceGrade': ('grading', 'EvidenceGrade'),
+    'DimensionGrade': ('grading', 'DimensionGrade'),
+    'score_to_grade': ('grading', 'score_to_grade'),
+    'PredictiveCoder': ('predictive', 'PredictiveCoder'),
+    'ReflexiveSystem': ('predictive', 'ReflexiveSystem'),
+    'EnergyGating': ('predictive', 'EnergyGating'),
+    'Prediction': ('predictive', 'Prediction'),
+    'EnergyState': ('predictive', 'EnergyState'),
+    'DopaminergicSystem': ('reward', 'DopaminergicSystem'),
+    'SalienceModulator': ('reward', 'SalienceModulator'),
+    'InhibitoryGate': ('reward', 'InhibitoryGate'),
+    'GlobalWorkspace': ('workspace', 'GlobalWorkspace'),
+    'WorkspaceEntry': ('workspace', 'WorkspaceEntry'),
+    'BroadcastResult': ('workspace', 'BroadcastResult'),
+    'WorkingMemory': ('working_memory', 'WorkingMemory'),
+    'WorkingMemoryItem': ('working_memory', 'WorkingMemoryItem'),
+    'MemorySlot': ('working_memory', 'MemorySlot'),
+    'MetacognitiveSystem': ('metacognition', 'MetacognitiveSystem'),
+    'MetacognitiveAssessment': ('metacognition', 'MetacognitiveAssessment'),
+    'UncertaintySignal': ('metacognition', 'UncertaintySignal'),
+    'AnalogicalReasoner': ('analogical', 'AnalogicalReasoner'),
+    'Analogy': ('analogical', 'Analogy'),
+    'StructuralMapping': ('analogical', 'StructuralMapping'),
+    'Domain': ('analogical', 'Domain'),
+    'DomainEntity': ('analogical', 'DomainEntity'),
+    'CausalModel': ('causal_model', 'CausalModel'),
+    'CausalNode': ('causal_model', 'CausalNode'),
+    'CausalEdge': ('causal_model', 'CausalEdge'),
+    'InterventionResult': ('causal_model', 'InterventionResult'),
+    'CausalCounterfactual': ('causal_model', 'CounterfactualResult'),
+    'CounterfactualReasoner': ('counterfactual', 'CounterfactualReasoner'),
+    'CounterfactualScenario': ('counterfactual', 'CounterfactualScenario'),
+    'SensitivityReport': ('counterfactual', 'SensitivityReport'),
+    'CommonSense': ('common_sense', 'CommonSense'),
+    'CommonSenseRule': ('common_sense', 'CommonSenseRule'),
+    'CommonSenseCheck': ('common_sense', 'CommonSenseCheck'),
+    'TheoryOfMind': ('theory_of_mind', 'TheoryOfMind'),
+    'AgentState': ('theory_of_mind', 'AgentState'),
+    'IntentAssessment': ('theory_of_mind', 'IntentAssessment'),
+    'SocialContext': ('theory_of_mind', 'SocialContext'),
+    'AbductiveReasoner': ('abductive', 'AbductiveReasoner'),
+    'Hypothesis': ('abductive', 'Hypothesis'),
+    'AbductiveResult': ('abductive', 'AbductiveResult'),
+    'NarrativeEngine': ('narrative', 'NarrativeEngine'),
+    'NarrativeEntity': ('narrative', 'NarrativeEntity'),
+    'StoryArc': ('narrative', 'StoryArc'),
+    'NarrativeAssessment': ('narrative', 'NarrativeAssessment'),
+    'EmbeddingEngine': ('embeddings', 'EmbeddingEngine'),
+    'Amygdala': ('amygdala', 'Amygdala'),
+    'ValenceCategory': ('amygdala', 'ValenceCategory'),
+    'ForgettingCurve': ('forgetting', 'ForgettingCurve'),
+    'MemoryTrace': ('forgetting', 'MemoryTrace'),
+    'InformationTheory': ('information', 'InformationTheory'),
+    'EntropyResult': ('information', 'EntropyResult'),
+    'MutualInfoResult': ('information', 'MutualInfoResult'),
+    'InformationGainResult': ('information', 'InformationGainResult'),
+    'FuzzyReasoner': ('fuzzy_logic', 'FuzzyReasoner'),
+    'FuzzyEvidenceGrader': ('fuzzy_logic', 'FuzzyEvidenceGrader'),
+    'FuzzySet': ('fuzzy_logic', 'FuzzySet'),
+    'FuzzyRule': ('fuzzy_logic', 'FuzzyRule'),
+    'FuzzyResult': ('fuzzy_logic', 'FuzzyResult'),
+    'triangular_mf': ('fuzzy_logic', 'triangular_mf'),
+    'trapezoidal_mf': ('fuzzy_logic', 'trapezoidal_mf'),
+    'gaussian_mf': ('fuzzy_logic', 'gaussian_mf'),
+    'sigmoid_mf': ('fuzzy_logic', 'sigmoid_mf'),
+    'fuzzy_and': ('fuzzy_logic', 'fuzzy_and'),
+    'fuzzy_or': ('fuzzy_logic', 'fuzzy_or'),
+    'fuzzy_not': ('fuzzy_logic', 'fuzzy_not'),
+    'fuzzy_implies': ('fuzzy_logic', 'fuzzy_implies'),
+    'ReasoningGraph': ('graph_algorithms', 'ReasoningGraph'),
+    'GraphNode': ('graph_algorithms', 'GraphNode'),
+    'GraphEdge': ('graph_algorithms', 'GraphEdge'),
+    'PageRankResult': ('graph_algorithms', 'PageRankResult'),
+    'ShortestPathResult': ('graph_algorithms', 'ShortestPathResult'),
+    'CentralityResult': ('graph_algorithms', 'CentralityResult'),
+    'CommunityResult': ('graph_algorithms', 'CommunityResult'),
+    'SemanticEmbedder': ('semantic_embeddings', 'SemanticEmbedder'),
+    'EmbeddingResult': ('semantic_embeddings', 'EmbeddingResult'),
+    'SimilarityResult': ('semantic_embeddings', 'SimilarityResult'),
+    'get_embedder': ('semantic_embeddings', 'get_embedder'),
+    'NEREngine': ('ner_engine', 'NEREngine'),
+    'Entity': ('ner_engine', 'Entity'),
+    'NERResult': ('ner_engine', 'NERResult'),
+    'get_ner_engine': ('ner_engine', 'get_ner_engine'),
+    'SentimentEngine': ('sentiment_engine', 'SentimentEngine'),
+    'SentimentResult': ('sentiment_engine', 'SentimentResult'),
+    'SentimentLabel': ('sentiment_engine', 'SentimentLabel'),
+    'get_sentiment_engine': ('sentiment_engine', 'get_sentiment_engine'),
+    'SpeechRecognizer': ('speech_recognition', 'SpeechRecognizer'),
+    'TranscriptResult': ('speech_recognition', 'TranscriptResult'),
+    'TranscriptSegment': ('speech_recognition', 'TranscriptSegment'),
+    'get_recognizer': ('speech_recognition', 'get_recognizer'),
+    'TextSummarizer': ('text_summarizer', 'TextSummarizer'),
+    'SummaryResult': ('text_summarizer', 'SummaryResult'),
+    'get_summarizer': ('text_summarizer', 'get_summarizer'),
+    'RecursiveInvestigationEngine': ('recursive_investigation', 'RecursiveInvestigationEngine'),
+    'InvNode': ('recursive_investigation', 'InvNode'),
+    'InvEdge': ('recursive_investigation', 'InvEdge'),
+    'NodeType': ('recursive_investigation', 'NodeType'),
+    'EdgeType': ('recursive_investigation', 'EdgeType'),
+    'InvestigationResult': ('recursive_investigation', 'InvestigationResult'),
+    'EvidenceGraph': ('evidence_graph', 'EvidenceGraph'),
+    'EvidenceNode': ('evidence_graph', 'EvidenceNode'),
+    'CorrelationEdge': ('evidence_graph', 'CorrelationEdge'),
+    'EvidenceChain': ('evidence_graph', 'EvidenceChain'),
+    'GraphStats': ('evidence_graph', 'GraphStats'),
+    'EvidenceType': ('evidence_graph', 'EvidenceType'),
+    'CorrelationType': ('evidence_graph', 'CorrelationType'),
+    'LocationIntelligence': ('location_intelligence', 'LocationIntelligence'),
+    'Location': ('location_intelligence', 'Location'),
+    'Coordinates': ('location_intelligence', 'Coordinates'),
+    'GeographicRelation': ('location_intelligence', 'GeographicRelation'),
+    'LocationAnalysisResult': ('location_intelligence', 'LocationAnalysisResult'),
+    'LocationEvidence': ('location_intelligence', 'LocationEvidence'),
+    'SearchStrategyOptimizer': ('search_strategy', 'SearchStrategyOptimizer'),
+    'SearchPlan': ('search_strategy', 'SearchPlan'),
+    'SearchQuery': ('search_strategy', 'SearchQuery'),
+    'SearchResult': ('search_strategy', 'SearchResult'),
+    'StrategyState': ('search_strategy', 'StrategyState'),
+    'KnowledgeAspect': ('search_strategy', 'KnowledgeAspect'),
+    'EvidenceReportGenerator': ('evidence_reports', 'EvidenceReportGenerator'),
+    'InvestigationReport': ('evidence_reports', 'InvestigationReport'),
+    'Finding': ('evidence_reports', 'Finding'),
+    'DeduplicationEngine': ('deduplication', 'DeduplicationEngine'),
+    'ContentItem': ('deduplication', 'ContentItem'),
+    'DuplicateCluster': ('deduplication', 'DuplicateCluster'),
+    'DeduplicationResult': ('deduplication', 'DeduplicationResult'),
+    'SourceIndependenceTracker': ('source_independence', 'SourceIndependenceTracker'),
+    'SourceNode': ('source_independence', 'SourceNode'),
+    'SourceGroup': ('source_independence', 'SourceGroup'),
+    'IndependenceReport': ('source_independence', 'IndependenceReport'),
+}
 
-Now includes all 9 biological mechanisms:
+__all__ = list(_EXPORTS)
 
-HINDBRAIN (Survival Layer):
-    1. Predictive Coding — generate hypotheses before processing
-    2. Reflexive Shortcuts — bypass for known patterns
-    3. Energy Gating — monitor system load
 
-MIDBRAIN (Relay Layer):
-    4. Dopaminergic Reward — predict signal value before processing
-    5. Salience Modulation — amplify important, suppress noise
-    6. Inhibitory Gating — block irrelevant channels (TRN)
+def __getattr__(name):
+    try:
+        module, symbol = _EXPORTS[name]
+    except KeyError:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
+    value = getattr(import_module(f".{module}", __name__), symbol)
+    globals()[name] = value
+    return value
 
-FOREBRAIN (Processing Layer):
-    7. Global Workspace — shared broadcasting between centers
-    8. Working Memory — active context buffer (4-7 items)
-    9. Metacognition — self-monitoring of reasoning quality
 
-Plus 7 Human Reasoning Capabilities:
-
-    1. Analogical Reasoning — find structural similarities across domains
-    2. Causal World Model — build and update causal graphs
-    3. Counterfactual Reasoning — explore what-if scenarios
-    4. Common Sense KB — default assumptions about the world
-    5. Theory of Mind — understand other agents' beliefs and intentions
-    6. Abductive Reasoning — inference to the best explanation
-    7. Narrative Coherence — structure evidence into coherent stories
-
-Architecture:
-    Raw Input
-        ↓
-    Hindbrain (predict → reflex → energy → filter → salience)
-        ↓
-    Midbrain (value predict → salience modulate → inhibit → route)
-        ↓
-    Forebrain (workspace broadcast → working memory → process → metacognition)
-        ↓
-    Reasoning Capabilities (analogical, causal, counterfactual, common sense,
-                           theory of mind, abductive, narrative)
-        ↓
-    Synaptic Plasticity (LTP/LTD, myelination, circuit reorganization)
-        ↓
-    Multi-Dimensional Grading (depth, breadth, novelty, reliability, coherence, actionability)
-        ↓
-    Output (decision + grade + explanation)
-"""
-from .signal import Signal, SignalType, Synapse, SynapseType
-from .centers import (
-    ProcessingCenter,
-    EvidenceGatherer,
-    CredibilityAssessor,
-    TemporalSequencer,
-    CausalLinker,
-    ContradictionDetector,
-    ExplanationBuilder,
-)
-from .integration import IntegrationHub, ConsensusEngine, ConsensusDecision
-from .cortex import ReasoningCortex, ReasoningResult, ReasoningTrace
-from .narrator import ExplanationNarrator, Explanation
-from .brain import Hindbrain, Midbrain, Forebrain
-from .basal_ganglia import (
-    BasalGanglia,
-    Thalamus,
-    ActionProposal,
-    ActionDecision,
-    ThalamusRelay,
-    ActionType,
-)
-from .plasticity import SynapticPlasticity, MasteryPhase, LearningMetrics
-from .grading import EvidenceGrader, EvidenceGrade, DimensionGrade, score_to_grade
-# ── New biological mechanisms ──
-from .predictive import PredictiveCoder, ReflexiveSystem, EnergyGating, Prediction, EnergyState
-from .reward import DopaminergicSystem, SalienceModulator, InhibitoryGate
-from .workspace import GlobalWorkspace, WorkspaceEntry, BroadcastResult
-from .working_memory import WorkingMemory, WorkingMemoryItem, MemorySlot
-from .metacognition import MetacognitiveSystem, MetacognitiveAssessment, UncertaintySignal
-# ── Human reasoning capabilities ──
-from .analogical import AnalogicalReasoner, Analogy, StructuralMapping, Domain, DomainEntity
-from .causal_model import CausalModel, CausalNode, CausalEdge, InterventionResult, CounterfactualResult as CausalCounterfactual
-from .counterfactual import CounterfactualReasoner, CounterfactualScenario, SensitivityReport
-from .common_sense import CommonSense, CommonSenseRule, CommonSenseCheck
-from .theory_of_mind import TheoryOfMind, AgentState, IntentAssessment, SocialContext
-from .abductive import AbductiveReasoner, Hypothesis, AbductiveResult
-from .narrative import NarrativeEngine, NarrativeEntity, StoryArc, NarrativeAssessment
-# ── Improvement modules ──
-from .embeddings import EmbeddingEngine
-from .amygdala import Amygdala, ValenceCategory
-from .forgetting import ForgettingCurve, MemoryTrace
-# ── Advanced Math/Logic Modules ──
-from .information import InformationTheory, EntropyResult, MutualInfoResult, InformationGainResult
-from .fuzzy_logic import (
-    FuzzyReasoner, FuzzyEvidenceGrader, FuzzySet, FuzzyRule, FuzzyResult,
-    triangular_mf, trapezoidal_mf, gaussian_mf, sigmoid_mf,
-    fuzzy_and, fuzzy_or, fuzzy_not, fuzzy_implies,
-)
-from .graph_algorithms import (
-    ReasoningGraph, GraphNode, GraphEdge,
-    PageRankResult, ShortestPathResult, CentralityResult, CommunityResult,
-)
-# ── Real ML Engines ──
-from .semantic_embeddings import SemanticEmbedder, EmbeddingResult, SimilarityResult, get_embedder
-from .ner_engine import NEREngine, Entity, NERResult, get_ner_engine
-from .sentiment_engine import SentimentEngine, SentimentResult, SentimentLabel, get_sentiment_engine
-from .speech_recognition import SpeechRecognizer, TranscriptResult, TranscriptSegment, get_recognizer
-from .text_summarizer import TextSummarizer, SummaryResult, get_summarizer
-# ── New Capability Modules (Items 7, 13, 21, 22, 24, 26, 27) ──
-from .recursive_investigation import (
-    RecursiveInvestigationEngine, InvNode, InvEdge, NodeType, EdgeType,
-    InvestigationResult,
-)
-from .evidence_graph import (
-    EvidenceGraph, EvidenceNode, CorrelationEdge, EvidenceChain, GraphStats,
-    EvidenceType, CorrelationType,
-)
-from .location_intelligence import (
-    LocationIntelligence, Location, Coordinates, GeographicRelation,
-    LocationAnalysisResult, LocationEvidence,
-)
-from .search_strategy import (
-    SearchStrategyOptimizer, SearchPlan, SearchQuery, SearchResult,
-    StrategyState, KnowledgeAspect,
-)
-from .evidence_reports import (
-    EvidenceReportGenerator, InvestigationReport, Finding,
-)
-from .deduplication import (
-    DeduplicationEngine, ContentItem, DuplicateCluster, DeduplicationResult,
-)
-from .source_independence import (
-    SourceIndependenceTracker, SourceNode, SourceGroup, IndependenceReport,
-)
-
-__all__ = [
-    "Signal", "SignalType", "Synapse", "SynapseType",
-    "ProcessingCenter",
-    "EvidenceGatherer", "CredibilityAssessor", "TemporalSequencer",
-    "CausalLinker", "ContradictionDetector", "ExplanationBuilder",
-    "IntegrationHub", "ConsensusEngine", "ConsensusDecision",
-    "ReasoningCortex", "ReasoningResult", "ReasoningTrace",
-    "ExplanationNarrator", "Explanation",
-    "Hindbrain", "Midbrain", "Forebrain",
-    "BasalGanglia", "Thalamus", "ActionProposal", "ActionDecision",
-    "ThalamusRelay", "ActionType",
-    "SynapticPlasticity", "MasteryPhase", "LearningMetrics",
-    "EvidenceGrader", "EvidenceGrade", "DimensionGrade", "score_to_grade",
-    # New biological mechanisms
-    "PredictiveCoder", "ReflexiveSystem", "EnergyGating", "Prediction", "EnergyState",
-    "DopaminergicSystem", "SalienceModulator", "InhibitoryGate",
-    "GlobalWorkspace", "WorkspaceEntry", "BroadcastResult",
-    "WorkingMemory", "WorkingMemoryItem", "MemorySlot",
-    "MetacognitiveSystem", "MetacognitiveAssessment", "UncertaintySignal",
-    # Human reasoning capabilities
-    "AnalogicalReasoner", "Analogy", "StructuralMapping", "Domain", "DomainEntity",
-    "CausalModel", "CausalNode", "CausalEdge", "InterventionResult", "CausalCounterfactual",
-    "CounterfactualReasoner", "CounterfactualScenario", "SensitivityReport",
-    "CommonSense", "CommonSenseRule", "CommonSenseCheck",
-    "TheoryOfMind", "AgentState", "IntentAssessment", "SocialContext",
-    "AbductiveReasoner", "Hypothesis", "AbductiveResult",
-    "NarrativeEngine", "NarrativeEntity", "StoryArc", "NarrativeAssessment",
-    # Improvement modules
-    "EmbeddingEngine",
-    "Amygdala", "ValenceCategory",
-    "ForgettingCurve", "MemoryTrace",
-    # Advanced Math/Logic Modules
-    "InformationTheory", "EntropyResult", "MutualInfoResult", "InformationGainResult",
-    "FuzzyReasoner", "FuzzyEvidenceGrader", "FuzzySet", "FuzzyRule", "FuzzyResult",
-    "triangular_mf", "trapezoidal_mf", "gaussian_mf", "sigmoid_mf",
-    "fuzzy_and", "fuzzy_or", "fuzzy_not", "fuzzy_implies",
-    "ReasoningGraph", "GraphNode", "GraphEdge",
-    "PageRankResult", "ShortestPathResult", "CentralityResult", "CommunityResult",
-    # Real ML Engines
-    "SemanticEmbedder", "EmbeddingResult", "SimilarityResult", "get_embedder",
-    "NEREngine", "Entity", "NERResult", "get_ner_engine",
-    "SentimentEngine", "SentimentResult", "SentimentLabel", "get_sentiment_engine",
-    "SpeechRecognizer", "TranscriptResult", "TranscriptSegment", "get_recognizer",
-    "TextSummarizer", "SummaryResult", "get_summarizer",
-    # New Capability Modules
-    "RecursiveInvestigationEngine", "InvNode", "InvEdge", "NodeType", "EdgeType",
-    "InvestigationResult",
-    "EvidenceGraph", "EvidenceNode", "CorrelationEdge", "EvidenceChain", "GraphStats",
-    "EvidenceType", "CorrelationType",
-    "LocationIntelligence", "Location", "Coordinates", "GeographicRelation",
-    "LocationAnalysisResult", "LocationEvidence",
-    "SearchStrategyOptimizer", "SearchPlan", "SearchQuery", "SearchResult",
-    "StrategyState", "KnowledgeAspect",
-    "EvidenceReportGenerator", "InvestigationReport", "Finding",
-    "DeduplicationEngine", "ContentItem", "DuplicateCluster", "DeduplicationResult",
-    "SourceIndependenceTracker", "SourceNode", "SourceGroup", "IndependenceReport",
-]
+def __dir__():
+    return sorted(set(globals()) | set(__all__))

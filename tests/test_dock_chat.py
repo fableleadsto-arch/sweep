@@ -133,7 +133,7 @@ def test_image_transfer_denial_never_creates_worker(dock, monkeypatch, tmp_path)
     window.submit()
     assert window.process is None
     assert window.task_store.list() == []
-    assert "cancelled" in window.transcript.toPlainText()
+    assert "action wasn’t started" in window.transcript.toPlainText()
 
 
 def test_missing_image_stays_in_chat_and_asks_for_attachment(dock):
@@ -176,29 +176,80 @@ def test_chat_store_blocks_path_escape_and_survives_malformed_file(tmp_path):
     assert [thread["id"] for thread in store.list()] == [good["id"]]
 
 
-def test_queued_chat_cannot_use_permission_from_another_thread(dock, monkeypatch):
-    from sweep.desktop.providers import load_config
+def test_queued_local_reply_needs_no_dialog_and_stays_in_original_chat(dock, monkeypatch):
     app, window = dock
     origin = window.thread_id
     window.prompt.setPlainText("calculate 4 + 4")
     window.submit()
-    window.prompt.setPlainText("Hello, how are you?")
+    window.prompt.setPlainText("hi")
     window.submit()
     queued_id = window.pending[0]
     assert window._task_threads[queued_id] == origin
     window.new_workspace()
-    config = load_config(window.root)
-    signature = json.dumps({key: config[key] for key in ("provider", "model", "ollama_base_url")}, sort_keys=True)
-    window.settings.setValue("chat_permission/" + window.thread_id, signature)
     dialogs = []
     def decline(dialog):
         dialogs.append(dialog.text())
         return QMessageBox.StandardButton.No
     monkeypatch.setattr(QMessageBox, "exec", decline)
     finish(app, window)
-    assert len(dialogs) == 1 and "Hello, how are you?" in dialogs[0]
-    assert window.task_store.get(queued_id)["state"] == "cancelled"
-    assert not (window.task_store.directory(queued_id) / "events.jsonl").exists()
+    assert not dialogs
+    assert window.task_store.get(queued_id)["state"] == "completed"
+    assert window.task_store.get(queued_id)["thread_id"] == origin
+    assert not window.chat_store.get(window.thread_id)["turns"]
+
+
+@pytest.mark.parametrize("capability", ["conversation", "context.answer"])
+def test_local_reply_rejects_nonlocal_configuration_before_grant(dock, monkeypatch, capability):
+    app, window = dock
+    warnings = []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    (window.root / "providers.json").write_text(json.dumps({
+        "schema_version": 1, "ollama_base_url": "http://203.0.113.4:11434",
+    }), encoding="utf-8")
+    assert not window.approve_task(capability, "A private message")
+    assert warnings and "loopback" in warnings[0]
+
+
+@pytest.mark.parametrize("capability,text", [
+    ("computer.command", "open calculator"),
+    ("web.search", "Python documentation"),
+    ("web.scrape", "https://example.com"),
+    ("web.research", "Battery recycling"),
+    ("screen.read", "Read my screen"),
+    ("images.analyze", "Describe this image"),
+    ("media.analyze", "Describe this video"),
+    ("data.transform", "Remove duplicate rows"),
+    ("speech.setup", "Set up local speech"),
+])
+def test_sending_local_chat_does_not_authorize_other_actions(dock, monkeypatch, capability, text):
+    app, window = dock
+    window.settings.setValue("allow_web", False)
+    dialogs = []
+
+    def decline(dialog):
+        dialogs.append(dialog)
+        assert dialog.defaultButton() == dialog.button(QMessageBox.StandardButton.No)
+        return QMessageBox.StandardButton.No
+
+    monkeypatch.setattr(QMessageBox, "exec", decline)
+    assert window.approve_task("conversation", "Hello")
+    assert not dialogs
+    assert not window.start_task(capability, text)
+    assert len(dialogs) == 1
+    assert window.process is None and not window.pending
+    assert not window.task_store.list()
+
+
+@pytest.mark.parametrize("capability,text", [
+    ("computer.command", "open calculator"),
+    ("screen.read", "Read my screen"),
+])
+def test_remembered_web_permission_does_not_authorize_device_actions(dock, monkeypatch, capability, text):
+    app, window = dock
+    window.settings.setValue("allow_web", True)
+    monkeypatch.setattr(QMessageBox, "exec", lambda dialog: QMessageBox.StandardButton.No)
+    assert window.approve_task("web.search", "Python documentation")
+    assert not window.approve_task(capability, text)
 
 
 def test_new_chat_phrase_starts_separate_local_thread(dock):

@@ -5,11 +5,14 @@ before every new task, then [DEVELOPMENT_STATE.md](DEVELOPMENT_STATE.md). This i
 the current execution order; the original companion backlog remains supported.
 Statuses use the master directive's vocabulary. Targets are not achievements.
 
-**2026-11-25 explicit priority change:** the user requested a usable installed
-companion by this session's end. Complete native chat, supported desktop tasks,
-and permission-bound screen text reading with real packaged/installed tests
-before resuming the enterprise increments below. Enterprise requirements remain
-open. The workspace-storage draft is parked without a production import or migration.
+**2026-11-26 explicit priority change:** the user reports poor everyday chat/UI
+and requests companion quality, compact reuse of the neural mesh, and lower
+resource use first. Fix conversational intent versus actions, native chat flow,
+bounded inference and embed only validated lightweight reasoning; verify source,
+packaged and installed behavior before resuming enterprise increments. Regular
+web browsing already exists; original-source tracing and explicit Tor access
+remain requested follow-ups, with no current Tor implementation claim. Enterprise
+requirements remain open. The workspace draft stays parked without migration.
 
 ## Phase gates
 

@@ -1,0 +1,278 @@
+{
+  "date": "2026-11-26",
+  "model": "qwen2.5-coder:3b",
+  "cpu_count": 12,
+  "scope": "Synthetic same-prompt local engine test, no UI; server and all runner descendants sampled every 100 ms. Sum of process working sets may double-count shared pages; CPU is observed cumulative process time, not a power/energy measurement. Short-lived process tails can be missed. Not a latency percentile or quality evaluation.",
+  "runs": [
+    {
+      "profile": "previous_default",
+      "trial": 0,
+      "warmup": true,
+      "first_text_seconds": 10.778,
+      "elapsed_seconds": 12.147,
+      "cpu_seconds_observed": 23.719,
+      "average_cpu_percent_of_machine": 16.3,
+      "peak_resident_mib_observed": 2098.4,
+      "load_seconds": 9.208,
+      "eval_seconds": 1.364,
+      "eval_tokens": 13,
+      "answer": "Take a break and focus on one task at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 88
+    },
+    {
+      "profile": "previous_default",
+      "trial": 1,
+      "warmup": false,
+      "first_text_seconds": 0.217,
+      "elapsed_seconds": 2.183,
+      "cpu_seconds_observed": 11.594,
+      "average_cpu_percent_of_machine": 44.3,
+      "peak_resident_mib_observed": 2098.5,
+      "load_seconds": 0.023,
+      "eval_seconds": 1.958,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 17
+    },
+    {
+      "profile": "previous_default",
+      "trial": 2,
+      "warmup": false,
+      "first_text_seconds": 0.263,
+      "elapsed_seconds": 2.181,
+      "cpu_seconds_observed": 11.578,
+      "average_cpu_percent_of_machine": 44.2,
+      "peak_resident_mib_observed": 2098.6,
+      "load_seconds": 0.025,
+      "eval_seconds": 1.914,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 17
+    },
+    {
+      "profile": "balanced",
+      "trial": 0,
+      "warmup": true,
+      "first_text_seconds": 8.923,
+      "elapsed_seconds": 10.355,
+      "cpu_seconds_observed": 19.594,
+      "average_cpu_percent_of_machine": 15.8,
+      "peak_resident_mib_observed": 2098.6,
+      "load_seconds": 7.284,
+      "eval_seconds": 1.425,
+      "eval_tokens": 13,
+      "answer": "Take a break and focus on one task at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 4,
+        "num_batch": 256
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 77
+    },
+    {
+      "profile": "balanced",
+      "trial": 1,
+      "warmup": false,
+      "first_text_seconds": 0.213,
+      "elapsed_seconds": 2.202,
+      "cpu_seconds_observed": 8.703,
+      "average_cpu_percent_of_machine": 32.9,
+      "peak_resident_mib_observed": 2097.8,
+      "load_seconds": 0.024,
+      "eval_seconds": 1.958,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 4,
+        "num_batch": 256
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 18
+    },
+    {
+      "profile": "balanced",
+      "trial": 2,
+      "warmup": false,
+      "first_text_seconds": 0.194,
+      "elapsed_seconds": 2.697,
+      "cpu_seconds_observed": 9.672,
+      "average_cpu_percent_of_machine": 29.9,
+      "peak_resident_mib_observed": 2097.9,
+      "load_seconds": 0.018,
+      "eval_seconds": 2.492,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 4,
+        "num_batch": 256
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 19
+    },
+    {
+      "profile": "efficient",
+      "trial": 0,
+      "warmup": true,
+      "first_text_seconds": 9.451,
+      "elapsed_seconds": 11.984,
+      "cpu_seconds_observed": 15.344,
+      "average_cpu_percent_of_machine": 10.7,
+      "peak_resident_mib_observed": 2097.9,
+      "load_seconds": 7.35,
+      "eval_seconds": 2.521,
+      "eval_tokens": 13,
+      "answer": "Take a break and focus on one task at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 2,
+        "num_batch": 128,
+        "num_gpu": 0
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 89
+    },
+    {
+      "profile": "efficient",
+      "trial": 1,
+      "warmup": false,
+      "first_text_seconds": 0.531,
+      "elapsed_seconds": 3.383,
+      "cpu_seconds_observed": 5.984,
+      "average_cpu_percent_of_machine": 14.7,
+      "peak_resident_mib_observed": 2095.8,
+      "load_seconds": 0.059,
+      "eval_seconds": 2.845,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 2,
+        "num_batch": 128,
+        "num_gpu": 0
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 26
+    },
+    {
+      "profile": "efficient",
+      "trial": 2,
+      "warmup": false,
+      "first_text_seconds": 0.389,
+      "elapsed_seconds": 4.17,
+      "cpu_seconds_observed": 7.594,
+      "average_cpu_percent_of_machine": 15.2,
+      "peak_resident_mib_observed": 2095.7,
+      "load_seconds": 0.03,
+      "eval_seconds": 3.771,
+      "eval_tokens": 18,
+      "answer": "Take a deep breath, prioritize your tasks, and focus on one at a time.",
+      "requested_options": {
+        "temperature": 0,
+        "seed": 42,
+        "num_predict": 60,
+        "num_ctx": 4096,
+        "num_thread": 2,
+        "num_batch": 128,
+        "num_gpu": 0
+      },
+      "process_names": [
+        "conhost.exe",
+        "llama-server.exe",
+        "ollama.exe"
+      ],
+      "samples": 30
+    }
+  ],
+  "previous_default_loaded": [
+    {
+      "size": 2168371280,
+      "size_vram": 0,
+      "context_length": 4096
+    }
+  ],
+  "balanced_loaded": [
+    {
+      "size": 2121961306,
+      "size_vram": 0,
+      "context_length": 4096
+    }
+  ],
+  "efficient_loaded": [
+    {
+      "size": 2098756319,
+      "size_vram": 0,
+      "context_length": 4096
+    }
+  ]
+}

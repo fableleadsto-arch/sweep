@@ -91,6 +91,8 @@ class ChatTranscript(QScrollArea):
         self._plain_text = ""
         self._signature = None
         self._row_signatures = []
+        self._stream_shapes = []
+        self._message_labels = []
         self._following = True
         self._scroll_target = (False, 0)
         self._scroll_timer = QTimer(self)
@@ -260,9 +262,11 @@ class ChatTranscript(QScrollArea):
         if message.get("attachments"):
             body.addWidget(self._text(" · ".join(message["attachments"]), "attachmentCaption"))
         value = str(message.get("text", ""))
+        text_label = None
         if value:
-            body.addWidget(self._text(value))
-        if message.get("state") == "running":
+            text_label = self._text(value)
+            body.addWidget(text_label)
+        if message.get("state") == "running" and message.get("kind") != "conversation":
             progress = QProgressBar()
             progress.setAccessibleName("Task in progress")
             progress.setRange(0, 0)
@@ -341,12 +345,16 @@ class ChatTranscript(QScrollArea):
         if user:
             row.addSpacing(2)
         self.layout.addLayout(row)
+        return text_label
 
     def render(self, messages: list[dict], *, scroll_to_latest=False):
         # Progress can arrive frequently. Keep native cards and text selection
         # stable unless visible content has actually changed.
         rows = [repr({key: value.cacheKey() if key == "preview" and value is not None else value
                       for key, value in message.items()}) for message in messages]
+        stream_shapes = [repr({key: value for key, value in message.items() if key != "text"})
+                         if message.get("kind") == "conversation" and message.get("state") == "running"
+                         else None for message in messages]
         signature = tuple(rows)
         bar = self.verticalScrollBar()
         at_bottom = bool(messages) and (scroll_to_latest or bar.value() >= bar.maximum() - 24)
@@ -367,9 +375,18 @@ class ChatTranscript(QScrollArea):
         prefix = 0
         for previous, current in zip(self._row_signatures, rows, strict=False):
             if previous != current:
-                break
+                # A streamed reply changes text, not its controls or identity.
+                # Keep its native widgets alive instead of rebuilding the card
+                # and a progress animation for each token batch.
+                shape = stream_shapes[prefix]
+                text_label = self._message_labels[prefix]
+                if shape is None or shape != self._stream_shapes[prefix] or text_label is None:
+                    break
+                text_label.setText(rich_text(str(messages[prefix].get("text", ""))))
             prefix += 1
         self._row_signatures = rows
+        self._stream_shapes = stream_shapes
+        self._message_labels = self._message_labels[:prefix]
         while self.layout.count() > prefix:
             item = self.layout.takeAt(prefix)
             if item.widget():
@@ -386,7 +403,7 @@ class ChatTranscript(QScrollArea):
         if not messages:
             self._welcome()
         for message in messages[prefix:]:
-            self._card(message)
+            self._message_labels.append(self._card(message))
         self.layout.addStretch(1)
         self.content.adjustSize()
         bar.setValue(bar.maximum() if at_bottom else position)

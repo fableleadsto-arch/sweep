@@ -8,6 +8,23 @@ import pytest
 from sweep.desktop import local_stream
 
 
+@pytest.mark.parametrize("available", [None, 1, 2, 3, 12, 128])
+@pytest.mark.parametrize("profile", ["balanced", "efficient"])
+def test_resource_budget_never_oversubscribes_available_cpus(monkeypatch, available, profile):
+    monkeypatch.setattr(local_stream.os, "process_cpu_count", lambda: available, raising=False)
+    limits = local_stream.resource_limits(profile)
+    threads = limits["options"]["num_thread"]
+    assert 1 <= threads <= max(1, (available or 1) - 1)
+    assert threads <= (2 if profile == "efficient" else 4)
+
+
+def test_invalid_resource_budget_fails_before_opening_transport(monkeypatch):
+    monkeypatch.setattr(local_stream.httpx, "AsyncClient", lambda **kwargs: pytest.fail("transport opened"))
+    with pytest.raises(ValueError, match="Balanced or Quiet"):
+        asyncio.run(local_stream.stream_chat(None, system="test", messages=[], json_mode=False,
+                    on_preview=lambda _: None, resource_profile="unlimited"))
+
+
 @pytest.mark.parametrize("text,expected", [
     ('{"mess', ''),
     ('{"message":"Hello', 'Hello'),
@@ -30,7 +47,7 @@ class Chunks(httpx.AsyncByteStream):
             yield chunk
 
 
-def run_stream(monkeypatch, chunks, headers=None):
+def run_stream(monkeypatch, chunks, headers=None, *, json_mode=True):
     sent, previews = [], []
     real_client = httpx.AsyncClient
     def reply(request):
@@ -44,7 +61,7 @@ def run_stream(monkeypatch, chunks, headers=None):
     settings = SimpleNamespace(ollama_model='downloaded:latest', ollama_base_url='http://127.0.0.1:11434',
                                request_timeout_seconds=30)
     answer = asyncio.run(local_stream.stream_chat(settings, system='system',
-        messages=[{'role': 'user', 'content': 'hello'}], json_mode=True, on_preview=previews.append))
+        messages=[{'role': 'user', 'content': 'hello'}], json_mode=json_mode, on_preview=previews.append))
     return answer, previews, sent
 
 
@@ -91,6 +108,25 @@ def test_truncated_response_keeps_answer_but_discards_proposals(monkeypatch):
     assert 'A partial answer' in answer.parsed['message']
     assert 'proposal' not in answer.parsed
     assert previews[-1] == 'A partial answer'
+
+
+def test_plain_truncated_response_flags_limit_in_final_preview_and_result(monkeypatch):
+    body = json.dumps({'message': {'content': 'Here is the start of the explanation'},
+                       'done': True, 'done_reason': 'length'}).encode() + b'\n'
+    answer, previews, sent = run_stream(monkeypatch, [body], json_mode=False)
+    assert answer.text.startswith('Here is the start of the explanation')
+    assert answer.text.endswith('This answer is incomplete. Ask me to continue.')
+    assert answer.parsed == {'incomplete': True}
+    assert previews[-1] == answer.text
+    assert 'format' not in sent[0]
+
+
+def test_plain_complete_response_has_no_truncation_notice(monkeypatch):
+    body = b'{"message":{"content":"A complete answer."},"done":true,"done_reason":"stop"}\n'
+    answer, previews, _ = run_stream(monkeypatch, [body], json_mode=False)
+    assert answer.text == 'A complete answer.'
+    assert answer.parsed == {}
+    assert previews[-1] == answer.text
 
 
 def test_first_small_packet_is_visible_before_server_sends_next_token(monkeypatch):

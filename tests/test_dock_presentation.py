@@ -7,12 +7,15 @@ from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QImage
 from PySide6.QtWidgets import (
     QApplication,
+    QComboBox,
     QDialog,
+    QDialogButtonBox,
     QLabel,
     QLineEdit,
     QListWidget,
     QMessageBox,
     QPlainTextEdit,
+    QProgressBar,
     QPushButton,
     QTableWidget,
     QWidget,
@@ -401,7 +404,7 @@ def test_completed_answer_replaces_preview_and_restores_from_task_record(dock):
     window.refresh_chat()
     assert result["message"] in window.transcript.toPlainText()
     assert "unfinished draft" not in window.transcript.toPlainText()
-    assert window.owl.state == "success"
+    assert window.owl.state == "idle"
     window._response_previews.clear()
     window.refresh_chat()
     assert result["message"] in window.transcript.toPlainText()
@@ -446,3 +449,96 @@ def test_inspect_locally_keeps_image_request_in_metadata_mode(dock, monkeypatch,
     window.prompt.setPlainText("Inspect locally")
     window.submit()
     assert started == ["images.inspect"]
+
+
+@pytest.mark.parametrize("capability", ["conversation", "context.answer"])
+def test_chat_answers_have_copy_and_sources_without_task_controls(dock, capability):
+    app, window = dock
+    task = window.task_store.create(capability, "Can we talk this through?")
+    result = {"message": "Of course. " + "Let’s explore it. " * 100}
+    value = window._result_message(task, result)
+    assert "state_label" not in value and not value["actions"]
+    window.transcript.render([value])
+    card = window.transcript.layout.itemAt(0).layout().itemAt(0).widget()
+    buttons = [button.text() for button in card.findChildren(QPushButton)]
+    assert buttons == ["Copy"]
+    assert not window.transcript.findChildren(QLabel, "taskState")
+    result["context_sources"] = [{"task_id": "source", "excerpt": "Saved evidence"}]
+    result["proposal"] = {"capability": "computer.command", "text": "open calculator"}
+    value = window._result_message(task, result)
+    assert [action[0] for action in value["actions"]] == ["Review proposed task", "Sources used"]
+
+
+def test_native_chat_stream_keeps_its_card_without_task_animation(dock):
+    app, window = dock
+    window.reveal()
+    task = window.task_store.create("conversation", "Talk with me", thread_id=window.thread_id)
+    window.task = window.task_store.update(task["id"], state="running")
+    window.chat_store.append(window.thread_id, {"role": "assistant", "task_id": task["id"]})
+    window.activity_summary.setText("Internal task worker started")
+    window.refresh_chat()
+    assert window.transcript.toPlainText() == "Thinking…"
+    card = window.transcript.findChild(QWidget, "assistantMessage")
+    text_label = card.findChild(QLabel, "messageText")
+    for number in range(25):
+        window.accept_event({"kind": "response.preview", "text": f"Reply {number}"})
+        app.processEvents()
+        assert window.transcript.findChild(QWidget, "assistantMessage") is card
+        assert card.findChild(QLabel, "messageText") is text_label
+    assert window.transcript.toPlainText() == "Reply 24"
+    assert not card.findChildren(QProgressBar)
+    assert not card.findChildren(QLabel, "taskTitle")
+    assert not card.findChildren(QLabel, "taskState")
+    assert not window.body_effect.isEnabled()
+    window.task = window.task_store.update(task["id"], state="failed", error="Local processing is unavailable. Open Settings to start it.")
+    window.refresh_chat()
+    app.processEvents()
+    assert "Open Settings" in window.transcript.toPlainText()
+    assert "Try again" in [button.text() for button in window.transcript.findChildren(QPushButton) if button.isVisibleTo(window.transcript)]
+
+
+def test_wrapped_composer_grows_and_attachment_controls_fit_narrow_dock(dock, tmp_path):
+    app, window = dock
+    window.reveal()
+    window.resize(380, 620)
+    app.processEvents()
+    base = window.prompt.height()
+    window.prompt.setPlainText("I want to talk about a difficult day and figure out what to do next. " * 5)
+    app.processEvents()
+    assert window.prompt.document().blockCount() == 1
+    assert window.prompt.height() > base
+    assert window.prompt.height() <= 24 + 5 * window.prompt.fontMetrics().lineSpacing()
+    path = tmp_path / "note.txt"
+    path.write_text("A note", encoding="utf-8")
+    window.set_attachment(path)
+    app.processEvents()
+    assert window.width() == 380
+    assert window.clear_attachment_button.isVisible()
+    window.prompt.clear()
+    app.processEvents()
+    assert window.prompt.height() == base
+
+
+def test_settings_saves_and_restores_quiet_resource_profile(dock, monkeypatch):
+    from sweep.desktop.providers import load_config
+
+    app, window = dock
+
+    def choose_quiet(dialog):
+        profile = dialog.findChild(QComboBox, "resourceProfile")
+        assert profile.currentData() == "balanced"
+        profile.setCurrentIndex(profile.findData("efficient"))
+        dialog.findChild(QDialogButtonBox).button(QDialogButtonBox.StandardButton.Save).click()
+        return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr(QDialog, "exec", choose_quiet)
+    window.show_settings()
+    assert load_config(window.root)["resource_profile"] == "efficient"
+
+    def inspect_saved(dialog):
+        assert dialog.findChild(QComboBox, "resourceProfile").currentData() == "efficient"
+        dialog.reject()
+        return QDialog.DialogCode.Rejected
+
+    monkeypatch.setattr(QDialog, "exec", inspect_saved)
+    window.show_settings()

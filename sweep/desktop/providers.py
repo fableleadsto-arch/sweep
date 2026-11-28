@@ -19,7 +19,7 @@ from companion.providers import ProviderResult
 PROVIDERS = ("auto", "ollama", "openai", "gemini", "anthropic")  # legacy preference migration
 CLOUD_PROVIDERS = ("openai", "gemini", "anthropic")
 CONFIG_NAME = "providers.json"
-_CONFIG_FIELDS = ("provider", "model", "vision_provider", "vision_model", "ollama_base_url")
+_CONFIG_FIELDS = ("provider", "model", "vision_provider", "vision_model", "ollama_base_url", "resource_profile")
 
 
 def _base_settings(root: Path) -> BrainSettings:
@@ -45,8 +45,11 @@ def _read_document(root: Path) -> dict:
 
 def _preferences(document: dict, settings: BrainSettings) -> dict:
     preferences = {"provider": "ollama", "model": "", "vision_provider": "ollama", "vision_model": "",
-                   "ollama_base_url": settings.ollama_base_url}
+                   "ollama_base_url": settings.ollama_base_url, "resource_profile": "balanced"}
     preferences.update({name: document[name] for name in _CONFIG_FIELDS if name in document})
+    from .local_stream import RESOURCE_PROFILES
+    if preferences["resource_profile"] not in RESOURCE_PROFILES:
+        raise ValueError("Choose Balanced or Quiet for local resource usage.")
     for name in ("provider", "vision_provider"):
         if preferences[name] not in PROVIDERS:
             raise ValueError("Invalid local intelligence settings.")
@@ -230,8 +233,8 @@ async def start_local_server(root: Path) -> dict:
     hostname = parsed.hostname if parsed.hostname != "localhost" else "127.0.0.1"
     environment["OLLAMA_HOST"] = f"{'[' + hostname + ']' if ':' in hostname else hostname}:{parsed.port or 11434}"
     environment["OLLAMA_NO_CLOUD"] = "1"
-    from .local_stream import CHAT_KEEP_ALIVE
-    environment["OLLAMA_KEEP_ALIVE"] = CHAT_KEEP_ALIVE
+    from .local_stream import resource_limits
+    environment["OLLAMA_KEEP_ALIVE"] = resource_limits(config["resource_profile"])["keep_alive"]
     # This desktop owns a serial task queue. Loading several model copies or
     # parallel contexts spends RAM without making that queue finish sooner.
     environment["OLLAMA_MAX_LOADED_MODELS"] = "1"
@@ -285,7 +288,8 @@ async def generate_chat(root: Path, *, system: str, messages: list[dict], json_m
             # Summaries and regular chat share the same native chat template,
             # bounded wire parser and local-only transport, even without UI.
             return await stream_chat(settings, system=system, messages=list(reversed(bounded)),
-                                     json_mode=json_mode, on_preview=on_preview or (lambda _: None))
+                                     json_mode=json_mode, on_preview=on_preview or (lambda _: None),
+                                     resource_profile=config["resource_profile"])
     except TimeoutError:
         raise RuntimeError("Local processing took too long. Try a shorter request or a smaller installed model in advanced settings.") from None
     except Exception:

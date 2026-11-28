@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 from collections.abc import Callable
@@ -15,6 +16,25 @@ MAX_TEXT = 40_000
 CHAT_CONTEXT_TOKENS = 4096
 CHAT_REPLY_TOKENS = 600
 CHAT_KEEP_ALIVE = "2m"
+RESOURCE_PROFILES = ("balanced", "efficient")
+
+
+def resource_limits(profile: str = "balanced") -> dict:
+    """Explicit per-request budgets, not OS CPU/memory utilization guarantees.
+
+    Preserve the conversation window and answer length in both modes. Reducing
+    threads/batches leaves more headroom for other apps; Quiet also disables GPU
+    offload and releases the model sooner, at the cost of slower/cold replies.
+    """
+    if profile not in RESOURCE_PROFILES:
+        raise ValueError("Choose Balanced or Quiet for local resource usage.")
+    available = (getattr(os, "process_cpu_count", os.cpu_count)() or 1)
+    threads = max(1, min(2 if profile == "efficient" else 4, available - 1))
+    options = {"num_thread": threads, "num_batch": 128 if profile == "efficient" else 256}
+    if profile == "efficient":
+        options["num_gpu"] = 0
+    return {"keep_alive": "30s" if profile == "efficient" else CHAT_KEEP_ALIVE,
+            "options": options}
 
 
 def preview_text(text: str, json_mode: bool) -> str:
@@ -32,16 +52,17 @@ def preview_text(text: str, json_mode: bool) -> str:
 
 
 async def stream_chat(settings, *, system: str, messages: list[dict], json_mode: bool,
-                      on_preview: Callable[[str], None]) -> ProviderResult:
+                      on_preview: Callable[[str], None], resource_profile: str = "balanced") -> ProviderResult:
     """Caller verifies loopback endpoint and downloaded-model metadata first."""
     # Let the installed model apply its own trained conversation template. XML
     # role labels inside /generate's user prompt are not actual system/history
     # messages, and small local models readily confuse those roles.
+    limits = resource_limits(resource_profile)
     payload = {"model": settings.ollama_model,
                "messages": [{"role": "system", "content": system}, *messages], "stream": True,
-               "think": False, "keep_alive": CHAT_KEEP_ALIVE,
+               "think": False, "keep_alive": limits["keep_alive"],
                "options": {"temperature": .5, "num_predict": CHAT_REPLY_TOKENS,
-                           "num_ctx": CHAT_CONTEXT_TOKENS}}
+                           "num_ctx": CHAT_CONTEXT_TOKENS, **limits["options"]}}
     if json_mode:
         payload["format"] = "json"
     text = ""
@@ -104,6 +125,15 @@ async def stream_chat(settings, *, system: str, messages: list[dict], json_mode:
             if not partial:
                 raise ValueError("The local response did not contain a usable answer")
             parsed = {"message": partial + "\n\nThis answer is incomplete. Try a shorter request.", "incomplete": True}
+    elif final.get("done_reason") == "length":
+        # Plain conversation has no JSON envelope to flag a bounded generation.
+        # Preserve its useful text while making the limit visible in both the
+        # last streaming preview and the stored response.
+        text += "\n\nThis answer is incomplete. Ask me to continue."
+        parsed = {"incomplete": True}
+        preview = preview_text(text, False)
+        if preview != last_preview:
+            on_preview(preview)
     return ProviderResult(text=text, parsed=parsed, provider="ollama", model=settings.ollama_model,
         attempted=["ollama"], prompt_tokens=final.get("prompt_eval_count", 0),
         completion_tokens=final.get("eval_count", 0))
